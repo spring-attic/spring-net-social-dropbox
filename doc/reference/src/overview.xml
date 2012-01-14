@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter id="overview" version="5.0" xmlns="http://docbook.org/ns/docbook"
+         xmlns:ns52="http://www.w3.org/2000/svg"
+         xmlns:ns5="http://www.w3.org/1999/xlink"
+         xmlns:ns4="http://www.w3.org/1998/Math/MathML"
+         xmlns:ns3="http://www.w3.org/1999/xhtml"
+         xmlns:ns="http://docbook.org/ns/docbook">
+  <title>Overview</title>
+
+  <para>
+    The Spring.NET Social Dropbox project is an extension to <ulink url="http://www.springframework.net/social/">Spring.NET Social</ulink>
+    that enables integration with Dropbox.
+  </para>
+  
+  <para>
+		<ulink url="http://www.dropbox.com">Dropbox</ulink> is a free service that lets you bring your photos, docs, and videos anywhere and share them easily.
+  </para>
+
+  <para>Spring.NET Social Dropbox supports the following .NET Frameworks : <itemizedlist>
+    <listitem>
+      <para>.NET 2.0</para>
+    </listitem>
+
+    <listitem>
+      <para>.NET Client Profile 3.5 and 4.0</para>
+    </listitem>
+
+    <listitem>
+      <para>Silverlight 4.0 and 5.0</para>
+    </listitem>
+
+    <listitem>
+      <para>Windows Phone 7.0 and 7.1</para>
+    </listitem>
+  </itemizedlist></para>
+  
+  <para>
+    As an extension, Spring.NET Social Dropbox depends on Spring.NET Social. 
+    <sbr/>
+    Note that Spring.NET Social Dropbox may release on a different schedule than Spring.NET Social. 
+    Consequently, Spring.NET Social's version may differ from that of Spring.NET Social Dropbox.
+  </para>
+
+</chapter>

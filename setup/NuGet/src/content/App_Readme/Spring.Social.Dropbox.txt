@@ -1,0 +1,4 @@
+Spring.NET Social Framework extension for Dropbox
+-------------------------------------------------
+Download full package with sources, documentation and examples at 
+http://www.springframework.net/social-dropbox/
