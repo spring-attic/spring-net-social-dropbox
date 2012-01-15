@@ -32,18 +32,30 @@ namespace Spring.Social.Dropbox.Connect
     /// <author>Bruno Baia</author>
     public class DropboxServiceProvider : AbstractOAuth1ServiceProvider<IDropbox>
     {
+        private AccessLevel accessLevel;
+
+        /// <summary>
+        /// Gets the application access level. 
+        /// </summary>
+        public AccessLevel AccessLevel
+        {
+            get { return accessLevel; }
+        }
+
         /// <summary>
         /// Creates a new instance of <see cref="DropboxServiceProvider"/>.
         /// </summary>
         /// <param name="consumerKey">The application's API key.</param>
         /// <param name="consumerSecret">The application's API secret.</param>
-        public DropboxServiceProvider(string consumerKey, string consumerSecret)
+        /// <param name="accessLevel">The application access level.</param>
+        public DropboxServiceProvider(string consumerKey, string consumerSecret, AccessLevel accessLevel)
             : base(consumerKey, consumerSecret, new OAuth1Template(consumerKey, consumerSecret,
                 "https://api.dropbox.com/1/oauth/request_token",
                 "https://www.dropbox.com/1/oauth/authorize",
                 "https://api.dropbox.com/1/oauth/access_token", 
                 OAuth1Version.CORE_10))
         {
+            this.accessLevel = accessLevel;
         }
 
         /// <summary>
@@ -54,7 +66,7 @@ namespace Spring.Social.Dropbox.Connect
         /// <returns>A binding to the service provider's API.</returns>
         public override IDropbox GetApi(string accessToken, string secret)
         {
-            return new DropboxTemplate(this.ConsumerKey, this.ConsumerSecret, accessToken, secret);
+            return new DropboxTemplate(this.ConsumerKey, this.ConsumerSecret, accessToken, secret, this.accessLevel);
         }
     }
 }

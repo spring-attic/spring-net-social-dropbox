@@ -110,10 +110,14 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Social\Dropbox\Api\AccessLevel.cs" />
+    <Compile Include="Social\Dropbox\Api\Entry.cs" />
     <Compile Include="Social\Dropbox\Api\DropboxProfile.cs" />
     <Compile Include="Social\Dropbox\Api\IDropbox.cs" />
     <Compile Include="Social\Dropbox\Api\Impl\DropboxTemplate.cs" />
+    <Compile Include="Social\Dropbox\Api\Impl\Json\EntryDeserializer.cs" />
     <Compile Include="Social\Dropbox\Api\Impl\Json\DropboxProfileDeserializer.cs" />
+    <Compile Include="Social\Dropbox\Api\Impl\Json\JsonUtils.cs" />
     <Compile Include="Social\Dropbox\Connect\DropboxServiceProvider.cs" />
   </ItemGroup>
   <ItemGroup />

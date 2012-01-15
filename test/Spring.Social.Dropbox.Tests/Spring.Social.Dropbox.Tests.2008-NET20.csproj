@@ -102,6 +102,10 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Social\Dropbox\Api\Impl\Dropbox_Profile.json" />
+    <EmbeddedResource Include="Social\Dropbox\Api\Impl\Copy.json" />
+    <EmbeddedResource Include="Social\Dropbox\Api\Impl\Create_Folder.json" />
+    <EmbeddedResource Include="Social\Dropbox\Api\Impl\Delete.json" />
+    <EmbeddedResource Include="Social\Dropbox\Api\Impl\Move.json" />
     <None Include="Spring.Social.Dropbox.Tests.dll.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
