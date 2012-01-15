@@ -118,6 +118,7 @@
     <Compile Include="Social\Dropbox\Api\Impl\DropboxTemplateTests.cs" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Social\Dropbox\Api\Impl\Dropbox_Profile.json" />
     <None Include="Spring.Social.Dropbox.Tests.dll.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

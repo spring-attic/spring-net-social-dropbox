@@ -18,7 +18,13 @@
 
 #endregion
 
+using System;
+
 using NUnit.Framework;
+using Spring.Rest.Client.Testing;
+
+using Spring.IO;
+using Spring.Http;
 
 namespace Spring.Social.Dropbox.Api.Impl
 {
@@ -29,11 +35,61 @@ namespace Spring.Social.Dropbox.Api.Impl
     [TestFixture]
     public class DropboxTemplateTests
     {
+        protected DropboxTemplate dropbox;
+        protected MockRestServiceServer mockServer;
+        protected HttpHeaders responseHeaders;
+
+        [SetUp]
+        public void Setup()
+        {
+            dropbox = new DropboxTemplate("CONSUMER_KEY", "CONSUMER_SECRET", "ACCESS_TOKEN", "ACCESS_TOKEN_SECRET");
+            mockServer = MockRestServiceServer.CreateServer(dropbox.RestTemplate);
+            responseHeaders = new HttpHeaders();
+            responseHeaders.ContentType = MediaType.APPLICATION_JSON;
+        }
+
+        [TearDown]
+        public void TearDown()
+        {
+            mockServer.Verify();
+        }
+
         [Test]
 	    public void IsAuthorizedForUser() 
         {
-		    DropboxTemplate twitter = new DropboxTemplate("API_KEY", "API_SECRET", "ACCESS_TOKEN", "ACCESS_TOKEN_SECRET");
-		    Assert.IsTrue(twitter.IsAuthorized);
+		    DropboxTemplate dropbox = new DropboxTemplate("API_KEY", "API_SECRET", "ACCESS_TOKEN", "ACCESS_TOKEN_SECRET");
+		    Assert.IsTrue(dropbox.IsAuthorized);
 	    }
+
+        [Test]
+        public void GetUserProfile()
+        {
+            mockServer.ExpectNewRequest()
+                .AndExpectUri("https://api.dropbox.com/1/account/info")
+                .AndExpectMethod(HttpMethod.GET)
+                .AndRespondWith(JsonResource("Dropbox_Profile"), responseHeaders);
+
+#if NET_4_0 || SILVERLIGHT_5
+            DropboxProfile profile = dropbox.GetUserProfileAsync().Result;
+#else
+            DropboxProfile profile = dropbox.GetUserProfile();
+#endif
+            Assert.AreEqual("US", profile.Country);
+            Assert.AreEqual("John P. User", profile.DisplayName);
+            Assert.AreEqual("john@example.com", profile.Email);
+            Assert.AreEqual(12345678, profile.ID);
+            Assert.AreEqual(107374182400000, profile.Quota);
+            Assert.AreEqual(680031877871, profile.QuotaNormal);
+            Assert.AreEqual(253738410565, profile.QuotaShared);
+            Assert.AreEqual("https://www.dropbox.com/referrals/r1a2n3d4m5s6t7", profile.ReferralLink);
+        }
+
+
+        // tests helpers
+
+        private IResource JsonResource(string filename)
+        {
+            return new AssemblyResource("assembly://Spring.Social.Dropbox.Tests/Spring.Social.Dropbox.Api.Impl/" + filename + ".json");
+        }
     }
 }

@@ -20,12 +20,17 @@
 
 using System;
 using System.Collections.Generic;
+#if NET_4_0 || SILVERLIGHT_5
+using System.Threading.Tasks;
+#endif
 
 using Spring.Json;
 using Spring.Rest.Client;
 using Spring.Social.OAuth1;
 using Spring.Http.Converters;
 using Spring.Http.Converters.Json;
+
+using Spring.Social.Dropbox.Api.Impl.Json;
 
 namespace Spring.Social.Dropbox.Api.Impl
 {
@@ -53,6 +58,49 @@ namespace Spring.Social.Dropbox.Api.Impl
 	    }
 
         #region IDropbox Members
+
+#if NET_4_0 || SILVERLIGHT_5
+        /// <summary>
+        /// Asynchronously retrieves the authenticated user's Dropbox profile details.
+        /// </summary>
+        /// <returns>
+        /// A <code>Task</code> that represents the asynchronous operation that can return 
+        /// a <see cref="DropboxProfile"/> object representing the user's profile.
+        /// </returns>
+        /// <exception cref="ApiException">If there is an error while communicating with Dropbox.</exception>
+        public Task<DropboxProfile> GetUserProfileAsync()
+        {
+            return this.RestTemplate.GetForObjectAsync<DropboxProfile>("account/info");
+        }
+#else
+#if !SILVERLIGHT
+        /// <summary>
+        /// Retrieves the authenticated user's Dropbox profile details.
+        /// </summary>
+        /// <returns>A <see cref="DropboxProfile"/> object representing the user's profile.</returns>
+        /// <exception cref="ApiException">If there is an error while communicating with Dropbox.</exception>
+        public DropboxProfile GetUserProfile()
+        {
+            return this.RestTemplate.GetForObject<DropboxProfile>("account/info");
+        }
+#endif
+
+        /// <summary>
+        /// Asynchronously retrieves the authenticated user's Dropbox profile details.
+        /// </summary>
+        /// <param name="operationCompleted">
+        /// The <code>Action&lt;&gt;</code> to perform when the asynchronous request completes. 
+        /// Provides a <see cref="DropboxProfile"/>object representing the user's profile.
+        /// </param>
+        /// <returns>
+        /// A <see cref="RestOperationCanceler"/> instance that allows to cancel the asynchronous operation.
+        /// </returns>
+        /// <exception cref="ApiException">If there is an error while communicating with Dropbox.</exception>
+        public RestOperationCanceler GetUserProfileAsync(Action<RestOperationCompletedEventArgs<DropboxProfile>> operationCompleted)
+        {
+            return this.RestTemplate.GetForObjectAsync<DropboxProfile>("account/info", operationCompleted);
+        }
+#endif
 
         /// <summary>
         /// Gets the underlying <see cref="IRestOperations"/> object allowing for consumption of Dropbox endpoints 
@@ -107,6 +155,8 @@ namespace Spring.Social.Dropbox.Api.Impl
         protected virtual SpringJsonHttpMessageConverter GetJsonMessageConverter()
         {
             JsonMapper jsonMapper = new JsonMapper();
+            jsonMapper.RegisterDeserializer(typeof(DropboxProfile), new DropboxProfileDeserializer());
+
             return new SpringJsonHttpMessageConverter(jsonMapper);
         }
     }

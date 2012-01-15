@@ -19,6 +19,9 @@
 #endregion
 
 using System;
+#if NET_4_0 || SILVERLIGHT_5
+using System.Threading.Tasks;
+#endif
 
 using Spring.Rest.Client;
 
@@ -30,6 +33,40 @@ namespace Spring.Social.Dropbox.Api
     /// <author>Bruno Baia</author>
     public interface IDropbox : IApiBinding
     {
+#if NET_4_0 || SILVERLIGHT_5  
+        /// <summary>
+        /// Asynchronously retrieves the authenticated user's Dropbox profile details.
+        /// </summary>
+        /// <returns>
+        /// A <code>Task</code> that represents the asynchronous operation that can return 
+        /// a <see cref="DropboxProfile"/> object representing the user's profile.
+        /// </returns>
+        /// <exception cref="ApiException">If there is an error while communicating with Dropbox.</exception>
+        Task<DropboxProfile> GetUserProfileAsync();
+#else
+#if !SILVERLIGHT
+        /// <summary>
+        /// Retrieves the authenticated user's Dropbox profile details.
+        /// </summary>
+        /// <returns>A <see cref="DropboxProfile"/> object representing the user's profile.</returns>
+        /// <exception cref="ApiException">If there is an error while communicating with Dropbox.</exception>
+        DropboxProfile GetUserProfile();
+#endif
+
+        /// <summary>
+        /// Asynchronously retrieves the authenticated user's Dropbox profile details.
+        /// </summary>
+        /// <param name="operationCompleted">
+        /// The <code>Action&lt;&gt;</code> to perform when the asynchronous request completes. 
+        /// Provides a <see cref="DropboxProfile"/>object representing the user's profile.
+        /// </param>
+        /// <returns>
+        /// A <see cref="RestOperationCanceler"/> instance that allows to cancel the asynchronous operation.
+        /// </returns>
+        /// <exception cref="ApiException">If there is an error while communicating with Dropbox.</exception>
+        RestOperationCanceler GetUserProfileAsync(Action<RestOperationCompletedEventArgs<DropboxProfile>> operationCompleted);
+#endif
+
         /// <summary>
         /// Gets the underlying <see cref="IRestOperations"/> object allowing for consumption of Dropbox endpoints 
         /// that may not be otherwise covered by the API binding. 
