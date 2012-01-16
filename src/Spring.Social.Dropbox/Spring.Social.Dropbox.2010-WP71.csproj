@@ -65,7 +65,9 @@
     <Compile Include="Social\Dropbox\Api\Impl\DropboxTemplate.cs" />
     <Compile Include="Social\Dropbox\Api\Impl\Json\DropboxProfileDeserializer.cs" />
     <Compile Include="Social\Dropbox\Api\Impl\Json\EntryDeserializer.cs" />
+    <Compile Include="Social\Dropbox\Api\Impl\Json\EntryListDeserializer.cs" />
     <Compile Include="Social\Dropbox\Api\Impl\Json\JsonUtils.cs" />
+    <Compile Include="Social\Dropbox\Api\MetadataParameters.cs" />
     <Compile Include="Social\Dropbox\Connect\DropboxServiceProvider.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\Silverlight for Phone\$(TargetFrameworkVersion)\Microsoft.Silverlight.$(TargetFrameworkProfile).Overrides.targets" />

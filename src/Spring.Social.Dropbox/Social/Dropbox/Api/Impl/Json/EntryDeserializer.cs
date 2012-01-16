@@ -19,6 +19,7 @@
 #endregion
 
 using System;
+using System.Collections.Generic;
 
 using Spring.Json;
 
@@ -45,7 +46,8 @@ namespace Spring.Social.Dropbox.Api.Impl.Json
                 Revision = value.GetValue<string>("rev"),
                 Root = value.GetValue<string>("root"),
                 Size = value.GetValue<string>("size"),
-                ThumbExists = value.GetValue<bool>("thumb_exists")
+                ThumbExists = value.GetValue<bool>("thumb_exists"),
+                Contents = value.ContainsName("contents") ? mapper.Deserialize<IList<Entry>>(value.GetValue("contents")) : null
             };
         }
     }

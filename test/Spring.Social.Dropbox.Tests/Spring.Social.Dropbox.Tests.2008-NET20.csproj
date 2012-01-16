@@ -107,6 +107,8 @@
     <EmbeddedResource Include="Social\Dropbox\Api\Impl\Delete.json" />
     <EmbeddedResource Include="Social\Dropbox\Api\Impl\Move.json" />
     <EmbeddedResource Include="Social\Dropbox\Api\Impl\Upload_File.json" />
+    <EmbeddedResource Include="Social\Dropbox\Api\Impl\Metadata_File.json" />
+    <EmbeddedResource Include="Social\Dropbox\Api\Impl\Metadata_Folder.json" />
     <None Include="Spring.Social.Dropbox.Tests.dll.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

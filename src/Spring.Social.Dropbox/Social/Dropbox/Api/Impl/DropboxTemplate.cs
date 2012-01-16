@@ -55,6 +55,7 @@ namespace Spring.Social.Dropbox.Api.Impl
         private static readonly Uri API_URI_BASE = new Uri("https://api.dropbox.com/1/");
 
         private AccessLevel accessLevel;
+        private string root;
 
         /// <summary>
         /// Creates a new instance of <see cref="DropboxTemplate"/>.
@@ -68,6 +69,7 @@ namespace Spring.Social.Dropbox.Api.Impl
             : base(consumerKey, consumerSecret, accessToken, accessTokenSecret)
         {
             this.accessLevel = accessLevel;
+            this.root = this.accessLevel == Api.AccessLevel.AppFolder ? "sandbox" : "dropbox";
 	    }
 
         #region IDropbox Members
@@ -108,7 +110,7 @@ namespace Spring.Social.Dropbox.Api.Impl
         public Task<Entry> CreateFolderAsync(string path)
         {
             NameValueCollection request = new NameValueCollection();
-            this.AddRootTo(request);
+            request.Add("root", this.root);
             request.Add("path", path);
             this.AddLocaleTo(request);
             return this.RestTemplate.PostForObjectAsync<Entry>("fileops/create_folder", request);
@@ -126,7 +128,7 @@ namespace Spring.Social.Dropbox.Api.Impl
         public Task<Entry> DeleteAsync(string path)
         {
             NameValueCollection request = new NameValueCollection();
-            this.AddRootTo(request);
+            request.Add("root", this.root);
             request.Add("path", path);
             this.AddLocaleTo(request);
             return this.RestTemplate.PostForObjectAsync<Entry>("fileops/delete", request);
@@ -145,7 +147,7 @@ namespace Spring.Social.Dropbox.Api.Impl
         public Task<Entry> MoveAsync(string fromPath, string toPath)
         {
             NameValueCollection request = new NameValueCollection();
-            this.AddRootTo(request);
+            request.Add("root", this.root);
             request.Add("from_path", fromPath);
             request.Add("to_path", toPath);
             this.AddLocaleTo(request);
@@ -165,7 +167,7 @@ namespace Spring.Social.Dropbox.Api.Impl
         public Task<Entry> CopyAsync(string fromPath, string toPath)
         {
             NameValueCollection request = new NameValueCollection();
-            this.AddRootTo(request);
+            request.Add("root", this.root);
             request.Add("from_path", fromPath);
             request.Add("to_path", toPath);
             this.AddLocaleTo(request);
@@ -204,32 +206,8 @@ namespace Spring.Social.Dropbox.Api.Impl
         /// If <see langword="false"/>, the new file will be automatically renamed. 
         /// The new name can be obtained from the returned metadata.
         /// </param>
-        /// <param name="cancellationToken">The <see cref="CancellationToken"/> that will be assigned to the task.</param>
-        /// <returns>
-        /// A <code>Task</code> that represents the asynchronous operation that can return 
-        /// a metadata <see cref="Entry"/> for the uploaded file.
-        /// </returns>
-        /// <exception cref="ApiException">If there is an error while communicating with Dropbox.</exception>
-        public Task<Entry> UploadFileAsync(IResource file, string path, bool overwrite, CancellationToken cancellationToken)
-        {
-            return this.UploadFileAsync(file, path, overwrite, null, cancellationToken);
-        }
-
-        /// <summary>
-        /// Asynchronously uploads a file.
-        /// </summary>
-        /// <param name="file">The file resource to be uploaded.</param>
-        /// <param name="path">
-        /// The path to the file you want to write to, relative to root. 
-        /// This parameter should not point to a folder.
-        /// </param>
-        /// <param name="overwrite">
-        /// If <see langword="true"/>, the existing file will be overwritten by the new one. 
-        /// If <see langword="false"/>, the new file will be automatically renamed. 
-        /// The new name can be obtained from the returned metadata.
-        /// </param>
         /// <param name="revision">
-        /// The revision of the file you're editing. 
+        /// The revision of the file you're editing or null if this is a new upload. 
         /// If <paramref name="revision"/> matches the latest version of the file on the user's Dropbox, that file will be replaced.
         /// </param>
         /// <param name="cancellationToken">The <see cref="CancellationToken"/> that will be assigned to the task.</param>
@@ -283,6 +261,36 @@ namespace Spring.Social.Dropbox.Api.Impl
                     return task.Result.Body;
                 });
         }
+
+        /// <summary>
+        /// Asynchronously retrieves file or folder metadata.
+        /// </summary>
+        /// <param name="path">The path to the file or folder, relative to root.</param>
+        /// <returns>
+        /// A <code>Task</code> that represents the asynchronous operation that can return 
+        /// a metadata <see cref="Entry"/> for the file or folder.
+        /// </returns>
+        /// <exception cref="ApiException">If there is an error while communicating with Dropbox.</exception>
+        public Task<Entry> GetMetadataAsync(string path)
+        {
+            return this.GetMetadataAsync(path, new MetadataParameters());
+        }
+
+        /// <summary>
+        /// Asynchronously retrieves file or folder metadata. 
+        /// May return <see langword="null"/> if an hash is provided through parameters.
+        /// </summary>
+        /// <param name="path">The path to the file or folder, relative to root.</param>
+        /// <param name="parameters">The parameters for retrieving file and folder metadata.</param>
+        /// <returns>
+        /// A <code>Task</code> that represents the asynchronous operation that can return 
+        /// a metadata <see cref="Entry"/> for the file or folder.
+        /// </returns>
+        /// <exception cref="ApiException">If there is an error while communicating with Dropbox.</exception>
+        public Task<Entry> GetMetadataAsync(string path, MetadataParameters parameters)
+        {
+            return this.RestTemplate.GetForObjectAsync<Entry>(this.BuildMetadataUrl(path, parameters));
+        }
 #else
 #if !SILVERLIGHT
         /// <summary>
@@ -308,7 +316,7 @@ namespace Spring.Social.Dropbox.Api.Impl
         public Entry CreateFolder(string path)
         {
             NameValueCollection request = new NameValueCollection();
-            this.AddRootTo(request);
+            request.Add("root", this.root);
             request.Add("path", path);
             this.AddLocaleTo(request);
             return this.RestTemplate.PostForObject<Entry>("fileops/create_folder", request);
@@ -325,7 +333,7 @@ namespace Spring.Social.Dropbox.Api.Impl
         public Entry Delete(string path)
         {
             NameValueCollection request = new NameValueCollection();
-            this.AddRootTo(request);
+            request.Add("root", this.root);
             request.Add("path", path);
             this.AddLocaleTo(request);
             return this.RestTemplate.PostForObject<Entry>("fileops/delete", request);
@@ -343,7 +351,7 @@ namespace Spring.Social.Dropbox.Api.Impl
         public Entry Move(string fromPath, string toPath)
         {
             NameValueCollection request = new NameValueCollection();
-            this.AddRootTo(request);
+            request.Add("root", this.root);
             request.Add("from_path", fromPath);
             request.Add("to_path", toPath);
             this.AddLocaleTo(request);
@@ -362,7 +370,7 @@ namespace Spring.Social.Dropbox.Api.Impl
         public Entry Copy(string fromPath, string toPath)
         {
             NameValueCollection request = new NameValueCollection();
-            this.AddRootTo(request);
+            request.Add("root", this.root);
             request.Add("from_path", fromPath);
             request.Add("to_path", toPath);
             this.AddLocaleTo(request);
@@ -382,26 +390,6 @@ namespace Spring.Social.Dropbox.Api.Impl
         public Entry UploadFile(IResource file, string path)
         {
             return this.UploadFile(file, path, true, null);
-        }
-
-        /// <summary>
-        /// Uploads a file.
-        /// </summary>
-        /// <param name="file">The file resource to be uploaded.</param>
-        /// <param name="path">
-        /// The path to the file you want to write to, relative to root. 
-        /// This parameter should not point to a folder.
-        /// </param>
-        /// <param name="overwrite">
-        /// If <see langword="true"/>, the existing file will be overwritten by the new one. 
-        /// If <see langword="false"/>, the new file will be automatically renamed. 
-        /// The new name can be obtained from the returned metadata.
-        /// </param>
-        /// <returns>A metadata <see cref="Entry"/> for the uploaded file.</returns>
-        /// <exception cref="ApiException">If there is an error while communicating with Dropbox.</exception>
-        public Entry UploadFile(IResource file, string path, bool overwrite)
-        {
-            return this.UploadFile(file, path, overwrite, null);
         }
 
         /// <summary>
@@ -451,6 +439,34 @@ namespace Spring.Social.Dropbox.Api.Impl
         {
             return this.RestTemplate.GetForObject<byte[]>(this.BuildDownloadUrl(path, revision));
         }
+
+        /// <summary>
+        /// Retrieves file or folder metadata.
+        /// </summary>
+        /// <param name="path">The path to the file or folder, relative to root.</param>
+        /// <returns>
+        /// A metadata <see cref="Entry"/> for the file or folder.
+        /// </returns>
+        /// <exception cref="ApiException">If there is an error while communicating with Dropbox.</exception>
+        public Entry GetMetadata(string path)
+        {
+            return this.GetMetadata(path, new MetadataParameters());
+        }
+
+        /// <summary>
+        /// Retrieves file or folder metadata. 
+        /// May return <see langword="null"/> if an hash is provided through parameters.
+        /// </summary>
+        /// <param name="path">The path to the file or folder, relative to root.</param>
+        /// <param name="parameters">The parameters for retrieving file and folder metadata.</param>
+        /// <returns>
+        /// A metadata <see cref="Entry"/> for the file or folder.
+        /// </returns>
+        /// <exception cref="ApiException">If there is an error while communicating with Dropbox.</exception>
+        public Entry GetMetadata(string path, MetadataParameters parameters)
+        {
+            return this.RestTemplate.GetForObject<Entry>(this.BuildMetadataUrl(path, parameters));
+        }
 #endif
 
         /// <summary>
@@ -486,7 +502,7 @@ namespace Spring.Social.Dropbox.Api.Impl
         public RestOperationCanceler CreateFolderAsync(string path, Action<RestOperationCompletedEventArgs<Entry>> operationCompleted)
         {
             NameValueCollection request = new NameValueCollection();
-            this.AddRootTo(request);
+            request.Add("root", this.root);
             request.Add("path", path);
             this.AddLocaleTo(request);
             return this.RestTemplate.PostForObjectAsync<Entry>("fileops/create_folder", request, operationCompleted);
@@ -507,7 +523,7 @@ namespace Spring.Social.Dropbox.Api.Impl
         public RestOperationCanceler DeleteAsync(string path, Action<RestOperationCompletedEventArgs<Entry>> operationCompleted)
         {
             NameValueCollection request = new NameValueCollection();
-            this.AddRootTo(request);
+            request.Add("root", this.root);
             request.Add("path", path);
             this.AddLocaleTo(request);
             return this.RestTemplate.PostForObjectAsync<Entry>("fileops/delete", request, operationCompleted);
@@ -529,7 +545,7 @@ namespace Spring.Social.Dropbox.Api.Impl
         public RestOperationCanceler MoveAsync(string fromPath, string toPath, Action<RestOperationCompletedEventArgs<Entry>> operationCompleted)
         {
             NameValueCollection request = new NameValueCollection();
-            this.AddRootTo(request);
+            request.Add("root", this.root);
             request.Add("from_path", fromPath);
             request.Add("to_path", toPath);
             this.AddLocaleTo(request);
@@ -552,7 +568,7 @@ namespace Spring.Social.Dropbox.Api.Impl
         public RestOperationCanceler CopyAsync(string fromPath, string toPath, Action<RestOperationCompletedEventArgs<Entry>> operationCompleted)
         {
             NameValueCollection request = new NameValueCollection();
-            this.AddRootTo(request);
+            request.Add("root", this.root);
             request.Add("from_path", fromPath);
             request.Add("to_path", toPath);
             this.AddLocaleTo(request);
@@ -578,32 +594,6 @@ namespace Spring.Social.Dropbox.Api.Impl
         public RestOperationCanceler UploadFileAsync(IResource file, string path, Action<RestOperationCompletedEventArgs<Entry>> operationCompleted)
         {
             return this.UploadFileAsync(file, path, true, null, operationCompleted);
-        }
-
-        /// <summary>
-        /// Asynchronously uploads a file.
-        /// </summary>
-        /// <param name="file">The file resource to be uploaded.</param>
-        /// <param name="path">
-        /// The path to the file you want to write to, relative to root. 
-        /// This parameter should not point to a folder.
-        /// </param>
-        /// <param name="overwrite">
-        /// If <see langword="true"/>, the existing file will be overwritten by the new one. 
-        /// If <see langword="false"/>, the new file will be automatically renamed. 
-        /// The new name can be obtained from the returned metadata.
-        /// </param>
-        /// <param name="operationCompleted">
-        /// The <code>Action&lt;&gt;</code> to perform when the asynchronous request completes. 
-        /// Provides a metadata <see cref="Entry"/> for the uploaded file.
-        /// </param>
-        /// <returns>
-        /// A <see cref="RestOperationCanceler"/> instance that allows to cancel the asynchronous operation.
-        /// </returns>
-        /// <exception cref="ApiException">If there is an error while communicating with Dropbox.</exception>
-        public RestOperationCanceler UploadFileAsync(IResource file, string path, bool overwrite, Action<RestOperationCompletedEventArgs<Entry>> operationCompleted)
-        {
-            return this.UploadFileAsync(file, path, overwrite, null, operationCompleted);
         }
 
         /// <summary>
@@ -676,6 +666,42 @@ namespace Spring.Social.Dropbox.Api.Impl
         {
             return this.RestTemplate.GetForObjectAsync<byte[]>(this.BuildDownloadUrl(path, revision), operationCompleted);
         }
+
+        /// <summary>
+        /// Asynchronously retrieves file or folder metadata.
+        /// </summary>
+        /// <param name="path">The path to the file or folder, relative to root.</param>
+        /// <param name="operationCompleted">
+        /// The <code>Action&lt;&gt;</code> to perform when the asynchronous request completes. 
+        /// Provides a metadata <see cref="Entry"/> for the file or folder.
+        /// </param>
+        /// <returns>
+        /// A <see cref="RestOperationCanceler"/> instance that allows to cancel the asynchronous operation.
+        /// </returns>
+        /// <exception cref="ApiException">If there is an error while communicating with Dropbox.</exception>
+        public RestOperationCanceler GetMetadataAsync(string path, Action<RestOperationCompletedEventArgs<Entry>> operationCompleted)
+        {
+            return this.GetMetadataAsync(path, new MetadataParameters(), operationCompleted);
+        }
+
+        /// <summary>
+        /// Asynchronously retrieves file or folder metadata. 
+        /// May return <see langword="null"/> if an hash is provided through parameters.
+        /// </summary>
+        /// <param name="path">The path to the file or folder, relative to root.</param>
+        /// <param name="parameters">The parameters for retrieving file and folder metadata.</param>
+        /// <param name="operationCompleted">
+        /// The <code>Action&lt;&gt;</code> to perform when the asynchronous request completes. 
+        /// Provides a metadata <see cref="Entry"/> for the file or folder.
+        /// </param>
+        /// <returns>
+        /// A <see cref="RestOperationCanceler"/> instance that allows to cancel the asynchronous operation.
+        /// </returns>
+        /// <exception cref="ApiException">If there is an error while communicating with Dropbox.</exception>
+        public RestOperationCanceler GetMetadataAsync(string path, MetadataParameters parameters, Action<RestOperationCompletedEventArgs<Entry>> operationCompleted)
+        {
+            return this.RestTemplate.GetForObjectAsync<Entry>(this.BuildMetadataUrl(path, parameters), operationCompleted);
+        }
 #endif
 
         /// <summary>
@@ -719,6 +745,7 @@ namespace Spring.Social.Dropbox.Api.Impl
             JsonMapper jsonMapper = new JsonMapper();
             jsonMapper.RegisterDeserializer(typeof(DropboxProfile), new DropboxProfileDeserializer());
             jsonMapper.RegisterDeserializer(typeof(Entry), new EntryDeserializer());
+            jsonMapper.RegisterDeserializer(typeof(IList<Entry>), new EntryListDeserializer());
 
             IList<IHttpMessageConverter> converters = base.GetMessageConverters();
             converters.Add(new ByteArrayHttpMessageConverter());
@@ -727,22 +754,13 @@ namespace Spring.Social.Dropbox.Api.Impl
             return converters;
         }
 
-        private void AddRootTo(NameValueCollection parameters)
-        {
-            parameters.Add("root", this.accessLevel == Api.AccessLevel.AppFolder ? "sandbox" : "dropbox");
-        }
-
         private void AddLocaleTo(NameValueCollection parameters)
         {
             // TODO: locale parameter
         }
 
-        private string BuildUploadUrl(string path, bool overwrite, string revision)
+        private string BuildUploadUrl(string dropboxPath, bool overwrite, string revision)
         {
-            string baseUrl = "https://api-content.dropbox.com/1/files_put/";
-            baseUrl += this.accessLevel == Api.AccessLevel.AppFolder ? "sandbox/" : "dropbox/";
-            baseUrl += path.TrimStart('/');
-
             NameValueCollection parameters = new NameValueCollection();
             this.AddLocaleTo(parameters);
             if (!overwrite)
@@ -753,30 +771,48 @@ namespace Spring.Social.Dropbox.Api.Impl
             {
                 parameters.Add("parent_rev", revision);
             }
-
-            return this.BuildUrl(baseUrl, parameters);
+            return this.BuildUrl("https://api-content.dropbox.com/1/files_put/", dropboxPath, parameters);
         }
 
-        private string BuildDownloadUrl(string path, string revision)
+        private string BuildDownloadUrl(string dropboxPath, string revision)
         {
-            string baseUrl = "https://api-content.dropbox.com/1/files/";
-            baseUrl += this.accessLevel == Api.AccessLevel.AppFolder ? "sandbox/" : "dropbox/";
-            baseUrl += path.TrimStart('/');
-
             NameValueCollection parameters = new NameValueCollection();
             if (!String.IsNullOrEmpty(revision))
             {
                 parameters.Add("rev", revision);
             }
-
-            return this.BuildUrl(baseUrl, parameters);
+            return this.BuildUrl("https://api-content.dropbox.com/1/files/", dropboxPath, parameters);
         }
 
-        private string BuildUrl(string path, string parameterName, string parameterValue)
+        private string BuildMetadataUrl(string dropboxPath, MetadataParameters metadataParameters)
         {
             NameValueCollection parameters = new NameValueCollection();
-            parameters.Add(parameterName, parameterValue);
-            return this.BuildUrl(path, parameters);
+            if (metadataParameters.FileLimits > 0)
+            {
+                parameters.Add("file_limit", metadataParameters.FileLimits.ToString());
+            }
+            if (metadataParameters.Hash != null)
+            {
+                parameters.Add("hash", metadataParameters.Hash);
+            }
+            if (!metadataParameters.IncludeContents)
+            {
+                parameters.Add("list", "false");
+            }
+            if (metadataParameters.IncludeDeleted)
+            {
+                parameters.Add("include_deleted", "true");
+            }
+            if (metadataParameters.Revision != null)
+            {
+                parameters.Add("rev", metadataParameters.Revision);
+            }
+            return this.BuildUrl("metadata/", dropboxPath, parameters);
+        }
+
+        private string BuildUrl(string path, string dropboxPath, NameValueCollection parameters)
+        {
+            return this.BuildUrl(path + this.root + "/" + dropboxPath.TrimStart('/'), parameters);
         }
 
         private string BuildUrl(string path, NameValueCollection parameters)

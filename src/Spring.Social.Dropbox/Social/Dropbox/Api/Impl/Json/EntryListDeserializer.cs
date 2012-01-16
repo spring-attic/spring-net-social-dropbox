@@ -18,24 +18,26 @@
 
 #endregion
 
-using System;
+using System.Collections.Generic;
 
-namespace Spring.Social.Dropbox.Api
+using Spring.Json;
+
+namespace Spring.Social.Dropbox.Api.Impl.Json
 {
     /// <summary>
-    /// Defines the Dropbox API access levels.
+    /// JSON deserializer for list of entries.
     /// </summary>
     /// <author>Bruno Baia</author>
-    public enum AccessLevel 
+    class EntryListDeserializer : IJsonDeserializer
     {
-        /// <summary>
-        /// Application only needs access to a single folder within the user's Dropbox (recommended).
-        /// </summary>
-        AppFolder,
-
-        /// <summary>
-        /// Application needs access to the user's entire Dropbox.
-        /// </summary>
-        Full
+        public object Deserialize(JsonValue value, JsonMapper mapper)
+        {
+            IList<Entry> entries = new List<Entry>();
+            foreach (JsonValue itemValue in value.GetValues())
+            {
+                entries.Add(mapper.Deserialize<Entry>(itemValue));
+            }
+            return entries;
+        }
     }
 }

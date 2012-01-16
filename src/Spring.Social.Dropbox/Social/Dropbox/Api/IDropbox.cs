@@ -126,29 +126,8 @@ namespace Spring.Social.Dropbox.Api
         /// If <see langword="false"/>, the new file will be automatically renamed. 
         /// The new name can be obtained from the returned metadata.
         /// </param>
-        /// <param name="cancellationToken">The <see cref="CancellationToken"/> that will be assigned to the task.</param>
-        /// <returns>
-        /// A <code>Task</code> that represents the asynchronous operation that can return 
-        /// a metadata <see cref="Entry"/> for the uploaded file.
-        /// </returns>
-        /// <exception cref="ApiException">If there is an error while communicating with Dropbox.</exception>
-        Task<Entry> UploadFileAsync(IResource file, string path, bool overwrite, CancellationToken cancellationToken);
-
-        /// <summary>
-        /// Asynchronously uploads a file.
-        /// </summary>
-        /// <param name="file">The file resource to be uploaded.</param>
-        /// <param name="path">
-        /// The path to the file you want to write to, relative to root. 
-        /// This parameter should not point to a folder.
-        /// </param>
-        /// <param name="overwrite">
-        /// If <see langword="true"/>, the existing file will be overwritten by the new one. 
-        /// If <see langword="false"/>, the new file will be automatically renamed. 
-        /// The new name can be obtained from the returned metadata.
-        /// </param>
         /// <param name="revision">
-        /// The revision of the file you're editing. 
+        /// The revision of the file you're editing or null if this is a new upload. 
         /// If <paramref name="revision"/> matches the latest version of the file on the user's Dropbox, that file will be replaced.
         /// </param>
         /// <param name="cancellationToken">The <see cref="CancellationToken"/> that will be assigned to the task.</param>
@@ -183,6 +162,30 @@ namespace Spring.Social.Dropbox.Api
         /// </returns>
         /// <exception cref="ApiException">If there is an error while communicating with Dropbox.</exception>
         Task<byte[]> DownloadFileAsync(string path, string revision, CancellationToken cancellationToken);
+
+        /// <summary>
+        /// Asynchronously retrieves file or folder metadata.
+        /// </summary>
+        /// <param name="path">The path to the file or folder, relative to root.</param>
+        /// <returns>
+        /// A <code>Task</code> that represents the asynchronous operation that can return 
+        /// a metadata <see cref="Entry"/> for the file or folder.
+        /// </returns>
+        /// <exception cref="ApiException">If there is an error while communicating with Dropbox.</exception>
+        Task<Entry> GetMetadataAsync(string path);
+
+        /// <summary>
+        /// Asynchronously retrieves file or folder metadata. 
+        /// May return <see langword="null"/> if an hash is provided through parameters.
+        /// </summary>
+        /// <param name="path">The path to the file or folder, relative to root.</param>
+        /// <param name="parameters">The parameters for retrieving file and folder metadata.</param>
+        /// <returns>
+        /// A <code>Task</code> that represents the asynchronous operation that can return 
+        /// a metadata <see cref="Entry"/> for the file or folder.
+        /// </returns>
+        /// <exception cref="ApiException">If there is an error while communicating with Dropbox.</exception>
+        Task<Entry> GetMetadataAsync(string path, MetadataParameters parameters);
 #else
 #if !SILVERLIGHT
         /// <summary>
@@ -259,25 +262,8 @@ namespace Spring.Social.Dropbox.Api
         /// If <see langword="false"/>, the new file will be automatically renamed. 
         /// The new name can be obtained from the returned metadata.
         /// </param>
-        /// <returns>A metadata <see cref="Entry"/> for the uploaded file.</returns>
-        /// <exception cref="ApiException">If there is an error while communicating with Dropbox.</exception>
-        Entry UploadFile(IResource file, string path, bool overwrite);
-
-        /// <summary>
-        /// Uploads a file.
-        /// </summary>
-        /// <param name="file">The file resource to be uploaded.</param>
-        /// <param name="path">
-        /// The path to the file you want to write to, relative to root. 
-        /// This parameter should not point to a folder.
-        /// </param>
-        /// <param name="overwrite">
-        /// If <see langword="true"/>, the existing file will be overwritten by the new one. 
-        /// If <see langword="false"/>, the new file will be automatically renamed. 
-        /// The new name can be obtained from the returned metadata.
-        /// </param>
         /// <param name="revision">
-        /// The revision of the file you're editing. 
+        /// The revision of the file you're editing or null if this is a new upload. 
         /// If <paramref name="revision"/> matches the latest version of the file on the user's Dropbox, that file will be replaced.
         /// </param>
         /// <returns>A metadata <see cref="Entry"/> for the uploaded file.</returns>
@@ -300,6 +286,28 @@ namespace Spring.Social.Dropbox.Api
         /// <returns>An array of bytes containing the file's content.</returns>
         /// <exception cref="ApiException">If there is an error while communicating with Dropbox.</exception>
         byte[] DownloadFile(string path, string revision);
+
+        /// <summary>
+        /// Retrieves file or folder metadata.
+        /// </summary>
+        /// <param name="path">The path to the file or folder, relative to root.</param>
+        /// <returns>
+        /// A metadata <see cref="Entry"/> for the file or folder.
+        /// </returns>
+        /// <exception cref="ApiException">If there is an error while communicating with Dropbox.</exception>
+        Entry GetMetadata(string path);
+
+        /// <summary>
+        /// Retrieves file or folder metadata. 
+        /// May return <see langword="null"/> if an hash is provided through parameters.
+        /// </summary>
+        /// <param name="path">The path to the file or folder, relative to root.</param>
+        /// <param name="parameters">The parameters for retrieving file and folder metadata.</param>
+        /// <returns>
+        /// A metadata <see cref="Entry"/> for the file or folder.
+        /// </returns>
+        /// <exception cref="ApiException">If there is an error while communicating with Dropbox.</exception>
+        Entry GetMetadata(string path, MetadataParameters parameters);
 #endif
 
         /// <summary>
@@ -404,31 +412,8 @@ namespace Spring.Social.Dropbox.Api
         /// If <see langword="false"/>, the new file will be automatically renamed. 
         /// The new name can be obtained from the returned metadata.
         /// </param>
-        /// <param name="operationCompleted">
-        /// The <code>Action&lt;&gt;</code> to perform when the asynchronous request completes. 
-        /// Provides a metadata <see cref="Entry"/> for the uploaded file.
-        /// </param>
-        /// <returns>
-        /// A <see cref="RestOperationCanceler"/> instance that allows to cancel the asynchronous operation.
-        /// </returns>
-        /// <exception cref="ApiException">If there is an error while communicating with Dropbox.</exception>
-        RestOperationCanceler UploadFileAsync(IResource file, string path, bool overwrite, Action<RestOperationCompletedEventArgs<Entry>> operationCompleted);
-
-        /// <summary>
-        /// Asynchronously uploads a file.
-        /// </summary>
-        /// <param name="file">The file resource to be uploaded.</param>
-        /// <param name="path">
-        /// The path to the file you want to write to, relative to root. 
-        /// This parameter should not point to a folder.
-        /// </param>
-        /// <param name="overwrite">
-        /// If <see langword="true"/>, the existing file will be overwritten by the new one. 
-        /// If <see langword="false"/>, the new file will be automatically renamed. 
-        /// The new name can be obtained from the returned metadata.
-        /// </param>
         /// <param name="revision">
-        /// The revision of the file you're editing. 
+        /// The revision of the file you're editing or null if this is a new upload.  
         /// If <paramref name="revision"/> matches the latest version of the file on the user's Dropbox, that file will be replaced.
         /// </param>
         /// <param name="operationCompleted">
@@ -469,6 +454,36 @@ namespace Spring.Social.Dropbox.Api
         /// </returns>
         /// <exception cref="ApiException">If there is an error while communicating with Dropbox.</exception>
         RestOperationCanceler DownloadFileAsync(string path, string revision, Action<RestOperationCompletedEventArgs<byte[]>> operationCompleted);
+
+        /// <summary>
+        /// Asynchronously retrieves file or folder metadata.
+        /// </summary>
+        /// <param name="path">The path to the file or folder, relative to root.</param>
+        /// <param name="operationCompleted">
+        /// The <code>Action&lt;&gt;</code> to perform when the asynchronous request completes. 
+        /// Provides a metadata <see cref="Entry"/> for the file or folder.
+        /// </param>
+        /// <returns>
+        /// A <see cref="RestOperationCanceler"/> instance that allows to cancel the asynchronous operation.
+        /// </returns>
+        /// <exception cref="ApiException">If there is an error while communicating with Dropbox.</exception>
+        RestOperationCanceler GetMetadataAsync(string path, Action<RestOperationCompletedEventArgs<Entry>> operationCompleted);
+
+        /// <summary>
+        /// Asynchronously retrieves file or folder metadata. 
+        /// May return <see langword="null"/> if an hash is provided through parameters.
+        /// </summary>
+        /// <param name="path">The path to the file or folder, relative to root.</param>
+        /// <param name="parameters">The parameters for retrieving file and folder metadata.</param>
+        /// <param name="operationCompleted">
+        /// The <code>Action&lt;&gt;</code> to perform when the asynchronous request completes. 
+        /// Provides a metadata <see cref="Entry"/> for the file or folder.
+        /// </param>
+        /// <returns>
+        /// A <see cref="RestOperationCanceler"/> instance that allows to cancel the asynchronous operation.
+        /// </returns>
+        /// <exception cref="ApiException">If there is an error while communicating with Dropbox.</exception>
+        RestOperationCanceler GetMetadataAsync(string path, MetadataParameters parameters, Action<RestOperationCompletedEventArgs<Entry>> operationCompleted);
 #endif
 
         /// <summary>

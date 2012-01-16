@@ -19,6 +19,7 @@
 #endregion
 
 using System;
+using System.Net;
 
 using NUnit.Framework;
 using Spring.Rest.Client.Testing;
@@ -111,6 +112,7 @@ namespace Spring.Social.Dropbox.Api.Impl
             Assert.AreEqual("dropbox", metadata.Root);
             Assert.AreEqual("0 bytes", metadata.Size);
             Assert.IsFalse(metadata.ThumbExists);
+            Assert.IsNull(metadata.Contents);
         }
 
         [Test]
@@ -140,6 +142,7 @@ namespace Spring.Social.Dropbox.Api.Impl
             Assert.AreEqual("dropbox", metadata.Root);
             Assert.AreEqual("0 bytes", metadata.Size);
             Assert.IsFalse(metadata.ThumbExists);
+            Assert.IsNull(metadata.Contents);
         }
 
         [Test]
@@ -169,6 +172,7 @@ namespace Spring.Social.Dropbox.Api.Impl
             Assert.AreEqual("dropbox", metadata.Root);
             Assert.AreEqual("15 bytes", metadata.Size);
             Assert.IsFalse(metadata.ThumbExists);
+            Assert.IsNull(metadata.Contents);
         }
 
         [Test]
@@ -198,6 +202,7 @@ namespace Spring.Social.Dropbox.Api.Impl
             Assert.AreEqual("dropbox", metadata.Root);
             Assert.AreEqual("15 bytes", metadata.Size);
             Assert.IsFalse(metadata.ThumbExists);
+            Assert.IsNull(metadata.Contents);
         }
 
         [Test]
@@ -226,6 +231,7 @@ namespace Spring.Social.Dropbox.Api.Impl
             Assert.AreEqual("dropbox", metadata.Root);
             Assert.AreEqual("225.4KB", metadata.Size);
             Assert.IsFalse(metadata.ThumbExists);
+            Assert.IsNull(metadata.Contents);
         }
 
         [Test]
@@ -244,6 +250,104 @@ namespace Spring.Social.Dropbox.Api.Impl
 #endif
             Assert.IsNotNull(file);
             Assert.IsNotEmpty(file);
+        }
+
+        [Test]
+        public void GetFileMetadata()
+        {
+            mockServer.ExpectNewRequest()
+                .AndExpectUri("https://api.dropbox.com/1/metadata/dropbox/Dir/File.txt?list=false")
+                .AndExpectMethod(HttpMethod.GET)
+                .AndRespondWith(EmbeddedResource("Metadata_File.json"), responseHeaders);
+
+            MetadataParameters parameters = new MetadataParameters();
+            parameters.IncludeContents = false;
+#if NET_4_0 || SILVERLIGHT_5
+            Entry metadata = dropbox.GetMetadataAsync("Dir/File.txt", parameters).Result;
+#else
+            Entry metadata = dropbox.GetMetadata("Dir/File.txt", parameters);
+#endif
+            Assert.AreEqual(230783, metadata.Bytes);
+            Assert.IsNull(metadata.Hash);
+            Assert.AreEqual("page_white_acrobat", metadata.Icon);
+            Assert.AreEqual(false, metadata.IsDeleted);
+            Assert.AreEqual(false, metadata.IsDirectory);
+            Assert.AreEqual("application/pdf", metadata.MimeType);
+            Assert.IsNotNull(metadata.ModifiedDate);
+            Assert.AreEqual("19/07/2011 21:55:38", metadata.ModifiedDate.Value.ToUniversalTime().ToString("dd/MM/yyyy HH:mm:ss"));
+            Assert.AreEqual("/Getting_Started.pdf", metadata.Path);
+            Assert.AreEqual("35e97029684fe", metadata.Revision);
+            Assert.AreEqual("dropbox", metadata.Root);
+            Assert.AreEqual("225.4KB", metadata.Size);
+            Assert.IsFalse(metadata.ThumbExists);
+            Assert.IsNull(metadata.Contents);
+        }
+
+        [Test]
+        public void GetFolderMetadata()
+        {
+            mockServer.ExpectNewRequest()
+                .AndExpectUri("https://api.dropbox.com/1/metadata/dropbox/Dir/?file_limit=100&hash=a123z&include_deleted=true&rev=abcrev123")
+                .AndExpectMethod(HttpMethod.GET)
+                .AndRespondWith(EmbeddedResource("Metadata_Folder.json"), responseHeaders);
+
+            MetadataParameters parameters = new MetadataParameters();
+            parameters.FileLimits = 100;
+            parameters.Hash = "a123z";
+            parameters.IncludeDeleted = true;
+            parameters.Revision = "abcrev123";
+#if NET_4_0 || SILVERLIGHT_5
+            Entry metadata = dropbox.GetMetadataAsync("Dir/", parameters).Result;
+#else
+            Entry metadata = dropbox.GetMetadata("Dir/", parameters);
+#endif
+            Assert.AreEqual(0, metadata.Bytes);
+            Assert.AreEqual("37eb1ba1849d4b0fb0b28caf7ef3af52", metadata.Hash);
+            Assert.AreEqual("folder_public", metadata.Icon);
+            Assert.AreEqual(false, metadata.IsDeleted);
+            Assert.AreEqual(true, metadata.IsDirectory);
+            Assert.IsNull(metadata.MimeType);
+            Assert.IsNotNull(metadata.ModifiedDate);
+            Assert.AreEqual("27/04/2011 22:18:51", metadata.ModifiedDate.Value.ToUniversalTime().ToString("dd/MM/yyyy HH:mm:ss"));
+            Assert.AreEqual("/Public", metadata.Path);
+            Assert.AreEqual("714f029684fe", metadata.Revision);
+            Assert.AreEqual("dropbox", metadata.Root);
+            Assert.AreEqual("0 bytes", metadata.Size);
+            Assert.IsFalse(metadata.ThumbExists);
+            Assert.IsNotNull(metadata.Contents);
+            Assert.AreEqual(1, metadata.Contents.Count);
+            Assert.AreEqual(0, metadata.Contents[0].Bytes);
+            Assert.IsNull(metadata.Contents[0].Hash);
+            Assert.AreEqual("page_white_text", metadata.Contents[0].Icon);
+            Assert.AreEqual(false, metadata.Contents[0].IsDeleted);
+            Assert.AreEqual(false, metadata.Contents[0].IsDirectory);
+            Assert.AreEqual("text/plain", metadata.Contents[0].MimeType);
+            Assert.IsNotNull(metadata.Contents[0].ModifiedDate);
+            Assert.AreEqual("18/07/2011 20:13:43", metadata.Contents[0].ModifiedDate.Value.ToUniversalTime().ToString("dd/MM/yyyy HH:mm:ss"));
+            Assert.AreEqual("/Public/latest.txt", metadata.Contents[0].Path);
+            Assert.AreEqual("35c1f029684fe", metadata.Contents[0].Revision);
+            Assert.AreEqual("dropbox", metadata.Contents[0].Root);
+            Assert.AreEqual("0 bytes", metadata.Contents[0].Size);
+            Assert.IsFalse(metadata.Contents[0].ThumbExists);
+            Assert.IsNull(metadata.Contents[0].Contents);
+        }
+
+        [Test]
+        public void GetFolderMetadata_304()
+        {
+            mockServer.ExpectNewRequest()
+                .AndExpectUri("https://api.dropbox.com/1/metadata/dropbox/Dir/?hash=a123z")
+                .AndExpectMethod(HttpMethod.GET)
+                .AndRespondWith("", responseHeaders, HttpStatusCode.NotModified, "");
+
+            MetadataParameters parameters = new MetadataParameters();
+            parameters.Hash = "a123z";
+#if NET_4_0 || SILVERLIGHT_5
+            Entry metadata = dropbox.GetMetadataAsync("Dir/", parameters).Result;
+#else
+            Entry metadata = dropbox.GetMetadata("Dir/", parameters);
+#endif
+            Assert.IsNull(metadata);
         }
 
         // tests helpers

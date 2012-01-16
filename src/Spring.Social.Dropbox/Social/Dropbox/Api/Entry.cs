@@ -19,6 +19,7 @@
 #endregion
 
 using System;
+using System.Collections.Generic;
 
 namespace Spring.Social.Dropbox.Api
 {
@@ -94,5 +95,10 @@ namespace Spring.Social.Dropbox.Api
         /// Gets or sets the file or folder's path relative to root.
         /// </summary>
         public string Path { get; set; }
+
+        /// <summary>
+        /// Gets or sets the list of children entries if this is a directory. May be <see langword="null"/>.
+        /// </summary>
+        public IList<Entry> Contents { get; set; }
     }
 }
