@@ -67,7 +67,7 @@ namespace Spring.Social.Dropbox.Api.Impl
             mockServer.ExpectNewRequest()
                 .AndExpectUri("https://api.dropbox.com/1/account/info")
                 .AndExpectMethod(HttpMethod.GET)
-                .AndRespondWith(JsonResource("Dropbox_Profile"), responseHeaders);
+                .AndRespondWith(EmbeddedResource("Dropbox_Profile.json"), responseHeaders);
 
 #if NET_4_0 || SILVERLIGHT_5
             DropboxProfile profile = dropbox.GetUserProfileAsync().Result;
@@ -91,7 +91,7 @@ namespace Spring.Social.Dropbox.Api.Impl
                 .AndExpectUri("https://api.dropbox.com/1/fileops/create_folder")
                 .AndExpectMethod(HttpMethod.POST)
                 .AndExpectBody("root=dropbox&path=new_folder")
-                .AndRespondWith(JsonResource("Create_Folder"), responseHeaders);
+                .AndRespondWith(EmbeddedResource("Create_Folder.json"), responseHeaders);
 
 #if NET_4_0 || SILVERLIGHT_5
             Entry metadata = dropbox.CreateFolderAsync("new_folder").Result;
@@ -120,7 +120,7 @@ namespace Spring.Social.Dropbox.Api.Impl
                 .AndExpectUri("https://api.dropbox.com/1/fileops/delete")
                 .AndExpectMethod(HttpMethod.POST)
                 .AndExpectBody("root=dropbox&path=test+.txt")
-                .AndRespondWith(JsonResource("Delete"), responseHeaders);
+                .AndRespondWith(EmbeddedResource("Delete.json"), responseHeaders);
 
 #if NET_4_0 || SILVERLIGHT_5
             Entry metadata = dropbox.DeleteAsync("test .txt").Result;
@@ -149,7 +149,7 @@ namespace Spring.Social.Dropbox.Api.Impl
                 .AndExpectUri("https://api.dropbox.com/1/fileops/move")
                 .AndExpectMethod(HttpMethod.POST)
                 .AndExpectBody("root=dropbox&from_path=test1.txt&to_path=test2.txt")
-                .AndRespondWith(JsonResource("Move"), responseHeaders);
+                .AndRespondWith(EmbeddedResource("Move.json"), responseHeaders);
 
 #if NET_4_0 || SILVERLIGHT_5
             Entry metadata = dropbox.MoveAsync("test1.txt", "test2.txt").Result;
@@ -178,7 +178,7 @@ namespace Spring.Social.Dropbox.Api.Impl
                 .AndExpectUri("https://api.dropbox.com/1/fileops/copy")
                 .AndExpectMethod(HttpMethod.POST)
                 .AndExpectBody("root=dropbox&from_path=test2.txt&to_path=test1.txt")
-                .AndRespondWith(JsonResource("Copy"), responseHeaders);
+                .AndRespondWith(EmbeddedResource("Copy.json"), responseHeaders);
 
 #if NET_4_0 || SILVERLIGHT_5
             Entry metadata = dropbox.CopyAsync("test2.txt", "test1.txt").Result;
@@ -200,12 +200,57 @@ namespace Spring.Social.Dropbox.Api.Impl
             Assert.IsFalse(metadata.ThumbExists);
         }
 
+        [Test]
+        public void UploadFile()
+        {
+            mockServer.ExpectNewRequest()
+                .AndExpectUri("https://api-content.dropbox.com/1/files_put/dropbox/Dir/File.txt?overwrite=false&parent_rev=a123z")
+                .AndExpectMethod(HttpMethod.PUT)
+                .AndRespondWith(EmbeddedResource("Upload_File.json"), responseHeaders);
+
+#if NET_4_0 || SILVERLIGHT_5
+            Entry metadata = dropbox.UploadFileAsync(EmbeddedResource("File.txt"), "Dir/File.txt", false, "a123z", System.Threading.CancellationToken.None).Result;
+#else
+            Entry metadata = dropbox.UploadFile(EmbeddedResource("File.txt"), "Dir/File.txt", false, "a123z");
+#endif
+            Assert.AreEqual(230783, metadata.Bytes);
+            Assert.IsNull(metadata.Hash);
+            Assert.AreEqual("page_white_acrobat", metadata.Icon);
+            Assert.AreEqual(false, metadata.IsDeleted);
+            Assert.AreEqual(false, metadata.IsDirectory);
+            Assert.AreEqual("application/pdf", metadata.MimeType);
+            Assert.IsNotNull(metadata.ModifiedDate);
+            Assert.AreEqual("19/07/2011 21:55:38", metadata.ModifiedDate.Value.ToUniversalTime().ToString("dd/MM/yyyy HH:mm:ss"));
+            Assert.AreEqual("/Getting_Started.pdf", metadata.Path);
+            Assert.AreEqual("35e97029684fe", metadata.Revision);
+            Assert.AreEqual("dropbox", metadata.Root);
+            Assert.AreEqual("225.4KB", metadata.Size);
+            Assert.IsFalse(metadata.ThumbExists);
+        }
+
+        [Test]
+        public void DownloadFile()
+        {
+            responseHeaders.ContentType = MediaType.TEXT_PLAIN;
+            mockServer.ExpectNewRequest()
+                .AndExpectUri("https://api-content.dropbox.com/1/files/dropbox/Dir/File.txt?rev=a123z")
+                .AndExpectMethod(HttpMethod.GET)
+                .AndRespondWith(EmbeddedResource("File.txt"), responseHeaders);
+
+#if NET_4_0 || SILVERLIGHT_5
+            byte[] file = dropbox.DownloadFileAsync("Dir/File.txt", "a123z", System.Threading.CancellationToken.None).Result;
+#else
+            byte[] file = dropbox.DownloadFile("Dir/File.txt", "a123z");
+#endif
+            Assert.IsNotNull(file);
+            Assert.IsNotEmpty(file);
+        }
 
         // tests helpers
 
-        private IResource JsonResource(string filename)
+        private IResource EmbeddedResource(string filename)
         {
-            return new AssemblyResource("assembly://Spring.Social.Dropbox.Tests/Spring.Social.Dropbox.Api.Impl/" + filename + ".json");
+            return new AssemblyResource("assembly://Spring.Social.Dropbox.Tests/Spring.Social.Dropbox.Api.Impl/" + filename);
         }
     }
 }

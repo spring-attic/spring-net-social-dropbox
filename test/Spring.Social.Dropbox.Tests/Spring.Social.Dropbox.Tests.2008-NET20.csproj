@@ -106,6 +106,7 @@
     <EmbeddedResource Include="Social\Dropbox\Api\Impl\Create_Folder.json" />
     <EmbeddedResource Include="Social\Dropbox\Api\Impl\Delete.json" />
     <EmbeddedResource Include="Social\Dropbox\Api\Impl\Move.json" />
+    <EmbeddedResource Include="Social\Dropbox\Api\Impl\Upload_File.json" />
     <None Include="Spring.Social.Dropbox.Tests.dll.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -115,6 +116,9 @@
       <Project>{09B31C6A-237D-4A16-8A59-B723ABBCE73D}</Project>
       <Name>Spring.Social.Dropbox.2008-NET20</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Social\Dropbox\Api\Impl\File.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

@@ -20,9 +20,11 @@
 
 using System;
 #if NET_4_0 || SILVERLIGHT_5
+using System.Threading;
 using System.Threading.Tasks;
 #endif
 
+using Spring.IO;
 using Spring.Rest.Client;
 
 namespace Spring.Social.Dropbox.Api
@@ -94,6 +96,93 @@ namespace Spring.Social.Dropbox.Api
         /// </returns>
         /// <exception cref="ApiException">If there is an error while communicating with Dropbox.</exception>
         Task<Entry> CopyAsync(string fromPath, string toPath);
+
+        /// <summary>
+        /// Asynchronously uploads a file.
+        /// </summary>
+        /// <param name="file">The file resource to be uploaded.</param>
+        /// <param name="path">
+        /// The path to the file you want to write to, relative to root. 
+        /// This parameter should not point to a folder.
+        /// </param>
+        /// <param name="cancellationToken">The <see cref="CancellationToken"/> that will be assigned to the task.</param>
+        /// <returns>
+        /// A <code>Task</code> that represents the asynchronous operation that can return 
+        /// a metadata <see cref="Entry"/> for the uploaded file.
+        /// </returns>
+        /// <exception cref="ApiException">If there is an error while communicating with Dropbox.</exception>
+        Task<Entry> UploadFileAsync(IResource file, string path, CancellationToken cancellationToken);
+
+        /// <summary>
+        /// Asynchronously uploads a file.
+        /// </summary>
+        /// <param name="file">The file resource to be uploaded.</param>
+        /// <param name="path">
+        /// The path to the file you want to write to, relative to root. 
+        /// This parameter should not point to a folder.
+        /// </param>
+        /// <param name="overwrite">
+        /// If <see langword="true"/>, the existing file will be overwritten by the new one. 
+        /// If <see langword="false"/>, the new file will be automatically renamed. 
+        /// The new name can be obtained from the returned metadata.
+        /// </param>
+        /// <param name="cancellationToken">The <see cref="CancellationToken"/> that will be assigned to the task.</param>
+        /// <returns>
+        /// A <code>Task</code> that represents the asynchronous operation that can return 
+        /// a metadata <see cref="Entry"/> for the uploaded file.
+        /// </returns>
+        /// <exception cref="ApiException">If there is an error while communicating with Dropbox.</exception>
+        Task<Entry> UploadFileAsync(IResource file, string path, bool overwrite, CancellationToken cancellationToken);
+
+        /// <summary>
+        /// Asynchronously uploads a file.
+        /// </summary>
+        /// <param name="file">The file resource to be uploaded.</param>
+        /// <param name="path">
+        /// The path to the file you want to write to, relative to root. 
+        /// This parameter should not point to a folder.
+        /// </param>
+        /// <param name="overwrite">
+        /// If <see langword="true"/>, the existing file will be overwritten by the new one. 
+        /// If <see langword="false"/>, the new file will be automatically renamed. 
+        /// The new name can be obtained from the returned metadata.
+        /// </param>
+        /// <param name="revision">
+        /// The revision of the file you're editing. 
+        /// If <paramref name="revision"/> matches the latest version of the file on the user's Dropbox, that file will be replaced.
+        /// </param>
+        /// <param name="cancellationToken">The <see cref="CancellationToken"/> that will be assigned to the task.</param>
+        /// <returns>
+        /// A <code>Task</code> that represents the asynchronous operation that can return 
+        /// a metadata <see cref="Entry"/> for the uploaded file.
+        /// </returns>
+        /// <exception cref="ApiException">If there is an error while communicating with Dropbox.</exception>
+        Task<Entry> UploadFileAsync(IResource file, string path, bool overwrite, string revision, CancellationToken cancellationToken);
+
+        /// <summary>
+        /// Asynchronously downloads a file.
+        /// </summary>
+        /// <param name="path">The path to the file you want to retrieve, relative to root.</param>
+        /// <param name="cancellationToken">The <see cref="CancellationToken"/> that will be assigned to the task.</param>
+        /// <returns>
+        /// A <code>Task</code> that represents the asynchronous operation that can return 
+        /// an array of bytes containing the file's content.
+        /// </returns>
+        /// <exception cref="ApiException">If there is an error while communicating with Dropbox.</exception>
+        Task<byte[]> DownloadFileAsync(string path, CancellationToken cancellationToken);
+
+        /// <summary>
+        /// Asynchronously downloads a file.
+        /// </summary>
+        /// <param name="path">The path to the file you want to retrieve, relative to root.</param>
+        /// <param name="revision">The revision of the file to retrieve.</param>
+        /// <param name="cancellationToken">The <see cref="CancellationToken"/> that will be assigned to the task.</param>
+        /// <returns>
+        /// A <code>Task</code> that represents the asynchronous operation that can return 
+        /// an array of bytes containing the file's content.
+        /// </returns>
+        /// <exception cref="ApiException">If there is an error while communicating with Dropbox.</exception>
+        Task<byte[]> DownloadFileAsync(string path, string revision, CancellationToken cancellationToken);
 #else
 #if !SILVERLIGHT
         /// <summary>
@@ -144,6 +233,73 @@ namespace Spring.Social.Dropbox.Api
         /// </returns>
         /// <exception cref="ApiException">If there is an error while communicating with Dropbox.</exception>
         Entry Copy(string fromPath, string toPath);
+
+        /// <summary>
+        /// Uploads a file.
+        /// </summary>
+        /// <param name="file">The file resource to be uploaded.</param>
+        /// <param name="path">
+        /// The path to the file you want to write to, relative to root. 
+        /// This parameter should not point to a folder.
+        /// </param>
+        /// <returns>A metadata <see cref="Entry"/> for the uploaded file.</returns>
+        /// <exception cref="ApiException">If there is an error while communicating with Dropbox.</exception>
+        Entry UploadFile(IResource file, string path);
+
+        /// <summary>
+        /// Uploads a file.
+        /// </summary>
+        /// <param name="file">The file resource to be uploaded.</param>
+        /// <param name="path">
+        /// The path to the file you want to write to, relative to root. 
+        /// This parameter should not point to a folder.
+        /// </param>
+        /// <param name="overwrite">
+        /// If <see langword="true"/>, the existing file will be overwritten by the new one. 
+        /// If <see langword="false"/>, the new file will be automatically renamed. 
+        /// The new name can be obtained from the returned metadata.
+        /// </param>
+        /// <returns>A metadata <see cref="Entry"/> for the uploaded file.</returns>
+        /// <exception cref="ApiException">If there is an error while communicating with Dropbox.</exception>
+        Entry UploadFile(IResource file, string path, bool overwrite);
+
+        /// <summary>
+        /// Uploads a file.
+        /// </summary>
+        /// <param name="file">The file resource to be uploaded.</param>
+        /// <param name="path">
+        /// The path to the file you want to write to, relative to root. 
+        /// This parameter should not point to a folder.
+        /// </param>
+        /// <param name="overwrite">
+        /// If <see langword="true"/>, the existing file will be overwritten by the new one. 
+        /// If <see langword="false"/>, the new file will be automatically renamed. 
+        /// The new name can be obtained from the returned metadata.
+        /// </param>
+        /// <param name="revision">
+        /// The revision of the file you're editing. 
+        /// If <paramref name="revision"/> matches the latest version of the file on the user's Dropbox, that file will be replaced.
+        /// </param>
+        /// <returns>A metadata <see cref="Entry"/> for the uploaded file.</returns>
+        /// <exception cref="ApiException">If there is an error while communicating with Dropbox.</exception>
+        Entry UploadFile(IResource file, string path, bool overwrite, string revision);
+
+        /// <summary>
+        /// Downloads a file.
+        /// </summary>
+        /// <param name="path">The path to the file you want to retrieve, relative to root.</param>
+        /// <returns>An array of bytes containing the file's content.</returns>
+        /// <exception cref="ApiException">If there is an error while communicating with Dropbox.</exception>
+        byte[] DownloadFile(string path);
+
+        /// <summary>
+        /// Downloads a file.
+        /// </summary>
+        /// <param name="path">The path to the file you want to retrieve, relative to root.</param>
+        /// <param name="revision">The revision of the file to retrieve.</param>
+        /// <returns>An array of bytes containing the file's content.</returns>
+        /// <exception cref="ApiException">If there is an error while communicating with Dropbox.</exception>
+        byte[] DownloadFile(string path, string revision);
 #endif
 
         /// <summary>
@@ -216,6 +372,103 @@ namespace Spring.Social.Dropbox.Api
         /// </returns>
         /// <exception cref="ApiException">If there is an error while communicating with Dropbox.</exception>
         RestOperationCanceler CopyAsync(string fromPath, string toPath, Action<RestOperationCompletedEventArgs<Entry>> operationCompleted);
+
+        /// <summary>
+        /// Asynchronously uploads a file.
+        /// </summary>
+        /// <param name="file">The file resource to be uploaded.</param>
+        /// <param name="path">
+        /// The path to the file you want to write to, relative to root. 
+        /// This parameter should not point to a folder.
+        /// </param>
+        /// <param name="operationCompleted">
+        /// The <code>Action&lt;&gt;</code> to perform when the asynchronous request completes. 
+        /// Provides a metadata <see cref="Entry"/> for the uploaded file.
+        /// </param>
+        /// <returns>
+        /// A <see cref="RestOperationCanceler"/> instance that allows to cancel the asynchronous operation.
+        /// </returns>
+        /// <exception cref="ApiException">If there is an error while communicating with Dropbox.</exception>
+        RestOperationCanceler UploadFileAsync(IResource file, string path, Action<RestOperationCompletedEventArgs<Entry>> operationCompleted);
+
+        /// <summary>
+        /// Asynchronously uploads a file.
+        /// </summary>
+        /// <param name="file">The file resource to be uploaded.</param>
+        /// <param name="path">
+        /// The path to the file you want to write to, relative to root. 
+        /// This parameter should not point to a folder.
+        /// </param>
+        /// <param name="overwrite">
+        /// If <see langword="true"/>, the existing file will be overwritten by the new one. 
+        /// If <see langword="false"/>, the new file will be automatically renamed. 
+        /// The new name can be obtained from the returned metadata.
+        /// </param>
+        /// <param name="operationCompleted">
+        /// The <code>Action&lt;&gt;</code> to perform when the asynchronous request completes. 
+        /// Provides a metadata <see cref="Entry"/> for the uploaded file.
+        /// </param>
+        /// <returns>
+        /// A <see cref="RestOperationCanceler"/> instance that allows to cancel the asynchronous operation.
+        /// </returns>
+        /// <exception cref="ApiException">If there is an error while communicating with Dropbox.</exception>
+        RestOperationCanceler UploadFileAsync(IResource file, string path, bool overwrite, Action<RestOperationCompletedEventArgs<Entry>> operationCompleted);
+
+        /// <summary>
+        /// Asynchronously uploads a file.
+        /// </summary>
+        /// <param name="file">The file resource to be uploaded.</param>
+        /// <param name="path">
+        /// The path to the file you want to write to, relative to root. 
+        /// This parameter should not point to a folder.
+        /// </param>
+        /// <param name="overwrite">
+        /// If <see langword="true"/>, the existing file will be overwritten by the new one. 
+        /// If <see langword="false"/>, the new file will be automatically renamed. 
+        /// The new name can be obtained from the returned metadata.
+        /// </param>
+        /// <param name="revision">
+        /// The revision of the file you're editing. 
+        /// If <paramref name="revision"/> matches the latest version of the file on the user's Dropbox, that file will be replaced.
+        /// </param>
+        /// <param name="operationCompleted">
+        /// The <code>Action&lt;&gt;</code> to perform when the asynchronous request completes. 
+        /// Provides a metadata <see cref="Entry"/> for the uploaded file.
+        /// </param>
+        /// <returns>
+        /// A <see cref="RestOperationCanceler"/> instance that allows to cancel the asynchronous operation.
+        /// </returns>
+        /// <exception cref="ApiException">If there is an error while communicating with Dropbox.</exception>
+        RestOperationCanceler UploadFileAsync(IResource file, string path, bool overwrite, string revision, Action<RestOperationCompletedEventArgs<Entry>> operationCompleted);
+
+        /// <summary>
+        /// Asynchronously downloads a file.
+        /// </summary>
+        /// <param name="path">The path to the file you want to retrieve, relative to root.</param>
+        /// <param name="operationCompleted">
+        /// The <code>Action&lt;&gt;</code> to perform when the asynchronous request completes. 
+        /// Provides an array of bytes containing the file's content.
+        /// </param>
+        /// <returns>
+        /// A <see cref="RestOperationCanceler"/> instance that allows to cancel the asynchronous operation.
+        /// </returns>
+        /// <exception cref="ApiException">If there is an error while communicating with Dropbox.</exception>
+        RestOperationCanceler DownloadFileAsync(string path, Action<RestOperationCompletedEventArgs<byte[]>> operationCompleted);
+
+        /// <summary>
+        /// Asynchronously downloads a file.
+        /// </summary>
+        /// <param name="path">The path to the file you want to retrieve, relative to root.</param>
+        /// <param name="revision">The revision of the file to retrieve.</param>
+        /// <param name="operationCompleted">
+        /// The <code>Action&lt;&gt;</code> to perform when the asynchronous request completes. 
+        /// Provides an array of bytes containing the file's content.
+        /// </param>
+        /// <returns>
+        /// A <see cref="RestOperationCanceler"/> instance that allows to cancel the asynchronous operation.
+        /// </returns>
+        /// <exception cref="ApiException">If there is an error while communicating with Dropbox.</exception>
+        RestOperationCanceler DownloadFileAsync(string path, string revision, Action<RestOperationCompletedEventArgs<byte[]>> operationCompleted);
 #endif
 
         /// <summary>
