@@ -394,10 +394,7 @@
             Construct the URL to redirect the user to for authorization.
             </summary>
             <param name="requestToken">The request token value, to be encoded in the authorize URL.</param>
-            <param name="parameters">
-            Parameters to pass to the provider in the authorize URL. Should never be null; 
-            if there are no parameters to pass, set this argument value to OAuth1Parameters.NONE.
-            </param>
+            <param name="parameters">Parameters to pass to the provider in the authorize URL. May be null.</param>
             <returns>The absolute authorize URL to redirect the user to for authorization.</returns>
         </member>
         <member name="M:Spring.Social.OAuth1.IOAuth1Operations.BuildAuthenticateUrl(System.String,Spring.Social.OAuth1.OAuth1Parameters)">
@@ -407,10 +404,7 @@
             This provides a better user experience for "Sign in with Provider" scenarios.
             </summary>
             <param name="requestToken">The request token value, to be encoded in the authorize URL.</param>
-            <param name="parameters">
-            Parameters to pass to the provider in the authenticate URL. Should never be null; 
-            if there are no parameters to pass, set this argument value to OAuth1Parameters.NONE.
-            </param>
+            <param name="parameters">Parameters to pass to the provider in the authenticate URL. May be null.</param>
             <returns>The absolute authenticate URL to redirect the user to for authentication.</returns>
         </member>
         <member name="M:Spring.Social.OAuth1.IOAuth1Operations.FetchRequestTokenAsync(System.String,System.Collections.Specialized.NameValueCollection)">
@@ -458,36 +452,37 @@
             <author>Keith Donald</author>
             <author>Bruno Baia (.NET)</author>
         </member>
-        <member name="F:Spring.Social.OAuth1.OAuth1Parameters.NONE">
+        <member name="M:Spring.Social.OAuth1.OAuth1Parameters.#ctor">
             <summary>
-            Shared instance for passing zero authorization parameters (accepted for OAuth 1.0a-based flows).
+            Creates a new, empty instance of the <see cref="T:Spring.Social.OAuth1.OAuth1Parameters"/> class. 
+            Use properties to add parameters after construction.
             </summary>
         </member>
-        <member name="M:Spring.Social.OAuth1.OAuth1Parameters.#ctor(System.String)">
+        <member name="M:Spring.Social.OAuth1.OAuth1Parameters.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
             <summary>
-            Creates a new OAuth1Parameters instance. 
+            Creates a new instance of the <see cref="T:Spring.Social.OAuth1.OAuth1Parameters"/> class.
             </summary>
-            <param name="callbackUrl">
-            The authorization callback url; this value must be included for OAuth 1.0 providers (and NOT for OAuth 1.0a).
+            <param name="info">
+            The <see cref="T:System.Runtime.Serialization.SerializationInfo"/> that holds the serialized object data 
+            about the exception being thrown.
+            </param>
+            <param name="context">
+            The <see cref="T:System.Runtime.Serialization.StreamingContext"/> that contains contextual information 
+            about the source or destination.
             </param>
         </member>
-        <member name="M:Spring.Social.OAuth1.OAuth1Parameters.#ctor(System.String,System.Collections.Specialized.NameValueCollection)">
+        <member name="M:Spring.Social.OAuth1.OAuth1Parameters.GetFirst(System.String)">
             <summary>
-            Creates a new OAuth1Parameters instance.
+            Returns the first value for the given key.
             </summary>
-            <param name="callbackUrl">
-            The authorization callback url; this value must be included for OAuth 1.0 providers (and NOT for OAuth 1.0a).
-            </param>
-            <param name="additionalParameters">Additional supported parameters to pass to the provider.</param>
+            <param name="key">The key.</param>
+            <returns>The first value for the specified key, or <see langword="null"/>.</returns>
         </member>
         <member name="P:Spring.Social.OAuth1.OAuth1Parameters.CallbackUrl">
             <summary>
-            Gets the authorization callback url; this value must be included for OAuth 1.0 providers (and NOT for OAuth 1.0a).
-            </summary>
-        </member>
-        <member name="P:Spring.Social.OAuth1.OAuth1Parameters.AdditionalParameters">
-            <summary>
-            Gets the additional supported parameters to pass to the provider.
+            Gets or sets the authorization callback url.
+            <para/>
+            This value must be included for OAuth 1.0 providers (and NOT for OAuth 1.0a).
             </summary>
         </member>
         <member name="T:Spring.Social.OAuth1.OAuth1RequestInterceptor">
@@ -573,10 +568,7 @@
             Construct the URL to redirect the user to for authorization.
             </summary>
             <param name="requestToken">The request token value, to be encoded in the authorize URL</param>
-            <param name="parameters">
-            Parameters to pass to the provider in the authorize URL. Should never be null; 
-            if there are no parameters to pass, set this argument value to OAuth1Parameters.NONE
-            </param>
+            <param name="parameters">Parameters to pass to the provider in the authorize URL. May be null.</param>
             <returns>The absolute authorize URL to redirect the user to for authorization</returns>
         </member>
         <member name="M:Spring.Social.OAuth1.OAuth1Template.BuildAuthenticateUrl(System.String,Spring.Social.OAuth1.OAuth1Parameters)">
@@ -586,10 +578,7 @@
             This provides a better user experience for "Sign in with Provider" scenarios.
             </summary>
             <param name="requestToken">The request token value, to be encoded in the authorize URL</param>
-            <param name="parameters">
-            Parameters to pass to the provider in the authenticate URL. Should never be null; 
-            if there are no parameters to pass, set this argument value to OAuth1Parameters.NONE
-            </param>
+            <param name="parameters">Parameters to pass to the provider in the authenticate URL. May be null.</param>
             <returns>The absolute authenticate URL to redirect the user to for authentication</returns>
         </member>
         <member name="M:Spring.Social.OAuth1.OAuth1Template.FetchRequestTokenAsync(System.String,System.Collections.Specialized.NameValueCollection)">
@@ -635,12 +624,15 @@
             <param name="response">All parameters from the response received in the request/access token exchange.</param>
             <returns>An <see cref="T:Spring.Social.OAuth1.OAuthToken"/></returns>
         </member>
-        <member name="M:Spring.Social.OAuth1.OAuth1Template.GetCustomAuthorizationParameters">
+        <member name="M:Spring.Social.OAuth1.OAuth1Template.AddCustomAuthorizationParameters(System.Collections.Specialized.NameValueCollection)">
             <summary>
-            Returns a name-values collection of custom authorization parameters. 
+            Allows to add custom authorization parameters to the authorization URL.
+            <para/>
             May be overridden to return any provider-specific parameters that must be passed in the request to the authorization URL.
             </summary>
-            <returns>Custom authorization parameters.</returns>
+            <remarks>
+            Default implementation adds no parameters.
+            </remarks>
         </member>
         <member name="M:Spring.Social.OAuth1.OAuth1Template.CreateRestTemplate">
             <summary>
@@ -666,7 +658,8 @@
         <member name="P:Spring.Social.OAuth1.OAuth1Template.ConsumerKey">
             <summary>
             Gets the consumer key to be read by subclasses. 
-            This may be useful when overriding <see cref="M:GetCustomAuthorizationParameters"/> and 
+            <para/>
+            This may be useful when overriding <see cref="M:AddCustomAuthorizationParameters"/> and 
             the consumer key is required in the authorization request.
             </summary>
         </member>
@@ -680,12 +673,12 @@
             <author>Keith Donald</author>
             <author>Bruno Baia (.NET)</author>
         </member>
-        <member name="F:Spring.Social.OAuth1.OAuth1Version.CORE_10">
+        <member name="F:Spring.Social.OAuth1.OAuth1Version.Core10">
             <summary>
             OAuth Core Version 1.0.
             </summary>       
         </member>
-        <member name="F:Spring.Social.OAuth1.OAuth1Version.CORE_10_REVISION_A">
+        <member name="F:Spring.Social.OAuth1.OAuth1Version.Core10a">
             <summary>
             OAuth Core Version 1.0 Revision A.
             </summary>
@@ -742,7 +735,7 @@
             Subclasses may override to return another version.
             </remarks>
             <returns>
-            By default, returns OAuth2Version.BEARER indicating versions of OAuth2 that apply the bearer token scheme.
+            By default, returns OAuth2Version.Bearer indicating versions of OAuth2 that apply the bearer token scheme.
             </returns>
             <see cref="T:Spring.Social.OAuth2.OAuth2Version"/>
         </member>
@@ -892,15 +885,15 @@
             <author>Roy Clarkson</author>
             <author>Bruno Baia (.NET)</author>
         </member>
-        <member name="F:Spring.Social.OAuth2.GrantType.AUTHORIZATION_CODE">
+        <member name="F:Spring.Social.OAuth2.GrantType.AuthorizationCode">
             <summary>
-            AUTHORIZATION_CODE denotes the server-side authorization flow, and is 
+            Denotes the server-side authorization flow, and is 
             associated with the response_type=code parameter value.
             </summary>
         </member>
-        <member name="F:Spring.Social.OAuth2.GrantType.IMPLICIT_GRANT">
+        <member name="F:Spring.Social.OAuth2.GrantType.ImplicitGrant">
             <summary>
-            IMPLICIT_GRANT denotes the client-side authorization flow and is 
+            Denotes the client-side authorization flow and is 
             associated with the response_type=token parameter value.
             </summary>
         </member>
@@ -921,7 +914,7 @@
             Specifies whether to use client-side or server-side OAuth flow.
             </param>
             <param name="parameters">
-            Authorization parameters needed to build the URL.
+            Authorization parameters needed to build the URL. May be null.
             </param>
             <returns>
             The absolute authorize URL to redirect the user to for authorization.
@@ -930,11 +923,16 @@
         <member name="M:Spring.Social.OAuth2.IOAuth2Operations.BuildAuthenticateUrl(Spring.Social.OAuth2.GrantType,Spring.Social.OAuth2.OAuth2Parameters)">
             <summary>
             Construct the URL to redirect the user to for authentication. 
+            <para/>
             The authenticate URL differs from the authorizationUrl slightly in that it does not require the user to authorize the app multiple times.
             This provides a better user experience for "Sign in with Provider" scenarios.
             </summary>
-            <param name="grantType">Specifies whether to use client-side or server-side OAuth flow.</param>
-            <param name="parameters">Authorization parameters needed to build the URL.</param>
+            <param name="grantType">
+            Specifies whether to use client-side or server-side OAuth flow.
+            </param>
+            <param name="parameters">
+            Authorization parameters needed to build the URL. May be null.
+            </param>
             <returns>The absolute authenticate URL to redirect the user to for authorization.</returns>
         </member>
         <member name="M:Spring.Social.OAuth2.IOAuth2Operations.ExchangeForAccessAsync(System.String,System.String,System.Collections.Specialized.NameValueCollection)">
@@ -976,61 +974,49 @@
             <author>Roy Clarkson</author>
             <author>Bruno Baia (.NET)</author>
         </member>
-        <member name="M:Spring.Social.OAuth2.OAuth2Parameters.#ctor(System.String)">
+        <member name="M:Spring.Social.OAuth2.OAuth2Parameters.#ctor">
             <summary>
-            Creates a new authorization parameters instance.
+            Creates a new, empty instance of the <see cref="T:Spring.Social.OAuth2.OAuth2Parameters"/> class. 
+            Use properties to add parameters after construction.
             </summary>
-            <param name="redirectUri">
-            The authorization callback url; this value must match the redirectUri registered with the provider (required).
+        </member>
+        <member name="M:Spring.Social.OAuth2.OAuth2Parameters.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+            <summary>
+            Creates a new instance of the <see cref="T:Spring.Social.OAuth2.OAuth2Parameters"/> class.
+            </summary>
+            <param name="info">
+            The <see cref="T:System.Runtime.Serialization.SerializationInfo"/> that holds the serialized object data 
+            about the exception being thrown.
+            </param>
+            <param name="context">
+            The <see cref="T:System.Runtime.Serialization.StreamingContext"/> that contains contextual information 
+            about the source or destination.
             </param>
         </member>
-        <member name="M:Spring.Social.OAuth2.OAuth2Parameters.#ctor(System.String,System.String)">
+        <member name="M:Spring.Social.OAuth2.OAuth2Parameters.GetFirst(System.String)">
             <summary>
-            Creates a new authorization parameters instance.
+            Returns the first value for the given key.
             </summary>
-            <param name="redirectUri">
-            The authorization callback url; this value must match the redirectUri registered with the provider (required).
-            </param>
-            <param name="scope">
-            The permissions the application is seeking with the authorization (optional).
-            </param>
+            <param name="key">The key.</param>
+            <returns>The first value for the specified key, or <see langword="null"/>.</returns>
         </member>
-        <member name="M:Spring.Social.OAuth2.OAuth2Parameters.#ctor(System.String,System.String,System.String,System.Collections.Specialized.NameValueCollection)">
+        <member name="P:Spring.Social.OAuth2.OAuth2Parameters.RedirectUrl">
             <summary>
-            Creates a new authorization parameters instance.
-            </summary>
-            <param name="redirectUri">
-            The authorization callback url; this value must match the redirectUri registered with the provider (required).
-            </param>
-            <param name="scope">
-            The permissions the application is seeking with the authorization (optional).
-            </param>
-            <param name="state">
-            An opaque key that must be included in the provider's authorization callback (optional).
-            </param>
-            <param name="additionalParameters">
-            Additional supported parameters to pass to the provider (optional).
-            </param>
-        </member>
-        <member name="P:Spring.Social.OAuth2.OAuth2Parameters.RedirectUri">
-            <summary>
-            Gets the authorization callback url; 
-            this value must match the redirectUri registered with the provider (required). 
+            Gets or sets the authorization callback url.
+            <para/>
+            This value must match the redirectUri registered with the provider.
+            <para/>
+            This is optional per the OAuth 2 spec, but required by most OAuth 2 providers. 
             </summary>
         </member>
         <member name="P:Spring.Social.OAuth2.OAuth2Parameters.Scope">
             <summary>
-            Gets the permissions the application is seeking with the authorization (optional).
+            Gets or sets the permissions the application is seeking with the authorization (optional).
             </summary>
         </member>
         <member name="P:Spring.Social.OAuth2.OAuth2Parameters.State">
             <summary>
-            Gets an opaque key that must be included in the provider's authorization callback (optional).
-            </summary>
-        </member>
-        <member name="P:Spring.Social.OAuth2.OAuth2Parameters.AdditionalParameters">
-            <summary>
-            Gets additional supported parameters to pass to the provider (optional).
+            Gets or sets an opaque key that must be included in the provider's authorization callback (optional).
             </summary>
         </member>
         <member name="T:Spring.Social.OAuth2.OAuth2RequestInterceptor">
@@ -1093,7 +1079,7 @@
             Specifies whether to use client-side or server-side OAuth flow.
             </param>
             <param name="parameters">
-            Authorization parameters needed to build the URL.
+            Authorization parameters needed to build the URL. May be null.
             </param>
             <returns>
             The absolute authorize URL to redirect the user to for authorization.
@@ -1102,11 +1088,16 @@
         <member name="M:Spring.Social.OAuth2.OAuth2Template.BuildAuthenticateUrl(Spring.Social.OAuth2.GrantType,Spring.Social.OAuth2.OAuth2Parameters)">
             <summary>
             Construct the URL to redirect the user to for authentication.
+            <para/>
             The authenticate URL differs from the authorizationUrl slightly in that it does not require the user to authorize the app multiple times.
             This provides a better user experience for "Sign in with Provider" scenarios.
             </summary>
-            <param name="grantType">Specifies whether to use client-side or server-side OAuth flow.</param>
-            <param name="parameters">Authorization parameters needed to build the URL.</param>
+            <param name="grantType">
+            Specifies whether to use client-side or server-side OAuth flow.
+            </param>
+            <param name="parameters">
+            Authorization parameters needed to build the URL. May be null.
+            </param>
             <returns>The absolute authenticate URL to redirect the user to for authorization.</returns>
         </member>
         <member name="M:Spring.Social.OAuth2.OAuth2Template.ExchangeForAccessAsync(System.String,System.String,System.Collections.Specialized.NameValueCollection)">
@@ -1204,17 +1195,17 @@
             <author>Craig Walls</author>
             <author>Bruno Baia (.NET)</author>
         </member>
-        <member name="F:Spring.Social.OAuth2.OAuth2Version.BEARER">
+        <member name="F:Spring.Social.OAuth2.OAuth2Version.Bearer">
             <summary>
             OAuth Version 2.0 using bearer tokens (since Draft 12).
             </summary>
         </member>
-        <member name="F:Spring.Social.OAuth2.OAuth2Version.DRAFT_10">
+        <member name="F:Spring.Social.OAuth2.OAuth2Version.Draft10">
             <summary>
             OAuth Version 2.0 Draft 10.
             </summary>
         </member>
-        <member name="F:Spring.Social.OAuth2.OAuth2Version.DRAFT_8">
+        <member name="F:Spring.Social.OAuth2.OAuth2Version.Draft8">
             <summary>
             OAuth Version 2.0 Draft 8.
             </summary>

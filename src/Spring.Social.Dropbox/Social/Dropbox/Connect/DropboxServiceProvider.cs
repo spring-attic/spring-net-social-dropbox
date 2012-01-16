@@ -53,7 +53,7 @@ namespace Spring.Social.Dropbox.Connect
                 "https://api.dropbox.com/1/oauth/request_token",
                 "https://www.dropbox.com/1/oauth/authorize",
                 "https://api.dropbox.com/1/oauth/access_token", 
-                OAuth1Version.CORE_10))
+                OAuth1Version.Core10))
         {
             this.accessLevel = accessLevel;
         }
