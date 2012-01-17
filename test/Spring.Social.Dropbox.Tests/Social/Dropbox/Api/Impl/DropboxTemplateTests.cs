@@ -20,6 +20,7 @@
 
 using System;
 using System.Net;
+using System.Collections.Generic;
 
 using NUnit.Framework;
 using Spring.Rest.Client.Testing;
@@ -292,7 +293,7 @@ namespace Spring.Social.Dropbox.Api.Impl
                 .AndRespondWith(EmbeddedResource("Metadata_Folder.json"), responseHeaders);
 
             MetadataParameters parameters = new MetadataParameters();
-            parameters.FileLimits = 100;
+            parameters.FileLimit = 100;
             parameters.Hash = "a123z";
             parameters.IncludeDeleted = true;
             parameters.Revision = "abcrev123";
@@ -349,6 +350,156 @@ namespace Spring.Social.Dropbox.Api.Impl
 #endif
             Assert.IsNull(metadata);
         }
+
+        [Test]
+        public void GetRevisions()
+        {
+            mockServer.ExpectNewRequest()
+                .AndExpectUri("https://api.dropbox.com/1/revisions/dropbox/Dir/File.txt?rev_limit=20")
+                .AndExpectMethod(HttpMethod.GET)
+                .AndRespondWith(EmbeddedResource("Revisions.json"), responseHeaders);
+
+#if NET_4_0 || SILVERLIGHT_5
+            IList<Entry> revisions = dropbox.GetRevisionsAsync("Dir/File.txt", 20).Result;
+#else
+            IList<Entry> revisions = dropbox.GetRevisions("Dir/File.txt", 20);
+#endif
+            Assert.IsNotNull(revisions);
+            Assert.AreEqual(2, revisions.Count);
+            Assert.AreEqual(0, revisions[0].Bytes);
+            Assert.IsNull(revisions[0].Hash);
+            Assert.AreEqual("page_white", revisions[0].Icon);
+            Assert.AreEqual(true, revisions[0].IsDeleted);
+            Assert.AreEqual(false, revisions[0].IsDirectory);
+            Assert.AreEqual("application/octet-stream", revisions[0].MimeType);
+            Assert.IsNotNull(revisions[0].ModifiedDate);
+            Assert.AreEqual("20/07/2011 22:41:09", revisions[0].ModifiedDate.Value.ToUniversalTime().ToString("dd/MM/yyyy HH:mm:ss"));
+            Assert.AreEqual("/hi2", revisions[0].Path);
+            Assert.AreEqual("40000000d", revisions[0].Revision);
+            Assert.AreEqual("app_folder", revisions[0].Root);
+            Assert.AreEqual("0 bytes", revisions[0].Size);
+            Assert.IsFalse(revisions[0].ThumbExists);
+            Assert.IsNull(revisions[0].Contents);
+        }
+
+        [Test]
+        public void Restore()
+        {
+            mockServer.ExpectNewRequest()
+                .AndExpectUri("https://api.dropbox.com/1/restore/dropbox/Dir/File.txt")
+                .AndExpectMethod(HttpMethod.POST)
+                .AndExpectBody("rev=a123z")
+                .AndRespondWith(EmbeddedResource("Restore.json"), responseHeaders);
+
+#if NET_4_0 || SILVERLIGHT_5
+            Entry metadata = dropbox.RestoreAsync("Dir/File.txt", "a123z").Result;
+#else
+            Entry metadata = dropbox.Restore("Dir/File.txt", "a123z");
+#endif
+            Assert.AreEqual(0, metadata.Bytes);
+            Assert.IsNull(metadata.Hash);
+            Assert.AreEqual("page_white", metadata.Icon);
+            Assert.AreEqual(true, metadata.IsDeleted);
+            Assert.AreEqual(false, metadata.IsDirectory);
+            Assert.AreEqual("application/octet-stream", metadata.MimeType);
+            Assert.IsNotNull(metadata.ModifiedDate);
+            Assert.AreEqual("20/07/2011 22:41:09", metadata.ModifiedDate.Value.ToUniversalTime().ToString("dd/MM/yyyy HH:mm:ss"));
+            Assert.AreEqual("/hi2", metadata.Path);
+            Assert.AreEqual("40000000d", metadata.Revision);
+            Assert.AreEqual("sandbox", metadata.Root);
+            Assert.AreEqual("0 bytes", metadata.Size);
+            Assert.IsFalse(metadata.ThumbExists);
+            Assert.IsNull(metadata.Contents);
+        }
+
+        [Test]
+        public void Search()
+        {
+            mockServer.ExpectNewRequest()
+                .AndExpectUri("https://api.dropbox.com/1/search/dropbox/Dir/")
+                .AndExpectMethod(HttpMethod.POST)
+                .AndExpectBody("query=.txt&file_limit=20&include_deleted=true")
+                .AndRespondWith(EmbeddedResource("Search.json"), responseHeaders);
+
+#if NET_4_0 || SILVERLIGHT_5
+            IList<Entry> results = dropbox.SearchAsync("Dir/", ".txt", 20, true).Result;
+#else
+            IList<Entry> results = dropbox.Search("Dir/", ".txt", 20, true);
+#endif
+            Assert.IsNotNull(results);
+            Assert.AreEqual(1, results.Count);
+            Assert.AreEqual(0, results[0].Bytes);
+            Assert.IsNull(results[0].Hash);
+            Assert.AreEqual("page_white_text", results[0].Icon);
+            Assert.AreEqual(false, results[0].IsDeleted);
+            Assert.AreEqual(false, results[0].IsDirectory);
+            Assert.AreEqual("text/plain", results[0].MimeType);
+            Assert.IsNotNull(results[0].ModifiedDate);
+            Assert.AreEqual("18/07/2011 20:13:43", results[0].ModifiedDate.Value.ToUniversalTime().ToString("dd/MM/yyyy HH:mm:ss"));
+            Assert.AreEqual("/Public/latest.txt", results[0].Path);
+            Assert.AreEqual("35c1f029684fe", results[0].Revision);
+            Assert.AreEqual("dropbox", results[0].Root);
+            Assert.AreEqual("0 bytes", results[0].Size);
+            Assert.IsFalse(results[0].ThumbExists);
+            Assert.IsNull(results[0].Contents);
+        }
+
+        [Test]
+        public void GetShareableLink()
+        {
+            mockServer.ExpectNewRequest()
+                .AndExpectUri("https://api.dropbox.com/1/shares/dropbox/Dir/File.txt")
+                .AndExpectMethod(HttpMethod.POST)
+                .AndExpectBody("")
+                .AndRespondWith(EmbeddedResource("GetShareableLink.json"), responseHeaders);
+
+#if NET_4_0 || SILVERLIGHT_5
+            DropboxLink link = dropbox.GetShareableLinkAsync("Dir/File.txt").Result;
+#else
+            DropboxLink link = dropbox.GetShareableLink("Dir/File.txt");
+#endif
+            Assert.IsNotNull(link);
+            Assert.AreEqual("http://db.tt/APqhX1", link.Url);
+            Assert.AreEqual("17/08/2011 02:34:33", link.ExpireDate.ToUniversalTime().ToString("dd/MM/yyyy HH:mm:ss"));
+        }
+
+        [Test]
+        public void GetMediaLink()
+        {
+            mockServer.ExpectNewRequest()
+                .AndExpectUri("https://api.dropbox.com/1/media/dropbox/Dir/File.txt")
+                .AndExpectMethod(HttpMethod.POST)
+                .AndExpectBody("")
+                .AndRespondWith(EmbeddedResource("GetMediaLink.json"), responseHeaders);
+
+#if NET_4_0 || SILVERLIGHT_5
+            DropboxLink link = dropbox.GetMediaLinkAsync("Dir/File.txt").Result;
+#else
+            DropboxLink link = dropbox.GetMediaLink("Dir/File.txt");
+#endif
+            Assert.IsNotNull(link);
+            Assert.AreEqual("http://www.dropbox.com/s/m/a2mbDa2", link.Url);
+            Assert.AreEqual("16/09/2011 01:01:25", link.ExpireDate.ToUniversalTime().ToString("dd/MM/yyyy HH:mm:ss"));
+        }
+
+        [Test]
+        public void DownloadThumbnail()
+        {
+            responseHeaders.ContentType = MediaType.IMAGE_PNG;
+            mockServer.ExpectNewRequest()
+                .AndExpectUri("https://api-content.dropbox.com/1/thumbnails/dropbox/Dir/Image.jpg?format=PNG&size=xl")
+                .AndExpectMethod(HttpMethod.GET)
+                .AndRespondWith(EmbeddedResource("Image.png"), responseHeaders);
+
+#if NET_4_0 || SILVERLIGHT_5
+            byte[] thumbnail = dropbox.DownloadThumbnailAsync("Dir/Image.jpg", ThumbnailFormat.Png, ThumbnailSize.ExtraLarge).Result;
+#else
+            byte[] thumbnail = dropbox.DownloadThumbnail("Dir/Image.jpg", ThumbnailFormat.Png, ThumbnailSize.ExtraLarge);
+#endif
+            Assert.IsNotNull(thumbnail);
+            Assert.IsNotEmpty(thumbnail);
+        }
+
 
         // tests helpers
 

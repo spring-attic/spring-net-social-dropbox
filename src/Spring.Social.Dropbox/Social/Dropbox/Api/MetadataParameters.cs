@@ -31,7 +31,7 @@ namespace Spring.Social.Dropbox.Api
         /// <summary>
         /// Gets or sets the maximum numbers of childrens to retrieve when listing a folder. Default is 10,000 if set to 0.
         /// </summary>
-        public int FileLimits { get; set; }
+        public int FileLimit { get; set; }
 
         /// <summary>
         /// Gets or sets the metadata hash from a previous folder listing,

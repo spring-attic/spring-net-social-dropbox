@@ -109,6 +109,11 @@
     <EmbeddedResource Include="Social\Dropbox\Api\Impl\Upload_File.json" />
     <EmbeddedResource Include="Social\Dropbox\Api\Impl\Metadata_File.json" />
     <EmbeddedResource Include="Social\Dropbox\Api\Impl\Metadata_Folder.json" />
+    <EmbeddedResource Include="Social\Dropbox\Api\Impl\GetMediaLink.json" />
+    <EmbeddedResource Include="Social\Dropbox\Api\Impl\GetShareableLink.json" />
+    <EmbeddedResource Include="Social\Dropbox\Api\Impl\Restore.json" />
+    <EmbeddedResource Include="Social\Dropbox\Api\Impl\Revisions.json" />
+    <EmbeddedResource Include="Social\Dropbox\Api\Impl\Search.json" />
     <None Include="Spring.Social.Dropbox.Tests.dll.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -121,6 +126,9 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Social\Dropbox\Api\Impl\File.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Social\Dropbox\Api\Impl\Image.png" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

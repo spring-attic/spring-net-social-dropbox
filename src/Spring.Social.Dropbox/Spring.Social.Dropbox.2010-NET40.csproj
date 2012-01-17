@@ -111,6 +111,10 @@
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Social\Dropbox\Api\AccessLevel.cs" />
+    <Compile Include="Social\Dropbox\Api\ThumbnailFormat.cs" />
+    <Compile Include="Social\Dropbox\Api\ThumbnailSize.cs" />
+    <Compile Include="Social\Dropbox\Api\DropboxLink.cs" />
+    <Compile Include="Social\Dropbox\Api\Impl\Json\DropboxLinkDeserializer.cs" />
     <Compile Include="Social\Dropbox\Api\Impl\Json\EntryListDeserializer.cs" />
     <Compile Include="Social\Dropbox\Api\MetadataParameters.cs" />
     <Compile Include="Social\Dropbox\Api\Entry.cs" />

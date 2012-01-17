@@ -101,7 +101,7 @@ namespace Spring.Social.Dropbox.Api.Impl
         /// <summary>
         /// Asynchronously creates a folder.
         /// </summary>
-        /// <param name="path">The path to the new folder to create relative to root.</param>
+        /// <param name="path">The Dropbox path to the new folder to create relative to root.</param>
         /// <returns>
         /// A <code>Task</code> that represents the asynchronous operation that can return 
         /// a metadata <see cref="Entry"/> for the new folder.
@@ -119,7 +119,7 @@ namespace Spring.Social.Dropbox.Api.Impl
         /// <summary>
         /// Asynchronously deletes a file or folder.
         /// </summary>
-        /// <param name="path">The path to the file or folder to be deleted relative to root.</param>
+        /// <param name="path">The Dropbox path to the file or folder to be deleted relative to root.</param>
         /// <returns>
         /// A <code>Task</code> that represents the asynchronous operation that can return 
         /// a metadata <see cref="Entry"/> for the deleted file or folder.
@@ -229,7 +229,7 @@ namespace Spring.Social.Dropbox.Api.Impl
         /// <summary>
         /// Asynchronously downloads a file.
         /// </summary>
-        /// <param name="path">The path to the file you want to retrieve, relative to root.</param>
+        /// <param name="path">The Dropbox path to the file you want to retrieve, relative to root.</param>
         /// <param name="cancellationToken">The <see cref="CancellationToken"/> that will be assigned to the task.</param>
         /// <returns>
         /// A <code>Task</code> that represents the asynchronous operation that can return 
@@ -244,7 +244,7 @@ namespace Spring.Social.Dropbox.Api.Impl
         /// <summary>
         /// Asynchronously downloads a file.
         /// </summary>
-        /// <param name="path">The path to the file you want to retrieve, relative to root.</param>
+        /// <param name="path">The Dropbox path to the file you want to retrieve, relative to root.</param>
         /// <param name="revision">The revision of the file to retrieve.</param>
         /// <param name="cancellationToken">The <see cref="CancellationToken"/> that will be assigned to the task.</param>
         /// <returns>
@@ -265,7 +265,7 @@ namespace Spring.Social.Dropbox.Api.Impl
         /// <summary>
         /// Asynchronously retrieves file or folder metadata.
         /// </summary>
-        /// <param name="path">The path to the file or folder, relative to root.</param>
+        /// <param name="path">The Dropbox path to the file or folder, relative to root.</param>
         /// <returns>
         /// A <code>Task</code> that represents the asynchronous operation that can return 
         /// a metadata <see cref="Entry"/> for the file or folder.
@@ -280,7 +280,7 @@ namespace Spring.Social.Dropbox.Api.Impl
         /// Asynchronously retrieves file or folder metadata. 
         /// May return <see langword="null"/> if an hash is provided through parameters.
         /// </summary>
-        /// <param name="path">The path to the file or folder, relative to root.</param>
+        /// <param name="path">The Dropbox path to the file or folder, relative to root.</param>
         /// <param name="parameters">The parameters for retrieving file and folder metadata.</param>
         /// <returns>
         /// A <code>Task</code> that represents the asynchronous operation that can return 
@@ -290,6 +290,152 @@ namespace Spring.Social.Dropbox.Api.Impl
         public Task<Entry> GetMetadataAsync(string path, MetadataParameters parameters)
         {
             return this.RestTemplate.GetForObjectAsync<Entry>(this.BuildMetadataUrl(path, parameters));
+        }
+
+        /// <summary>
+        /// Asynchronously obtains metadata for the previous revisions of a file.
+        /// </summary>
+        /// <param name="path">The Dropbox path to the file, relative to root.</param>
+        /// <returns>
+        /// A <code>Task</code> that represents the asynchronous operation that can return 
+        /// a list of metadata <see cref="Entry">entries</see>.
+        /// </returns>
+        /// <exception cref="ApiException">If there is an error while communicating with Dropbox.</exception>
+        public Task<IList<Entry>> GetRevisionsAsync(string path)
+        {
+            return this.GetRevisionsAsync(path, 0);
+        }
+
+        /// <summary>
+        /// Asynchronously obtains metadata for the previous revisions of a file.
+        /// </summary>
+        /// <param name="path">The Dropbox path to the file, relative to root.</param>
+        /// <param name="revLimit">
+        /// The maximum numbers of revisions to retrieve. Default is 10, Max is 1,000.
+        /// </param>
+        /// <returns>
+        /// A <code>Task</code> that represents the asynchronous operation that can return 
+        /// a list of metadata <see cref="Entry">entries</see>.
+        /// </returns>
+        /// <exception cref="ApiException">If there is an error while communicating with Dropbox.</exception>
+        public Task<IList<Entry>> GetRevisionsAsync(string path, int revLimit)
+        {
+            NameValueCollection parameters = new NameValueCollection();
+            if (revLimit > 0)
+            {
+                parameters.Add("rev_limit", revLimit.ToString());
+            }
+            this.AddLocaleTo(parameters);
+            return this.RestTemplate.GetForObjectAsync<IList<Entry>>(this.BuildUrl("revisions/", path, parameters));
+        }
+
+        /// <summary>
+        /// Asynchronously restores a file path to a previous revision.
+        /// </summary>
+        /// <param name="path">The Dropbox path to the file, relative to root.</param>
+        /// <param name="revision">The revision of the file to restore.</param>
+        /// <returns>
+        /// A <code>Task</code> that represents the asynchronous operation that can return 
+        /// a metadata <see cref="Entry"/> for the restored file. 
+        /// </returns>
+        /// <exception cref="ApiException">If there is an error while communicating with Dropbox.</exception>
+        public Task<Entry> RestoreAsync(string path, string revision)
+        {
+            NameValueCollection request = new NameValueCollection();
+            request.Add("rev", revision);
+            this.AddLocaleTo(request);
+            return this.RestTemplate.PostForObjectAsync<Entry>(this.BuildUrl("restore/", path), request);
+        }
+
+        /// <summary>
+        /// Asynchronously searches for all files and folders that match the search query.
+        /// </summary>
+        /// <param name="path">The Dropbox path to the folder you want to search from, relative to root.</param>
+        /// <param name="query">The search string. Must be at least three characters long.</param>
+        /// <returns>
+        /// A <code>Task</code> that represents the asynchronous operation that can return 
+        /// a list of metadata <see cref="Entry">entries</see> for any matching files and folders.
+        /// </returns>
+        /// <exception cref="ApiException">If there is an error while communicating with Dropbox.</exception>
+        public Task<IList<Entry>> SearchAsync(string path, string query)
+        {
+            return this.SearchAsync(path, query, 0, false);
+        }
+
+        /// <summary>
+        /// Asynchronously searches for all files and folders that match the search query.
+        /// </summary>
+        /// <param name="path">The Dropbox path to the folder you want to search from, relative to root.</param>
+        /// <param name="query">The search string. Must be at least three characters long.</param>
+        /// <param name="fileLimit">
+        /// The maximum numbers of file entries to retrieve. The maximum and default value is 1000.
+        /// </param>
+        /// <param name="includeDeleted">
+        /// If <see langword="true"/>, then files and folders that have been deleted will also be included in the search.
+        /// </param>
+        /// <returns>
+        /// A <code>Task</code> that represents the asynchronous operation that can return 
+        /// a list of metadata <see cref="Entry">entries</see> for any matching files and folders.
+        /// </returns>
+        /// <exception cref="ApiException">If there is an error while communicating with Dropbox.</exception>
+        public Task<IList<Entry>> SearchAsync(string path, string query, int fileLimit, bool includeDeleted)
+        {
+            NameValueCollection request = this.BuildSearchParameters(path, query, fileLimit, includeDeleted);
+            return this.RestTemplate.PostForObjectAsync<IList<Entry>>(this.BuildUrl("search/", path), request);
+        }
+
+        /// <summary>
+        /// Asynchronously creates and returns a shareable link to files or folders.
+        /// </summary>
+        /// <param name="path">
+        /// The Dropbox path to the file or folder you want a sharable link to, relative to root.
+        /// </param>
+        /// <returns>
+        /// A <code>Task</code> that represents the asynchronous operation that can return 
+        /// a shareable link to the file or folder.
+        /// </returns>
+        /// <exception cref="ApiException">If there is an error while communicating with Dropbox.</exception>
+        public Task<DropboxLink> GetShareableLinkAsync(string path)
+        {
+            NameValueCollection request = new NameValueCollection();
+            this.AddLocaleTo(request);
+            return this.RestTemplate.PostForObjectAsync<DropboxLink>(this.BuildUrl("shares/", path), request);
+        }
+
+        /// <summary>
+        /// Asynchronously returns a link for streaming media files.
+        /// </summary>
+        /// <param name="path">
+        /// The Dropbox path to the media file you want a direct link to, relative to root.
+        /// </param>
+        /// <returns>
+        /// A <code>Task</code> that represents the asynchronous operation that can return 
+        /// a direct link to the media file.
+        /// </returns>
+        /// <exception cref="ApiException">If there is an error while communicating with Dropbox.</exception>
+        public Task<DropboxLink> GetMediaLinkAsync(string path)
+        {
+            NameValueCollection request = new NameValueCollection();
+            this.AddLocaleTo(request);
+            return this.RestTemplate.PostForObjectAsync<DropboxLink>(this.BuildUrl("media/", path), request);
+        }
+
+        /// <summary>
+        /// Asynchronously downloads a thumbnail for an image.
+        /// </summary>
+        /// <param name="path">
+        /// The Dropbox path to the image file you want to thumbnail, relative to root.
+        /// </param>
+        /// <param name="format">The image format of the thumbnail to download.</param>
+        /// <param name="size">The size of the thumbnail to download.</param>
+        /// <returns>
+        /// A <code>Task</code> that represents the asynchronous operation that can return 
+        /// an array of bytes containing the thumbnail's content.
+        /// </returns>
+        /// <exception cref="ApiException">If there is an error while communicating with Dropbox.</exception>
+        public Task<byte[]> DownloadThumbnailAsync(string path, ThumbnailFormat format, ThumbnailSize size)
+        {
+            return this.RestTemplate.GetForObjectAsync<byte[]>(this.BuildThumbnailsUrl(path, format, size));
         }
 #else
 #if !SILVERLIGHT
@@ -308,7 +454,7 @@ namespace Spring.Social.Dropbox.Api.Impl
         /// <summary>
         /// Creates a folder.
         /// </summary>
-        /// <param name="path">The path to the new folder to create relative to root.</param>
+        /// <param name="path">The Dropbox path to the new folder to create relative to root.</param>
         /// <returns>
         /// A metadata <see cref="Entry"/> for the new folder.
         /// </returns>
@@ -325,7 +471,7 @@ namespace Spring.Social.Dropbox.Api.Impl
         /// <summary>
         /// Deletes a file or folder.
         /// </summary>
-        /// <param name="path">The path to the file or folder to be deleted relative to root.</param>
+        /// <param name="path">The Dropbox path to the file or folder to be deleted relative to root.</param>
         /// <returns>
         /// A metadata <see cref="Entry"/> for the deleted file or folder.
         /// </returns>
@@ -420,7 +566,7 @@ namespace Spring.Social.Dropbox.Api.Impl
         /// <summary>
         /// Downloads a file.
         /// </summary>
-        /// <param name="path">The path to the file you want to retrieve, relative to root.</param>
+        /// <param name="path">The Dropbox path to the file you want to retrieve, relative to root.</param>
         /// <returns>An array of bytes containing the file's content.</returns>
         /// <exception cref="ApiException">If there is an error while communicating with Dropbox.</exception>
         public byte[] DownloadFile(string path)
@@ -431,7 +577,7 @@ namespace Spring.Social.Dropbox.Api.Impl
         /// <summary>
         /// Downloads a file.
         /// </summary>
-        /// <param name="path">The path to the file you want to retrieve, relative to root.</param>
+        /// <param name="path">The Dropbox path to the file you want to retrieve, relative to root.</param>
         /// <param name="revision">The revision of the file to retrieve.</param>
         /// <returns>An array of bytes containing the file's content.</returns>
         /// <exception cref="ApiException">If there is an error while communicating with Dropbox.</exception>
@@ -443,7 +589,7 @@ namespace Spring.Social.Dropbox.Api.Impl
         /// <summary>
         /// Retrieves file or folder metadata.
         /// </summary>
-        /// <param name="path">The path to the file or folder, relative to root.</param>
+        /// <param name="path">The Dropbox path to the file or folder, relative to root.</param>
         /// <returns>
         /// A metadata <see cref="Entry"/> for the file or folder.
         /// </returns>
@@ -457,7 +603,7 @@ namespace Spring.Social.Dropbox.Api.Impl
         /// Retrieves file or folder metadata. 
         /// May return <see langword="null"/> if an hash is provided through parameters.
         /// </summary>
-        /// <param name="path">The path to the file or folder, relative to root.</param>
+        /// <param name="path">The Dropbox path to the file or folder, relative to root.</param>
         /// <param name="parameters">The parameters for retrieving file and folder metadata.</param>
         /// <returns>
         /// A metadata <see cref="Entry"/> for the file or folder.
@@ -466,6 +612,144 @@ namespace Spring.Social.Dropbox.Api.Impl
         public Entry GetMetadata(string path, MetadataParameters parameters)
         {
             return this.RestTemplate.GetForObject<Entry>(this.BuildMetadataUrl(path, parameters));
+        }
+
+        /// <summary>
+        /// Obtains metadata for the previous revisions of a file.
+        /// </summary>
+        /// <param name="path">The Dropbox path to the file, relative to root.</param>
+        /// <returns>
+        /// A list of metadata <see cref="Entry">entries</see>.
+        /// </returns>
+        /// <exception cref="ApiException">If there is an error while communicating with Dropbox.</exception>
+        public IList<Entry> GetRevisions(string path)
+        {
+            return this.GetRevisions(path, 0);
+        }
+
+        /// <summary>
+        /// Obtains metadata for the previous revisions of a file.
+        /// </summary>
+        /// <param name="path">The Dropbox path to the file, relative to root.</param>
+        /// <param name="revLimit">
+        /// The maximum numbers of revisions to retrieve. Default is 10, Max is 1,000.
+        /// </param>
+        /// <returns>
+        /// A list of metadata <see cref="Entry">entries</see>.
+        /// </returns>
+        /// <exception cref="ApiException">If there is an error while communicating with Dropbox.</exception>
+        public IList<Entry> GetRevisions(string path, int revLimit)
+        {
+            NameValueCollection parameters = new NameValueCollection();
+            if (revLimit > 0)
+            {
+                parameters.Add("rev_limit", revLimit.ToString());
+            }
+            this.AddLocaleTo(parameters);
+            return this.RestTemplate.GetForObject<IList<Entry>>(this.BuildUrl("revisions/", path, parameters));
+        }
+
+        /// <summary>
+        /// Restores a file path to a previous revision.
+        /// </summary>
+        /// <param name="path">The Dropbox path to the file, relative to root.</param>
+        /// <param name="revision">The revision of the file to restore.</param>
+        /// <returns>
+        /// A metadata <see cref="Entry"/> for the restored file. 
+        /// </returns>
+        /// <exception cref="ApiException">If there is an error while communicating with Dropbox.</exception>
+        public Entry Restore(string path, string revision)
+        {
+            NameValueCollection request = new NameValueCollection();
+            request.Add("rev", revision);
+            this.AddLocaleTo(request);
+            return this.RestTemplate.PostForObject<Entry>(this.BuildUrl("restore/", path), request);
+        }
+
+        /// <summary>
+        /// Searches for all files and folders that match the search query.
+        /// </summary>
+        /// <param name="path">The Dropbox path to the folder you want to search from, relative to root.</param>
+        /// <param name="query">The search string. Must be at least three characters long.</param>
+        /// <returns>
+        /// A list of metadata <see cref="Entry">entries</see> for any matching files and folders.
+        /// </returns>
+        /// <exception cref="ApiException">If there is an error while communicating with Dropbox.</exception>
+        public IList<Entry> Search(string path, string query)
+        {
+            return this.Search(path, query, 0, false);
+        }
+
+        /// <summary>
+        /// Searches for all files and folders that match the search query.
+        /// </summary>
+        /// <param name="path">The Dropbox path to the folder you want to search from, relative to root.</param>
+        /// <param name="query">The search string. Must be at least three characters long.</param>
+        /// <param name="fileLimit">
+        /// The maximum numbers of file entries to retrieve. The maximum and default value is 1000.
+        /// </param>
+        /// <param name="includeDeleted">
+        /// If <see langword="true"/>, then files and folders that have been deleted will also be included in the search.
+        /// </param>
+        /// <returns>
+        /// A list of metadata <see cref="Entry">entries</see> for any matching files and folders.
+        /// </returns>
+        /// <exception cref="ApiException">If there is an error while communicating with Dropbox.</exception>
+        public IList<Entry> Search(string path, string query, int fileLimit, bool includeDeleted)
+        {
+            NameValueCollection request = this.BuildSearchParameters(path, query, fileLimit, includeDeleted);
+            return this.RestTemplate.PostForObject<IList<Entry>>(this.BuildUrl("search/", path), request);
+        }
+
+        /// <summary>
+        /// Creates and returns a shareable link to files or folders.
+        /// </summary>
+        /// <param name="path">
+        /// The Dropbox path to the file or folder you want a sharable link to, relative to root.
+        /// </param>
+        /// <returns>
+        /// A shareable link to the file or folder.
+        /// </returns>
+        /// <exception cref="ApiException">If there is an error while communicating with Dropbox.</exception>
+        public DropboxLink GetShareableLink(string path)
+        {
+            NameValueCollection request = new NameValueCollection();
+            this.AddLocaleTo(request);
+            return this.RestTemplate.PostForObject<DropboxLink>(this.BuildUrl("shares/", path), request);
+        }
+
+        /// <summary>
+        /// Returns a link for streaming media files.
+        /// </summary>
+        /// <param name="path">
+        /// The Dropbox path to the media file you want a direct link to, relative to root.
+        /// </param>
+        /// <returns>
+        /// A direct link to the media file.
+        /// </returns>
+        /// <exception cref="ApiException">If there is an error while communicating with Dropbox.</exception>
+        public DropboxLink GetMediaLink(string path)
+        {
+            NameValueCollection request = new NameValueCollection();
+            this.AddLocaleTo(request);
+            return this.RestTemplate.PostForObject<DropboxLink>(this.BuildUrl("media/", path), request);
+        }
+
+        /// <summary>
+        /// Downloads a thumbnail for an image.
+        /// </summary>
+        /// <param name="path">
+        /// The Dropbox path to the image file you want to thumbnail, relative to root.
+        /// </param>
+        /// <param name="format">The image format of the thumbnail to download.</param>
+        /// <param name="size">The size of the thumbnail to download.</param>
+        /// <returns>
+        /// An array of bytes containing the thumbnail's content.
+        /// </returns>
+        /// <exception cref="ApiException">If there is an error while communicating with Dropbox.</exception>
+        public byte[] DownloadThumbnail(string path, ThumbnailFormat format, ThumbnailSize size)
+        {
+            return this.RestTemplate.GetForObject<byte[]>(this.BuildThumbnailsUrl(path, format, size));
         }
 #endif
 
@@ -490,7 +774,7 @@ namespace Spring.Social.Dropbox.Api.Impl
         /// <summary>
         /// Asynchronously creates a folder.
         /// </summary>
-        /// <param name="path">The path to the new folder to create relative to root.</param>
+        /// <param name="path">The Dropbox path to the new folder to create relative to root.</param>
         /// <param name="operationCompleted">
         /// The <code>Action&lt;&gt;</code> to perform when the asynchronous request completes. 
         /// Provides a metadata <see cref="Entry"/> for the new folder.
@@ -511,7 +795,7 @@ namespace Spring.Social.Dropbox.Api.Impl
         /// <summary>
         /// Asynchronously deletes a file or folder.
         /// </summary>
-        /// <param name="path">The path to the file or folder to be deleted relative to root.</param>
+        /// <param name="path">The Dropbox path to the file or folder to be deleted relative to root.</param>
         /// <param name="operationCompleted">
         /// The <code>Action&lt;&gt;</code> to perform when the asynchronous request completes. 
         /// Provides a metadata <see cref="Entry"/> for the deleted file or folder.
@@ -635,7 +919,7 @@ namespace Spring.Social.Dropbox.Api.Impl
         /// <summary>
         /// Asynchronously downloads a file.
         /// </summary>
-        /// <param name="path">The path to the file you want to retrieve, relative to root.</param>
+        /// <param name="path">The Dropbox path to the file you want to retrieve, relative to root.</param>
         /// <param name="operationCompleted">
         /// The <code>Action&lt;&gt;</code> to perform when the asynchronous request completes. 
         /// Provides an array of bytes containing the file's content.
@@ -652,7 +936,7 @@ namespace Spring.Social.Dropbox.Api.Impl
         /// <summary>
         /// Asynchronously downloads a file.
         /// </summary>
-        /// <param name="path">The path to the file you want to retrieve, relative to root.</param>
+        /// <param name="path">The Dropbox path to the file you want to retrieve, relative to root.</param>
         /// <param name="revision">The revision of the file to retrieve.</param>
         /// <param name="operationCompleted">
         /// The <code>Action&lt;&gt;</code> to perform when the asynchronous request completes. 
@@ -670,7 +954,7 @@ namespace Spring.Social.Dropbox.Api.Impl
         /// <summary>
         /// Asynchronously retrieves file or folder metadata.
         /// </summary>
-        /// <param name="path">The path to the file or folder, relative to root.</param>
+        /// <param name="path">The Dropbox path to the file or folder, relative to root.</param>
         /// <param name="operationCompleted">
         /// The <code>Action&lt;&gt;</code> to perform when the asynchronous request completes. 
         /// Provides a metadata <see cref="Entry"/> for the file or folder.
@@ -688,7 +972,7 @@ namespace Spring.Social.Dropbox.Api.Impl
         /// Asynchronously retrieves file or folder metadata. 
         /// May return <see langword="null"/> if an hash is provided through parameters.
         /// </summary>
-        /// <param name="path">The path to the file or folder, relative to root.</param>
+        /// <param name="path">The Dropbox path to the file or folder, relative to root.</param>
         /// <param name="parameters">The parameters for retrieving file and folder metadata.</param>
         /// <param name="operationCompleted">
         /// The <code>Action&lt;&gt;</code> to perform when the asynchronous request completes. 
@@ -701,6 +985,176 @@ namespace Spring.Social.Dropbox.Api.Impl
         public RestOperationCanceler GetMetadataAsync(string path, MetadataParameters parameters, Action<RestOperationCompletedEventArgs<Entry>> operationCompleted)
         {
             return this.RestTemplate.GetForObjectAsync<Entry>(this.BuildMetadataUrl(path, parameters), operationCompleted);
+        }
+
+        /// <summary>
+        /// Asynchronously obtains metadata for the previous revisions of a file.
+        /// </summary>
+        /// <param name="path">The Dropbox path to the file, relative to root.</param>
+        /// <param name="operationCompleted">
+        /// The <code>Action&lt;&gt;</code> to perform when the asynchronous request completes. 
+        /// Provides a list of metadata <see cref="Entry">entries</see>.
+        /// </param>
+        /// <returns>
+        /// A <see cref="RestOperationCanceler"/> instance that allows to cancel the asynchronous operation.
+        /// </returns>
+        /// <exception cref="ApiException">If there is an error while communicating with Dropbox.</exception>
+        public RestOperationCanceler GetRevisionsAsync(string path, Action<RestOperationCompletedEventArgs<IList<Entry>>> operationCompleted)
+        {
+            return this.GetRevisionsAsync(path, 0, operationCompleted);
+        }
+
+        /// <summary>
+        /// Asynchronously obtains metadata for the previous revisions of a file.
+        /// </summary>
+        /// <param name="path">The Dropbox path to the file, relative to root.</param>
+        /// <param name="revLimit">
+        /// The maximum numbers of revisions to retrieve. Default is 10, Max is 1,000.
+        /// </param>
+        /// <param name="operationCompleted">
+        /// The <code>Action&lt;&gt;</code> to perform when the asynchronous request completes. 
+        /// Provides a list of metadata <see cref="Entry">entries</see>.
+        /// </param>
+        /// <returns>
+        /// A <see cref="RestOperationCanceler"/> instance that allows to cancel the asynchronous operation.
+        /// </returns>
+        /// <exception cref="ApiException">If there is an error while communicating with Dropbox.</exception>
+        public RestOperationCanceler GetRevisionsAsync(string path, int revLimit, Action<RestOperationCompletedEventArgs<IList<Entry>>> operationCompleted)
+        {
+            NameValueCollection parameters = new NameValueCollection();
+            if (revLimit > 0)
+            {
+                parameters.Add("rev_limit", revLimit.ToString());
+            }
+            this.AddLocaleTo(parameters);
+            return this.RestTemplate.GetForObjectAsync<IList<Entry>>(this.BuildUrl("revisions/", path, parameters), operationCompleted);
+        }
+
+        /// <summary>
+        /// Asynchronously restores a file path to a previous revision.
+        /// </summary>
+        /// <param name="path">The Dropbox path to the file, relative to root.</param>
+        /// <param name="revision">The revision of the file to restore.</param>
+        /// <param name="operationCompleted">
+        /// The <code>Action&lt;&gt;</code> to perform when the asynchronous request completes. 
+        /// Provides a metadata <see cref="Entry"/> for the restored file. 
+        /// </param>
+        /// <returns>
+        /// A <see cref="RestOperationCanceler"/> instance that allows to cancel the asynchronous operation.
+        /// </returns>
+        /// <exception cref="ApiException">If there is an error while communicating with Dropbox.</exception>
+        public RestOperationCanceler RestoreAsync(string path, string revision, Action<RestOperationCompletedEventArgs<Entry>> operationCompleted)
+        {
+            NameValueCollection request = new NameValueCollection();
+            request.Add("rev", revision);
+            this.AddLocaleTo(request);
+            return this.RestTemplate.PostForObjectAsync<Entry>(this.BuildUrl("restore/", path), request, operationCompleted);
+        }
+
+        /// <summary>
+        /// Asynchronously searches for all files and folders that match the search query.
+        /// </summary>
+        /// <param name="path">The Dropbox path to the folder you want to search from, relative to root.</param>
+        /// <param name="query">The search string. Must be at least three characters long.</param>
+        /// <param name="operationCompleted">
+        /// The <code>Action&lt;&gt;</code> to perform when the asynchronous request completes. 
+        /// Provides a list of metadata <see cref="Entry">entries</see> for any matching files and folders.
+        /// </param>
+        /// <returns>
+        /// A <see cref="RestOperationCanceler"/> instance that allows to cancel the asynchronous operation.
+        /// </returns>
+        /// <exception cref="ApiException">If there is an error while communicating with Dropbox.</exception>
+        public RestOperationCanceler SearchAsync(string path, string query, Action<RestOperationCompletedEventArgs<IList<Entry>>> operationCompleted)
+        {
+            return this.SearchAsync(path, query, 0, false, operationCompleted);
+        }
+
+        /// <summary>
+        /// Asynchronously searches for all files and folders that match the search query.
+        /// </summary>
+        /// <param name="path">The Dropbox path to the folder you want to search from, relative to root.</param>
+        /// <param name="query">The search string. Must be at least three characters long.</param>
+        /// <param name="fileLimit">
+        /// The maximum numbers of file entries to retrieve. The maximum and default value is 1000.
+        /// </param>
+        /// <param name="includeDeleted">
+        /// If <see langword="true"/>, then files and folders that have been deleted will also be included in the search.
+        /// </param>
+        /// <param name="operationCompleted">
+        /// The <code>Action&lt;&gt;</code> to perform when the asynchronous request completes. 
+        /// Provides a list of metadata <see cref="Entry">entries</see> for any matching files and folders.
+        /// </param>
+        /// <returns>
+        /// A <see cref="RestOperationCanceler"/> instance that allows to cancel the asynchronous operation.
+        /// </returns>
+        /// <exception cref="ApiException">If there is an error while communicating with Dropbox.</exception>
+        public RestOperationCanceler SearchAsync(string path, string query, int fileLimit, bool includeDeleted, Action<RestOperationCompletedEventArgs<IList<Entry>>> operationCompleted)
+        {
+            NameValueCollection request = this.BuildSearchParameters(path, query, fileLimit, includeDeleted);
+            return this.RestTemplate.PostForObjectAsync<IList<Entry>>(this.BuildUrl("search/", path), request, operationCompleted);
+        }
+
+        /// <summary>
+        /// Asynchronously creates and returns a shareable link to files or folders.
+        /// </summary>
+        /// <param name="path">
+        /// The Dropbox path to the file or folder you want a sharable link to, relative to root.
+        /// </param>
+        /// <param name="operationCompleted">
+        /// The <code>Action&lt;&gt;</code> to perform when the asynchronous request completes. 
+        /// Provides a shareable link to the file or folder.
+        /// </param>
+        /// <returns>
+        /// A <see cref="RestOperationCanceler"/> instance that allows to cancel the asynchronous operation.
+        /// </returns>
+        /// <exception cref="ApiException">If there is an error while communicating with Dropbox.</exception>
+        public RestOperationCanceler GetShareableLinkAsync(string path, Action<RestOperationCompletedEventArgs<DropboxLink>> operationCompleted)
+        {
+            NameValueCollection request = new NameValueCollection();
+            this.AddLocaleTo(request);
+            return this.RestTemplate.PostForObjectAsync<DropboxLink>(this.BuildUrl("shares/", path), request, operationCompleted);
+        }
+
+        /// <summary>
+        /// Asynchronously returns a link for streaming media files.
+        /// </summary>
+        /// <param name="path">
+        /// The Dropbox path to the media file you want a direct link to, relative to root.
+        /// </param>
+        /// <param name="operationCompleted">
+        /// The <code>Action&lt;&gt;</code> to perform when the asynchronous request completes. 
+        /// Provides a direct link to the media file.
+        /// </param>
+        /// <returns>
+        /// A <see cref="RestOperationCanceler"/> instance that allows to cancel the asynchronous operation.
+        /// </returns>
+        /// <exception cref="ApiException">If there is an error while communicating with Dropbox.</exception>
+        public RestOperationCanceler GetMediaLinkAsync(string path, Action<RestOperationCompletedEventArgs<DropboxLink>> operationCompleted)
+        {
+            NameValueCollection request = new NameValueCollection();
+            this.AddLocaleTo(request);
+            return this.RestTemplate.PostForObjectAsync<DropboxLink>(this.BuildUrl("media/", path), request, operationCompleted);
+        }
+
+        /// <summary>
+        /// Asynchronously downloads a thumbnail for an image.
+        /// </summary>
+        /// <param name="path">
+        /// The Dropbox path to the image file you want to thumbnail, relative to root.
+        /// </param>
+        /// <param name="format">The image format of the thumbnail to download.</param>
+        /// <param name="size">The size of the thumbnail to download.</param>
+        /// <param name="operationCompleted">
+        /// The <code>Action&lt;&gt;</code> to perform when the asynchronous request completes. 
+        /// Provides an array of bytes containing the thumbnail's content.
+        /// </param>
+        /// <returns>
+        /// A <see cref="RestOperationCanceler"/> instance that allows to cancel the asynchronous operation.
+        /// </returns>
+        /// <exception cref="ApiException">If there is an error while communicating with Dropbox.</exception>
+        public RestOperationCanceler DownloadThumbnailAsync(string path, ThumbnailFormat format, ThumbnailSize size, Action<RestOperationCompletedEventArgs<byte[]>> operationCompleted)
+        {
+            return this.RestTemplate.GetForObjectAsync<byte[]>(this.BuildThumbnailsUrl(path, format, size), operationCompleted);
         }
 #endif
 
@@ -746,6 +1200,7 @@ namespace Spring.Social.Dropbox.Api.Impl
             jsonMapper.RegisterDeserializer(typeof(DropboxProfile), new DropboxProfileDeserializer());
             jsonMapper.RegisterDeserializer(typeof(Entry), new EntryDeserializer());
             jsonMapper.RegisterDeserializer(typeof(IList<Entry>), new EntryListDeserializer());
+            jsonMapper.RegisterDeserializer(typeof(DropboxLink), new DropboxLinkDeserializer());
 
             IList<IHttpMessageConverter> converters = base.GetMessageConverters();
             converters.Add(new ByteArrayHttpMessageConverter());
@@ -757,6 +1212,22 @@ namespace Spring.Social.Dropbox.Api.Impl
         private void AddLocaleTo(NameValueCollection parameters)
         {
             // TODO: locale parameter
+        }
+
+        private NameValueCollection BuildSearchParameters(string dropboxPath, string query, int fileLimit, bool includeDeleted)
+        {
+            NameValueCollection parameters = new NameValueCollection();
+            parameters.Add("query", query);
+            if (fileLimit > 0)
+            {
+                parameters.Add("file_limit", fileLimit.ToString());
+            }
+            if (includeDeleted)
+            {
+                parameters.Add("include_deleted", "true");
+            }
+            this.AddLocaleTo(parameters);
+            return parameters;
         }
 
         private string BuildUploadUrl(string dropboxPath, bool overwrite, string revision)
@@ -784,12 +1255,20 @@ namespace Spring.Social.Dropbox.Api.Impl
             return this.BuildUrl("https://api-content.dropbox.com/1/files/", dropboxPath, parameters);
         }
 
+        private string BuildThumbnailsUrl(string dropboxPath, ThumbnailFormat format, ThumbnailSize size)
+        {
+            NameValueCollection parameters = new NameValueCollection();
+            parameters.Add("format", format.ToString().ToUpper());
+            parameters.Add("size", ThumbnailSizeToString(size));
+            return this.BuildUrl("https://api-content.dropbox.com/1/thumbnails/", dropboxPath, parameters);
+        }
+
         private string BuildMetadataUrl(string dropboxPath, MetadataParameters metadataParameters)
         {
             NameValueCollection parameters = new NameValueCollection();
-            if (metadataParameters.FileLimits > 0)
+            if (metadataParameters.FileLimit > 0)
             {
-                parameters.Add("file_limit", metadataParameters.FileLimits.ToString());
+                parameters.Add("file_limit", metadataParameters.FileLimit.ToString());
             }
             if (metadataParameters.Hash != null)
             {
@@ -810,9 +1289,14 @@ namespace Spring.Social.Dropbox.Api.Impl
             return this.BuildUrl("metadata/", dropboxPath, parameters);
         }
 
+        private string BuildUrl(string path, string dropboxPath)
+        {
+            return this.BuildUrl(path, dropboxPath, new NameValueCollection());
+        }
+
         private string BuildUrl(string path, string dropboxPath, NameValueCollection parameters)
         {
-            return this.BuildUrl(path + this.root + "/" + dropboxPath.TrimStart('/'), parameters);
+            return this.BuildUrl(path.TrimEnd('/') + "/" + this.root + "/" + dropboxPath.TrimStart('/'), parameters);
         }
 
         private string BuildUrl(string path, NameValueCollection parameters)
@@ -835,6 +1319,23 @@ namespace Spring.Social.Dropbox.Api.Impl
                 qsBuilder.Append(HttpUtils.UrlEncode(parameters[key]));
             }
             return path + qsBuilder.ToString();
+        }
+
+        private static string ThumbnailSizeToString(ThumbnailSize size)
+        {
+            switch(size)
+            {
+                case ThumbnailSize.Small:
+                    return "s";
+                case ThumbnailSize.Medium:
+                    return "m";
+                case ThumbnailSize.Large:
+                    return "l";
+                case ThumbnailSize.ExtraLarge:
+                    return "xl";
+                default:
+                    return "small";
+            }
         }
     }
 }
