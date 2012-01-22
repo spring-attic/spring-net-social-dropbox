@@ -1,0 +1,49 @@
+﻿@using Spring.Social.Dropbox.Api;
+@model Spring.Social.Dropbox.Api.Entry
+@{
+    ViewBag.Title = "Dropbox content browser";
+}
+
+<h2>Dropbox: '@Model.Path'</h2>
+@if (Model.Contents == null || Model.Contents.Count == 0)
+{
+    <label>Empty directory</label>
+}
+else
+{
+<table>
+    @foreach (Entry entry in Model.Contents.OrderBy(s => !s.IsDirectory))
+    {
+    <tr>
+        <td>
+            <img src="@Url.Content("~/Content/Images/Dropbox/" + entry.Icon + ".gif")" alt="@entry.Icon"/>
+        </td>
+        <td>
+            @if (entry.IsDirectory)
+            {
+                @Html.ActionLink(entry.Path, "Browser", "Dropbox", new { path = entry.Path }, null)
+            }
+            else
+            {
+                @entry.Path
+            }
+        </td>
+        <td>
+            @if (!entry.IsDirectory)
+            {
+                @entry.Size
+            }
+        </td>
+        <td>
+            @if (entry.ModifiedDate.HasValue)
+            {
+                @entry.ModifiedDate.Value.ToString()
+            }
+        </td>
+    </tr>
+    }
+</table>
+}
+
+
+

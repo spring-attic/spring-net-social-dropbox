@@ -1,0 +1,9 @@
+﻿@model Spring.Social.Dropbox.Api.DropboxProfile
+@{
+    ViewBag.Title = "Callback";
+}
+
+<h2>Welcome @Model.DisplayName!</h2>
+
+@Html.ActionLink("Browse Dropbox content", "Browser", "Dropbox", new { path = "/" }, null)
+
