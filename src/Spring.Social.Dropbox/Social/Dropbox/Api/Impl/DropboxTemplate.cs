@@ -20,6 +20,7 @@
 
 using System;
 using System.Text;
+using System.Globalization;
 using System.Collections.Generic;
 #if SILVERLIGHT
 using Spring.Collections.Specialized;
@@ -55,6 +56,7 @@ namespace Spring.Social.Dropbox.Api.Impl
         private static readonly Uri API_URI_BASE = new Uri("https://api.dropbox.com/1/");
 
         private AccessLevel accessLevel;
+        private string locale;
         private string root;
 
         /// <summary>
@@ -79,7 +81,20 @@ namespace Spring.Social.Dropbox.Api.Impl
         /// </summary>
         public AccessLevel AccessLevel
         {
-            get { return accessLevel; }
+            get { return this.accessLevel; }
+        }
+
+        /// <summary>
+        /// Gets or sets the locale parameter to specify language settings of content responses. 
+        /// <para/>
+        /// Uses IETF language tag (ex: "pt-BR" for Brazilian Portuguese).
+        /// <para/>
+        /// Default is <see langword="null"/> for Dropbox server's locale.
+        /// </summary>
+        public string Locale
+        {
+            get { return this.locale; }
+            set { this.locale = value; }
         }
 
 #if NET_4_0 || SILVERLIGHT_5
@@ -1210,7 +1225,10 @@ namespace Spring.Social.Dropbox.Api.Impl
 
         private void AddLocaleTo(NameValueCollection parameters)
         {
-            // TODO: locale parameter
+            if (this.locale != null)
+            {
+                parameters.Add("locale", this.locale);
+            }
         }
 
         private NameValueCollection BuildSearchParameters(string dropboxPath, string query, int fileLimit, bool includeDeleted)
@@ -1285,6 +1303,7 @@ namespace Spring.Social.Dropbox.Api.Impl
             {
                 parameters.Add("rev", metadataParameters.Revision);
             }
+            this.AddLocaleTo(parameters);
             return this.BuildUrl("metadata/", dropboxPath, parameters);
         }
 

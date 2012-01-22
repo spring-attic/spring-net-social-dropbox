@@ -43,7 +43,7 @@ namespace Spring.Social.Dropbox.Api.Impl.Json
                 MimeType = value.ContainsName("mime_type") ? value.GetValue<string>("mime_type") : null,
                 ModifiedDate = value.ContainsName("modified") ? JsonUtils.ToDropboxDateTime(value.GetValue<string>("modified")) : null,
                 Path = value.GetValue<string>("path"),
-                Revision = value.GetValue<string>("rev"),
+                Revision = value.ContainsName("rev") ? value.GetValue<string>("rev") : null,
                 Root = value.GetValue<string>("root"),
                 Size = value.GetValue<string>("size"),
                 ThumbExists = value.GetValue<bool>("thumb_exists"),

@@ -41,6 +41,15 @@ namespace Spring.Social.Dropbox.Api
         /// </summary>
         AccessLevel AccessLevel { get; }
 
+        /// <summary>
+        /// Gets or sets the locale parameter to specify language settings of content responses. 
+        /// <para/>
+        /// Uses IETF language tag (ex: "pt-BR" for Brazilian Portuguese).
+        /// <para/>
+        /// Default is <see langword="null"/> for Dropbox server's locale.
+        /// </summary>
+        string Locale { get; set; }
+
 #if NET_4_0 || SILVERLIGHT_5  
         /// <summary>
         /// Asynchronously retrieves the authenticated user's Dropbox profile details.
