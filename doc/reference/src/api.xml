@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter id="api" version="5.0" xmlns="http://docbook.org/ns/docbook"
+         xmlns:ns52="http://www.w3.org/2000/svg"
+         xmlns:ns5="http://www.w3.org/1999/xlink"
+         xmlns:ns4="http://www.w3.org/1998/Math/MathML"
+         xmlns:ns3="http://www.w3.org/1999/xhtml"
+         xmlns:ns="http://docbook.org/ns/docbook">
+	<title>Dropbox API Binding</title>
+  
+	<para>
+    Spring.NET Social Dropbox offers integration with Dropbox's REST API through the <interfacename>IDropbox</interfacename> interface 
+    and its implementation, <classname>DropboxTemplate</classname>.			
+	</para>
+
+	<para>
+		Creating an instance of <classname>DropboxTemplate</classname> involves invoking its constructor, 
+    passing in the application's OAuth credentials, an access token/secret pair authorizing the application to act on a user's behalf 
+    and the type of access level configured with the application.
+		<sbr/>For example:
+	</para>
+	
+	<programlisting language="csharp"><![CDATA[string consumerKey = "..."; // The application's consumer key
+string consumerSecret = "..."; // The application's consumer secret
+string accessToken = "..."; // The access token granted after OAuth authorization
+string accessTokenSecret = "..."; // The access token secret granted after OAuth authorization
+IDropbox dropbox = new DropboxTemplate(consumerKey, consumerSecret, accessToken, accessTokenSecret, AccessLevel.Full);]]></programlisting>
+	
+	<para>
+		In addition, <classname>DropboxTemplate</classname> has a <literal>Locale</literal> property 
+    that allows to specify language settings of content responses:
+  </para>
+	
+	<programlisting language="csharp"><![CDATA[dropbox.Locale = "fr-FR";]]></programlisting>
+	
+	<para>
+		You can also get an instance of <interfacename>IDropbox</interfacename> from the <classname>DropboxServiceProvider</classname> class.
+		<sbr/>The example code below shows use of the <classname>DropboxServiceProvider</classname> to retrieve an instance of <interfacename>IDropbox</interfacename> 
+    after authenticating through OAuth1 server-side flow:
+    <programlisting language="csharp"><![CDATA[
+DropboxServiceProvider serviceProvider = new DropboxServiceProvider("consumerKey", "consumerSecret", AccessLevel.AppFolder);
+OAuth1Operations oauthOperations = serviceProvider.AuthOperations;
+OAuthToken requestToken = oauthOperations.FetchRequestToken("https://my-callback-url/", null);
+OAuth1Parameters parameters = new OAuth1Parameters();
+parameters.CallbackUrl = "http://my-callback-url/";
+parameters.Add("locale", "fr-FR"); // for a localized version of the authorization website
+string authorizeUrl = oauthOperations.BuildAuthorizeUrl(requestToken, parameters);
+Response.Redirect(authorizeUrl);
+
+// upon receiving the callback from the provider:
+OAuthToken accessToken = oauthOperations.ExchangeForAccessToken(new AuthorizedRequestToken(requestToken, oauthVerifier), null);
+IDropbox dropboxApi = serviceProvider.GetApi(accessToken.Value, accessToken.Secret);]]></programlisting>
+  </para>
+	
+	<para>
+		Once you have a <interfacename>IDropbox</interfacename>, you can perform a several operations against Dropbox.
+		<sbr/><interfacename>IDropbox</interfacename> is defined as follows:
+	</para>
+	
+  <programlisting language="csharp"><![CDATA[public interface IDropbox : IApiBinding
+{
+  DropboxProfile GetUserProfile();
+
+  Entry CreateFolder(string path);
+
+  Entry Delete(string path);
+
+  Entry Move(string fromPath, string toPath);
+
+  Entry Copy(string fromPath, string toPath);
+
+  Entry UploadFile(IResource file, string path);
+
+  Entry UploadFile(IResource file, string path, bool overwrite, string revision);
+
+  byte[] DownloadFile(string path);
+
+  byte[] DownloadFile(string path, string revision);
+
+  Entry GetMetadata(string path);
+
+  Entry GetMetadata(string path, MetadataParameters parameters);
+
+  IList<Entry> GetRevisions(string path);
+
+  IList<Entry> GetRevisions(string path, int revLimit);
+
+  Entry Restore(string path, string revision);
+
+  IList<Entry> Search(string path, string query);
+
+  IList<Entry> Search(string path, string query, int fileLimit, bool includeDeleted);
+
+  DropboxLink GetShareableLink(string path);
+
+  DropboxLink GetMediaLink(string path);
+
+  byte[] DownloadThumbnail(string path, ThumbnailFormat format, ThumbnailSize size);
+}]]></programlisting>
+
+  <para>
+    There are 3 ways to call a method depending on the target Framework:
+    <itemizedlist>
+      <listitem>
+        <emphasis role="bold">Synchronuous methods</emphasis>
+        <para>Available on .NET 2.0 and .NET 3.5</para>
+        <programlisting language="csharp"><![CDATA[DropboxProfile profile = dropbox.GetUserProfile();
+Console.WriteLine("Hi " + profile.DisplayName + "!");]]></programlisting>
+      </listitem>
+
+      <listitem>
+        <emphasis role="bold">Asynchronuous methods</emphasis>
+        <para>Available on .NET 2.0, .NET 3.5, Silvelight 4 and Windows Phone</para>
+        <programlisting language="csharp"><![CDATA[DropboxProfile profile = dropbox.GetUserProfileAsync(
+  r =>
+  {
+    Console.WriteLine("Hi " + r.Response.DisplayName + "!");
+  });]]>
+        </programlisting>
+      </listitem>
+
+      <listitem>
+        <emphasis role="bold">Task-based asynchronuous methods (Task Parallel Library)</emphasis>
+        <para>Available on .NET 4.0 and Silvelight 5</para>
+        <programlisting language="csharp"><![CDATA[DropboxProfile profile = dropbox.GetUserProfileAsync()
+  .ContinueWith(task =>
+  {
+    Console.WriteLine("Hi " + task.Result.DisplayName + "!");
+  });]]>
+        </programlisting>
+        <para>Advanced usage scenario:</para>
+        <programlisting language="csharp"><![CDATA[Task[] tasks = new Task[]
+{
+  dropbox.UploadFileAsync(new FileResource(@"c:\Image1.jpg"), "/Images/Image1.jpg")
+    .ContinueWith(t => Console.WriteLine("Image1.jpg uploaded!")),
+  dropbox.UploadFileAsync(new FileResource(@"c:\Image2.jpg"), "/Images/Image2.jpg")
+    .ContinueWith(t => Console.WriteLine("Image2.jpg uploaded!")),
+};
+Task.WaitAll(tasks);
+Console.WriteLine("All images uploaded!");]]>
+        </programlisting>
+      </listitem>
+    </itemizedlist>
+  </para>
+
+  <para/>
+  
+	<para>
+		For complete details on the Spring.NET Social's entire Dropbox API binding, refer to the API documentation.
+    <sbr/>Samples are provided in the 'examples' directory of the distribution.
+  </para>
+</chapter>

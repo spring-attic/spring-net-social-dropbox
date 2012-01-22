@@ -10,10 +10,12 @@
   <para>
     The Spring.NET Social Dropbox project is an extension to <ulink url="http://www.springframework.net/social/">Spring.NET Social</ulink>
     that enables integration with Dropbox.
+    <sbr/>The <ulink url="http://www.springframework.net/rest/">Spring.NET REST Client Framework</ulink> 
+    is used to consume <ulink url="https://www.dropbox.com/developers/reference/api">Dropbox REST API</ulink>.
   </para>
   
   <para>
-		<ulink url="http://www.dropbox.com">Dropbox</ulink> is a free service that lets you bring your photos, docs, and videos anywhere and share them easily.
+    <ulink url="http://www.dropbox.com">Dropbox</ulink> is a free service that lets you bring your photos, docs, and videos anywhere and share them easily.
   </para>
 
   <para>Spring.NET Social Dropbox supports the following .NET Frameworks : <itemizedlist>
@@ -35,9 +37,9 @@
   </itemizedlist></para>
   
   <para>
-    As an extension, Spring.NET Social Dropbox depends on Spring.NET Social. 
+    As an extension, Spring.NET Social Dropbox depends on Spring.NET Social.
     <sbr/>
-    Note that Spring.NET Social Dropbox may release on a different schedule than Spring.NET Social. 
+    Note that Spring.NET Social Dropbox may release on a different schedule than Spring.NET Social.
     Consequently, Spring.NET Social's version may differ from that of Spring.NET Social Dropbox.
   </para>
 
