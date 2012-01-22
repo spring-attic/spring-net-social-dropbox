@@ -90,7 +90,7 @@ namespace Spring.Social.Dropbox.Api.Impl
         /// A <code>Task</code> that represents the asynchronous operation that can return 
         /// a <see cref="DropboxProfile"/> object representing the user's profile.
         /// </returns>
-        /// <exception cref="ApiException">If there is an error while communicating with Dropbox.</exception>
+        /// <exception cref="DropboxApiException">If there is an error while communicating with Dropbox.</exception>
         public Task<DropboxProfile> GetUserProfileAsync()
         {
             NameValueCollection parameters = new NameValueCollection();
@@ -106,7 +106,7 @@ namespace Spring.Social.Dropbox.Api.Impl
         /// A <code>Task</code> that represents the asynchronous operation that can return 
         /// a metadata <see cref="Entry"/> for the new folder.
         /// </returns>
-        /// <exception cref="ApiException">If there is an error while communicating with Dropbox.</exception>
+        /// <exception cref="DropboxApiException">If there is an error while communicating with Dropbox.</exception>
         public Task<Entry> CreateFolderAsync(string path)
         {
             NameValueCollection request = new NameValueCollection();
@@ -124,7 +124,7 @@ namespace Spring.Social.Dropbox.Api.Impl
         /// A <code>Task</code> that represents the asynchronous operation that can return 
         /// a metadata <see cref="Entry"/> for the deleted file or folder.
         /// </returns>
-        /// <exception cref="ApiException">If there is an error while communicating with Dropbox.</exception>
+        /// <exception cref="DropboxApiException">If there is an error while communicating with Dropbox.</exception>
         public Task<Entry> DeleteAsync(string path)
         {
             NameValueCollection request = new NameValueCollection();
@@ -143,7 +143,7 @@ namespace Spring.Social.Dropbox.Api.Impl
         /// A <code>Task</code> that represents the asynchronous operation that can return 
         /// a metadata <see cref="Entry"/> for the moved file or folder.
         /// </returns>
-        /// <exception cref="ApiException">If there is an error while communicating with Dropbox.</exception>
+        /// <exception cref="DropboxApiException">If there is an error while communicating with Dropbox.</exception>
         public Task<Entry> MoveAsync(string fromPath, string toPath)
         {
             NameValueCollection request = new NameValueCollection();
@@ -163,7 +163,7 @@ namespace Spring.Social.Dropbox.Api.Impl
         /// A <code>Task</code> that represents the asynchronous operation that can return 
         /// a metadata <see cref="Entry"/> for the moved file or folder.
         /// </returns>
-        /// <exception cref="ApiException">If there is an error while communicating with Dropbox.</exception>
+        /// <exception cref="DropboxApiException">If there is an error while communicating with Dropbox.</exception>
         public Task<Entry> CopyAsync(string fromPath, string toPath)
         {
             NameValueCollection request = new NameValueCollection();
@@ -187,7 +187,7 @@ namespace Spring.Social.Dropbox.Api.Impl
         /// A <code>Task</code> that represents the asynchronous operation that can return 
         /// a metadata <see cref="Entry"/> for the uploaded file.
         /// </returns>
-        /// <exception cref="ApiException">If there is an error while communicating with Dropbox.</exception>
+        /// <exception cref="DropboxApiException">If there is an error while communicating with Dropbox.</exception>
         public Task<Entry> UploadFileAsync(IResource file, string path, CancellationToken cancellationToken)
         {
             return this.UploadFileAsync(file, path, true, null, cancellationToken);
@@ -215,7 +215,7 @@ namespace Spring.Social.Dropbox.Api.Impl
         /// A <code>Task</code> that represents the asynchronous operation that can return 
         /// a metadata <see cref="Entry"/> for the uploaded file.
         /// </returns>
-        /// <exception cref="ApiException">If there is an error while communicating with Dropbox.</exception>
+        /// <exception cref="DropboxApiException">If there is an error while communicating with Dropbox.</exception>
         public Task<Entry> UploadFileAsync(IResource file, string path, bool overwrite, string revision, CancellationToken cancellationToken)
         {
             return this.RestTemplate.ExchangeAsync<Entry>(
@@ -235,7 +235,7 @@ namespace Spring.Social.Dropbox.Api.Impl
         /// A <code>Task</code> that represents the asynchronous operation that can return 
         /// an array of bytes containing the file's content.
         /// </returns>
-        /// <exception cref="ApiException">If there is an error while communicating with Dropbox.</exception>
+        /// <exception cref="DropboxApiException">If there is an error while communicating with Dropbox.</exception>
         public Task<byte[]> DownloadFileAsync(string path, CancellationToken cancellationToken)
         {
             return this.DownloadFileAsync(path, null, cancellationToken);
@@ -251,7 +251,7 @@ namespace Spring.Social.Dropbox.Api.Impl
         /// A <code>Task</code> that represents the asynchronous operation that can return 
         /// an array of bytes containing the file's content.
         /// </returns>
-        /// <exception cref="ApiException">If there is an error while communicating with Dropbox.</exception>
+        /// <exception cref="DropboxApiException">If there is an error while communicating with Dropbox.</exception>
         public Task<byte[]> DownloadFileAsync(string path, string revision, CancellationToken cancellationToken)
         {
             return this.RestTemplate.ExchangeAsync<byte[]>(
@@ -270,7 +270,7 @@ namespace Spring.Social.Dropbox.Api.Impl
         /// A <code>Task</code> that represents the asynchronous operation that can return 
         /// a metadata <see cref="Entry"/> for the file or folder.
         /// </returns>
-        /// <exception cref="ApiException">If there is an error while communicating with Dropbox.</exception>
+        /// <exception cref="DropboxApiException">If there is an error while communicating with Dropbox.</exception>
         public Task<Entry> GetMetadataAsync(string path)
         {
             return this.GetMetadataAsync(path, new MetadataParameters());
@@ -286,7 +286,7 @@ namespace Spring.Social.Dropbox.Api.Impl
         /// A <code>Task</code> that represents the asynchronous operation that can return 
         /// a metadata <see cref="Entry"/> for the file or folder.
         /// </returns>
-        /// <exception cref="ApiException">If there is an error while communicating with Dropbox.</exception>
+        /// <exception cref="DropboxApiException">If there is an error while communicating with Dropbox.</exception>
         public Task<Entry> GetMetadataAsync(string path, MetadataParameters parameters)
         {
             return this.RestTemplate.GetForObjectAsync<Entry>(this.BuildMetadataUrl(path, parameters));
@@ -300,7 +300,7 @@ namespace Spring.Social.Dropbox.Api.Impl
         /// A <code>Task</code> that represents the asynchronous operation that can return 
         /// a list of metadata <see cref="Entry">entries</see>.
         /// </returns>
-        /// <exception cref="ApiException">If there is an error while communicating with Dropbox.</exception>
+        /// <exception cref="DropboxApiException">If there is an error while communicating with Dropbox.</exception>
         public Task<IList<Entry>> GetRevisionsAsync(string path)
         {
             return this.GetRevisionsAsync(path, 0);
@@ -317,7 +317,7 @@ namespace Spring.Social.Dropbox.Api.Impl
         /// A <code>Task</code> that represents the asynchronous operation that can return 
         /// a list of metadata <see cref="Entry">entries</see>.
         /// </returns>
-        /// <exception cref="ApiException">If there is an error while communicating with Dropbox.</exception>
+        /// <exception cref="DropboxApiException">If there is an error while communicating with Dropbox.</exception>
         public Task<IList<Entry>> GetRevisionsAsync(string path, int revLimit)
         {
             NameValueCollection parameters = new NameValueCollection();
@@ -338,7 +338,7 @@ namespace Spring.Social.Dropbox.Api.Impl
         /// A <code>Task</code> that represents the asynchronous operation that can return 
         /// a metadata <see cref="Entry"/> for the restored file. 
         /// </returns>
-        /// <exception cref="ApiException">If there is an error while communicating with Dropbox.</exception>
+        /// <exception cref="DropboxApiException">If there is an error while communicating with Dropbox.</exception>
         public Task<Entry> RestoreAsync(string path, string revision)
         {
             NameValueCollection request = new NameValueCollection();
@@ -356,7 +356,7 @@ namespace Spring.Social.Dropbox.Api.Impl
         /// A <code>Task</code> that represents the asynchronous operation that can return 
         /// a list of metadata <see cref="Entry">entries</see> for any matching files and folders.
         /// </returns>
-        /// <exception cref="ApiException">If there is an error while communicating with Dropbox.</exception>
+        /// <exception cref="DropboxApiException">If there is an error while communicating with Dropbox.</exception>
         public Task<IList<Entry>> SearchAsync(string path, string query)
         {
             return this.SearchAsync(path, query, 0, false);
@@ -377,7 +377,7 @@ namespace Spring.Social.Dropbox.Api.Impl
         /// A <code>Task</code> that represents the asynchronous operation that can return 
         /// a list of metadata <see cref="Entry">entries</see> for any matching files and folders.
         /// </returns>
-        /// <exception cref="ApiException">If there is an error while communicating with Dropbox.</exception>
+        /// <exception cref="DropboxApiException">If there is an error while communicating with Dropbox.</exception>
         public Task<IList<Entry>> SearchAsync(string path, string query, int fileLimit, bool includeDeleted)
         {
             NameValueCollection request = this.BuildSearchParameters(path, query, fileLimit, includeDeleted);
@@ -394,7 +394,7 @@ namespace Spring.Social.Dropbox.Api.Impl
         /// A <code>Task</code> that represents the asynchronous operation that can return 
         /// a shareable link to the file or folder.
         /// </returns>
-        /// <exception cref="ApiException">If there is an error while communicating with Dropbox.</exception>
+        /// <exception cref="DropboxApiException">If there is an error while communicating with Dropbox.</exception>
         public Task<DropboxLink> GetShareableLinkAsync(string path)
         {
             NameValueCollection request = new NameValueCollection();
@@ -412,7 +412,7 @@ namespace Spring.Social.Dropbox.Api.Impl
         /// A <code>Task</code> that represents the asynchronous operation that can return 
         /// a direct link to the media file.
         /// </returns>
-        /// <exception cref="ApiException">If there is an error while communicating with Dropbox.</exception>
+        /// <exception cref="DropboxApiException">If there is an error while communicating with Dropbox.</exception>
         public Task<DropboxLink> GetMediaLinkAsync(string path)
         {
             NameValueCollection request = new NameValueCollection();
@@ -432,7 +432,7 @@ namespace Spring.Social.Dropbox.Api.Impl
         /// A <code>Task</code> that represents the asynchronous operation that can return 
         /// an array of bytes containing the thumbnail's content.
         /// </returns>
-        /// <exception cref="ApiException">If there is an error while communicating with Dropbox.</exception>
+        /// <exception cref="DropboxApiException">If there is an error while communicating with Dropbox.</exception>
         public Task<byte[]> DownloadThumbnailAsync(string path, ThumbnailFormat format, ThumbnailSize size)
         {
             return this.RestTemplate.GetForObjectAsync<byte[]>(this.BuildThumbnailsUrl(path, format, size));
@@ -443,7 +443,7 @@ namespace Spring.Social.Dropbox.Api.Impl
         /// Retrieves the authenticated user's Dropbox profile details.
         /// </summary>
         /// <returns>A <see cref="DropboxProfile"/> object representing the user's profile.</returns>
-        /// <exception cref="ApiException">If there is an error while communicating with Dropbox.</exception>
+        /// <exception cref="DropboxApiException">If there is an error while communicating with Dropbox.</exception>
         public DropboxProfile GetUserProfile()
         {
             NameValueCollection parameters = new NameValueCollection();
@@ -458,7 +458,7 @@ namespace Spring.Social.Dropbox.Api.Impl
         /// <returns>
         /// A metadata <see cref="Entry"/> for the new folder.
         /// </returns>
-        /// <exception cref="ApiException">If there is an error while communicating with Dropbox.</exception>
+        /// <exception cref="DropboxApiException">If there is an error while communicating with Dropbox.</exception>
         public Entry CreateFolder(string path)
         {
             NameValueCollection request = new NameValueCollection();
@@ -475,7 +475,7 @@ namespace Spring.Social.Dropbox.Api.Impl
         /// <returns>
         /// A metadata <see cref="Entry"/> for the deleted file or folder.
         /// </returns>
-        /// <exception cref="ApiException">If there is an error while communicating with Dropbox.</exception>
+        /// <exception cref="DropboxApiException">If there is an error while communicating with Dropbox.</exception>
         public Entry Delete(string path)
         {
             NameValueCollection request = new NameValueCollection();
@@ -493,7 +493,7 @@ namespace Spring.Social.Dropbox.Api.Impl
         /// <returns>
         /// A metadata <see cref="Entry"/> for the moved file or folder.
         /// </returns>
-        /// <exception cref="ApiException">If there is an error while communicating with Dropbox.</exception>
+        /// <exception cref="DropboxApiException">If there is an error while communicating with Dropbox.</exception>
         public Entry Move(string fromPath, string toPath)
         {
             NameValueCollection request = new NameValueCollection();
@@ -512,7 +512,7 @@ namespace Spring.Social.Dropbox.Api.Impl
         /// <returns>
         /// A metadata <see cref="Entry"/> for the moved file or folder.
         /// </returns>
-        /// <exception cref="ApiException">If there is an error while communicating with Dropbox.</exception>
+        /// <exception cref="DropboxApiException">If there is an error while communicating with Dropbox.</exception>
         public Entry Copy(string fromPath, string toPath)
         {
             NameValueCollection request = new NameValueCollection();
@@ -532,7 +532,7 @@ namespace Spring.Social.Dropbox.Api.Impl
         /// This parameter should not point to a folder.
         /// </param>
         /// <returns>A metadata <see cref="Entry"/> for the uploaded file.</returns>
-        /// <exception cref="ApiException">If there is an error while communicating with Dropbox.</exception>
+        /// <exception cref="DropboxApiException">If there is an error while communicating with Dropbox.</exception>
         public Entry UploadFile(IResource file, string path)
         {
             return this.UploadFile(file, path, true, null);
@@ -556,7 +556,7 @@ namespace Spring.Social.Dropbox.Api.Impl
         /// If <paramref name="revision"/> matches the latest version of the file on the user's Dropbox, that file will be replaced.
         /// </param>
         /// <returns>A metadata <see cref="Entry"/> for the uploaded file.</returns>
-        /// <exception cref="ApiException">If there is an error while communicating with Dropbox.</exception>
+        /// <exception cref="DropboxApiException">If there is an error while communicating with Dropbox.</exception>
         public Entry UploadFile(IResource file, string path, bool overwrite, string revision)
         {
             return this.RestTemplate.Exchange<Entry>(
@@ -568,7 +568,7 @@ namespace Spring.Social.Dropbox.Api.Impl
         /// </summary>
         /// <param name="path">The Dropbox path to the file you want to retrieve, relative to root.</param>
         /// <returns>An array of bytes containing the file's content.</returns>
-        /// <exception cref="ApiException">If there is an error while communicating with Dropbox.</exception>
+        /// <exception cref="DropboxApiException">If there is an error while communicating with Dropbox.</exception>
         public byte[] DownloadFile(string path)
         {
             return this.DownloadFile(path, null);
@@ -580,7 +580,7 @@ namespace Spring.Social.Dropbox.Api.Impl
         /// <param name="path">The Dropbox path to the file you want to retrieve, relative to root.</param>
         /// <param name="revision">The revision of the file to retrieve.</param>
         /// <returns>An array of bytes containing the file's content.</returns>
-        /// <exception cref="ApiException">If there is an error while communicating with Dropbox.</exception>
+        /// <exception cref="DropboxApiException">If there is an error while communicating with Dropbox.</exception>
         public byte[] DownloadFile(string path, string revision)
         {
             return this.RestTemplate.GetForObject<byte[]>(this.BuildDownloadUrl(path, revision));
@@ -593,7 +593,7 @@ namespace Spring.Social.Dropbox.Api.Impl
         /// <returns>
         /// A metadata <see cref="Entry"/> for the file or folder.
         /// </returns>
-        /// <exception cref="ApiException">If there is an error while communicating with Dropbox.</exception>
+        /// <exception cref="DropboxApiException">If there is an error while communicating with Dropbox.</exception>
         public Entry GetMetadata(string path)
         {
             return this.GetMetadata(path, new MetadataParameters());
@@ -608,7 +608,7 @@ namespace Spring.Social.Dropbox.Api.Impl
         /// <returns>
         /// A metadata <see cref="Entry"/> for the file or folder.
         /// </returns>
-        /// <exception cref="ApiException">If there is an error while communicating with Dropbox.</exception>
+        /// <exception cref="DropboxApiException">If there is an error while communicating with Dropbox.</exception>
         public Entry GetMetadata(string path, MetadataParameters parameters)
         {
             return this.RestTemplate.GetForObject<Entry>(this.BuildMetadataUrl(path, parameters));
@@ -621,7 +621,7 @@ namespace Spring.Social.Dropbox.Api.Impl
         /// <returns>
         /// A list of metadata <see cref="Entry">entries</see>.
         /// </returns>
-        /// <exception cref="ApiException">If there is an error while communicating with Dropbox.</exception>
+        /// <exception cref="DropboxApiException">If there is an error while communicating with Dropbox.</exception>
         public IList<Entry> GetRevisions(string path)
         {
             return this.GetRevisions(path, 0);
@@ -637,7 +637,7 @@ namespace Spring.Social.Dropbox.Api.Impl
         /// <returns>
         /// A list of metadata <see cref="Entry">entries</see>.
         /// </returns>
-        /// <exception cref="ApiException">If there is an error while communicating with Dropbox.</exception>
+        /// <exception cref="DropboxApiException">If there is an error while communicating with Dropbox.</exception>
         public IList<Entry> GetRevisions(string path, int revLimit)
         {
             NameValueCollection parameters = new NameValueCollection();
@@ -657,7 +657,7 @@ namespace Spring.Social.Dropbox.Api.Impl
         /// <returns>
         /// A metadata <see cref="Entry"/> for the restored file. 
         /// </returns>
-        /// <exception cref="ApiException">If there is an error while communicating with Dropbox.</exception>
+        /// <exception cref="DropboxApiException">If there is an error while communicating with Dropbox.</exception>
         public Entry Restore(string path, string revision)
         {
             NameValueCollection request = new NameValueCollection();
@@ -674,7 +674,7 @@ namespace Spring.Social.Dropbox.Api.Impl
         /// <returns>
         /// A list of metadata <see cref="Entry">entries</see> for any matching files and folders.
         /// </returns>
-        /// <exception cref="ApiException">If there is an error while communicating with Dropbox.</exception>
+        /// <exception cref="DropboxApiException">If there is an error while communicating with Dropbox.</exception>
         public IList<Entry> Search(string path, string query)
         {
             return this.Search(path, query, 0, false);
@@ -694,7 +694,7 @@ namespace Spring.Social.Dropbox.Api.Impl
         /// <returns>
         /// A list of metadata <see cref="Entry">entries</see> for any matching files and folders.
         /// </returns>
-        /// <exception cref="ApiException">If there is an error while communicating with Dropbox.</exception>
+        /// <exception cref="DropboxApiException">If there is an error while communicating with Dropbox.</exception>
         public IList<Entry> Search(string path, string query, int fileLimit, bool includeDeleted)
         {
             NameValueCollection request = this.BuildSearchParameters(path, query, fileLimit, includeDeleted);
@@ -710,7 +710,7 @@ namespace Spring.Social.Dropbox.Api.Impl
         /// <returns>
         /// A shareable link to the file or folder.
         /// </returns>
-        /// <exception cref="ApiException">If there is an error while communicating with Dropbox.</exception>
+        /// <exception cref="DropboxApiException">If there is an error while communicating with Dropbox.</exception>
         public DropboxLink GetShareableLink(string path)
         {
             NameValueCollection request = new NameValueCollection();
@@ -727,7 +727,7 @@ namespace Spring.Social.Dropbox.Api.Impl
         /// <returns>
         /// A direct link to the media file.
         /// </returns>
-        /// <exception cref="ApiException">If there is an error while communicating with Dropbox.</exception>
+        /// <exception cref="DropboxApiException">If there is an error while communicating with Dropbox.</exception>
         public DropboxLink GetMediaLink(string path)
         {
             NameValueCollection request = new NameValueCollection();
@@ -746,7 +746,7 @@ namespace Spring.Social.Dropbox.Api.Impl
         /// <returns>
         /// An array of bytes containing the thumbnail's content.
         /// </returns>
-        /// <exception cref="ApiException">If there is an error while communicating with Dropbox.</exception>
+        /// <exception cref="DropboxApiException">If there is an error while communicating with Dropbox.</exception>
         public byte[] DownloadThumbnail(string path, ThumbnailFormat format, ThumbnailSize size)
         {
             return this.RestTemplate.GetForObject<byte[]>(this.BuildThumbnailsUrl(path, format, size));
@@ -763,7 +763,7 @@ namespace Spring.Social.Dropbox.Api.Impl
         /// <returns>
         /// A <see cref="RestOperationCanceler"/> instance that allows to cancel the asynchronous operation.
         /// </returns>
-        /// <exception cref="ApiException">If there is an error while communicating with Dropbox.</exception>
+        /// <exception cref="DropboxApiException">If there is an error while communicating with Dropbox.</exception>
         public RestOperationCanceler GetUserProfileAsync(Action<RestOperationCompletedEventArgs<DropboxProfile>> operationCompleted)
         {
             NameValueCollection parameters = new NameValueCollection();
@@ -782,7 +782,7 @@ namespace Spring.Social.Dropbox.Api.Impl
         /// <returns>
         /// A <see cref="RestOperationCanceler"/> instance that allows to cancel the asynchronous operation.
         /// </returns>
-        /// <exception cref="ApiException">If there is an error while communicating with Dropbox.</exception>
+        /// <exception cref="DropboxApiException">If there is an error while communicating with Dropbox.</exception>
         public RestOperationCanceler CreateFolderAsync(string path, Action<RestOperationCompletedEventArgs<Entry>> operationCompleted)
         {
             NameValueCollection request = new NameValueCollection();
@@ -803,7 +803,7 @@ namespace Spring.Social.Dropbox.Api.Impl
         /// <returns>
         /// A <see cref="RestOperationCanceler"/> instance that allows to cancel the asynchronous operation.
         /// </returns>
-        /// <exception cref="ApiException">If there is an error while communicating with Dropbox.</exception>
+        /// <exception cref="DropboxApiException">If there is an error while communicating with Dropbox.</exception>
         public RestOperationCanceler DeleteAsync(string path, Action<RestOperationCompletedEventArgs<Entry>> operationCompleted)
         {
             NameValueCollection request = new NameValueCollection();
@@ -825,7 +825,7 @@ namespace Spring.Social.Dropbox.Api.Impl
         /// <returns>
         /// A <see cref="RestOperationCanceler"/> instance that allows to cancel the asynchronous operation.
         /// </returns>
-        /// <exception cref="ApiException">If there is an error while communicating with Dropbox.</exception>
+        /// <exception cref="DropboxApiException">If there is an error while communicating with Dropbox.</exception>
         public RestOperationCanceler MoveAsync(string fromPath, string toPath, Action<RestOperationCompletedEventArgs<Entry>> operationCompleted)
         {
             NameValueCollection request = new NameValueCollection();
@@ -848,7 +848,7 @@ namespace Spring.Social.Dropbox.Api.Impl
         /// <returns>
         /// A <see cref="RestOperationCanceler"/> instance that allows to cancel the asynchronous operation.
         /// </returns>
-        /// <exception cref="ApiException">If there is an error while communicating with Dropbox.</exception>
+        /// <exception cref="DropboxApiException">If there is an error while communicating with Dropbox.</exception>
         public RestOperationCanceler CopyAsync(string fromPath, string toPath, Action<RestOperationCompletedEventArgs<Entry>> operationCompleted)
         {
             NameValueCollection request = new NameValueCollection();
@@ -874,7 +874,7 @@ namespace Spring.Social.Dropbox.Api.Impl
         /// <returns>
         /// A <see cref="RestOperationCanceler"/> instance that allows to cancel the asynchronous operation.
         /// </returns>
-        /// <exception cref="ApiException">If there is an error while communicating with Dropbox.</exception>
+        /// <exception cref="DropboxApiException">If there is an error while communicating with Dropbox.</exception>
         public RestOperationCanceler UploadFileAsync(IResource file, string path, Action<RestOperationCompletedEventArgs<Entry>> operationCompleted)
         {
             return this.UploadFileAsync(file, path, true, null, operationCompleted);
@@ -904,7 +904,7 @@ namespace Spring.Social.Dropbox.Api.Impl
         /// <returns>
         /// A <see cref="RestOperationCanceler"/> instance that allows to cancel the asynchronous operation.
         /// </returns>
-        /// <exception cref="ApiException">If there is an error while communicating with Dropbox.</exception>
+        /// <exception cref="DropboxApiException">If there is an error while communicating with Dropbox.</exception>
         public RestOperationCanceler UploadFileAsync(IResource file, string path, bool overwrite, string revision, Action<RestOperationCompletedEventArgs<Entry>> operationCompleted)
         {
             return this.RestTemplate.ExchangeAsync<Entry>(
@@ -927,7 +927,7 @@ namespace Spring.Social.Dropbox.Api.Impl
         /// <returns>
         /// A <see cref="RestOperationCanceler"/> instance that allows to cancel the asynchronous operation.
         /// </returns>
-        /// <exception cref="ApiException">If there is an error while communicating with Dropbox.</exception>
+        /// <exception cref="DropboxApiException">If there is an error while communicating with Dropbox.</exception>
         public RestOperationCanceler DownloadFileAsync(string path, Action<RestOperationCompletedEventArgs<byte[]>> operationCompleted)
         {
             return this.DownloadFileAsync(path, null, operationCompleted);
@@ -945,7 +945,7 @@ namespace Spring.Social.Dropbox.Api.Impl
         /// <returns>
         /// A <see cref="RestOperationCanceler"/> instance that allows to cancel the asynchronous operation.
         /// </returns>
-        /// <exception cref="ApiException">If there is an error while communicating with Dropbox.</exception>
+        /// <exception cref="DropboxApiException">If there is an error while communicating with Dropbox.</exception>
         public RestOperationCanceler DownloadFileAsync(string path, string revision, Action<RestOperationCompletedEventArgs<byte[]>> operationCompleted)
         {
             return this.RestTemplate.GetForObjectAsync<byte[]>(this.BuildDownloadUrl(path, revision), operationCompleted);
@@ -962,7 +962,7 @@ namespace Spring.Social.Dropbox.Api.Impl
         /// <returns>
         /// A <see cref="RestOperationCanceler"/> instance that allows to cancel the asynchronous operation.
         /// </returns>
-        /// <exception cref="ApiException">If there is an error while communicating with Dropbox.</exception>
+        /// <exception cref="DropboxApiException">If there is an error while communicating with Dropbox.</exception>
         public RestOperationCanceler GetMetadataAsync(string path, Action<RestOperationCompletedEventArgs<Entry>> operationCompleted)
         {
             return this.GetMetadataAsync(path, new MetadataParameters(), operationCompleted);
@@ -981,7 +981,7 @@ namespace Spring.Social.Dropbox.Api.Impl
         /// <returns>
         /// A <see cref="RestOperationCanceler"/> instance that allows to cancel the asynchronous operation.
         /// </returns>
-        /// <exception cref="ApiException">If there is an error while communicating with Dropbox.</exception>
+        /// <exception cref="DropboxApiException">If there is an error while communicating with Dropbox.</exception>
         public RestOperationCanceler GetMetadataAsync(string path, MetadataParameters parameters, Action<RestOperationCompletedEventArgs<Entry>> operationCompleted)
         {
             return this.RestTemplate.GetForObjectAsync<Entry>(this.BuildMetadataUrl(path, parameters), operationCompleted);
@@ -998,7 +998,7 @@ namespace Spring.Social.Dropbox.Api.Impl
         /// <returns>
         /// A <see cref="RestOperationCanceler"/> instance that allows to cancel the asynchronous operation.
         /// </returns>
-        /// <exception cref="ApiException">If there is an error while communicating with Dropbox.</exception>
+        /// <exception cref="DropboxApiException">If there is an error while communicating with Dropbox.</exception>
         public RestOperationCanceler GetRevisionsAsync(string path, Action<RestOperationCompletedEventArgs<IList<Entry>>> operationCompleted)
         {
             return this.GetRevisionsAsync(path, 0, operationCompleted);
@@ -1018,7 +1018,7 @@ namespace Spring.Social.Dropbox.Api.Impl
         /// <returns>
         /// A <see cref="RestOperationCanceler"/> instance that allows to cancel the asynchronous operation.
         /// </returns>
-        /// <exception cref="ApiException">If there is an error while communicating with Dropbox.</exception>
+        /// <exception cref="DropboxApiException">If there is an error while communicating with Dropbox.</exception>
         public RestOperationCanceler GetRevisionsAsync(string path, int revLimit, Action<RestOperationCompletedEventArgs<IList<Entry>>> operationCompleted)
         {
             NameValueCollection parameters = new NameValueCollection();
@@ -1042,7 +1042,7 @@ namespace Spring.Social.Dropbox.Api.Impl
         /// <returns>
         /// A <see cref="RestOperationCanceler"/> instance that allows to cancel the asynchronous operation.
         /// </returns>
-        /// <exception cref="ApiException">If there is an error while communicating with Dropbox.</exception>
+        /// <exception cref="DropboxApiException">If there is an error while communicating with Dropbox.</exception>
         public RestOperationCanceler RestoreAsync(string path, string revision, Action<RestOperationCompletedEventArgs<Entry>> operationCompleted)
         {
             NameValueCollection request = new NameValueCollection();
@@ -1063,7 +1063,7 @@ namespace Spring.Social.Dropbox.Api.Impl
         /// <returns>
         /// A <see cref="RestOperationCanceler"/> instance that allows to cancel the asynchronous operation.
         /// </returns>
-        /// <exception cref="ApiException">If there is an error while communicating with Dropbox.</exception>
+        /// <exception cref="DropboxApiException">If there is an error while communicating with Dropbox.</exception>
         public RestOperationCanceler SearchAsync(string path, string query, Action<RestOperationCompletedEventArgs<IList<Entry>>> operationCompleted)
         {
             return this.SearchAsync(path, query, 0, false, operationCompleted);
@@ -1087,7 +1087,7 @@ namespace Spring.Social.Dropbox.Api.Impl
         /// <returns>
         /// A <see cref="RestOperationCanceler"/> instance that allows to cancel the asynchronous operation.
         /// </returns>
-        /// <exception cref="ApiException">If there is an error while communicating with Dropbox.</exception>
+        /// <exception cref="DropboxApiException">If there is an error while communicating with Dropbox.</exception>
         public RestOperationCanceler SearchAsync(string path, string query, int fileLimit, bool includeDeleted, Action<RestOperationCompletedEventArgs<IList<Entry>>> operationCompleted)
         {
             NameValueCollection request = this.BuildSearchParameters(path, query, fileLimit, includeDeleted);
@@ -1107,7 +1107,7 @@ namespace Spring.Social.Dropbox.Api.Impl
         /// <returns>
         /// A <see cref="RestOperationCanceler"/> instance that allows to cancel the asynchronous operation.
         /// </returns>
-        /// <exception cref="ApiException">If there is an error while communicating with Dropbox.</exception>
+        /// <exception cref="DropboxApiException">If there is an error while communicating with Dropbox.</exception>
         public RestOperationCanceler GetShareableLinkAsync(string path, Action<RestOperationCompletedEventArgs<DropboxLink>> operationCompleted)
         {
             NameValueCollection request = new NameValueCollection();
@@ -1128,7 +1128,7 @@ namespace Spring.Social.Dropbox.Api.Impl
         /// <returns>
         /// A <see cref="RestOperationCanceler"/> instance that allows to cancel the asynchronous operation.
         /// </returns>
-        /// <exception cref="ApiException">If there is an error while communicating with Dropbox.</exception>
+        /// <exception cref="DropboxApiException">If there is an error while communicating with Dropbox.</exception>
         public RestOperationCanceler GetMediaLinkAsync(string path, Action<RestOperationCompletedEventArgs<DropboxLink>> operationCompleted)
         {
             NameValueCollection request = new NameValueCollection();
@@ -1151,7 +1151,7 @@ namespace Spring.Social.Dropbox.Api.Impl
         /// <returns>
         /// A <see cref="RestOperationCanceler"/> instance that allows to cancel the asynchronous operation.
         /// </returns>
-        /// <exception cref="ApiException">If there is an error while communicating with Dropbox.</exception>
+        /// <exception cref="DropboxApiException">If there is an error while communicating with Dropbox.</exception>
         public RestOperationCanceler DownloadThumbnailAsync(string path, ThumbnailFormat format, ThumbnailSize size, Action<RestOperationCompletedEventArgs<byte[]>> operationCompleted)
         {
             return this.RestTemplate.GetForObjectAsync<byte[]>(this.BuildThumbnailsUrl(path, format, size), operationCompleted);
@@ -1183,6 +1183,7 @@ namespace Spring.Social.Dropbox.Api.Impl
         protected override void ConfigureRestTemplate(RestTemplate restTemplate)
         {
             restTemplate.BaseAddress = API_URI_BASE;
+            restTemplate.ErrorHandler = new DropboxErrorHandler();
         }
 
         /// <summary>
