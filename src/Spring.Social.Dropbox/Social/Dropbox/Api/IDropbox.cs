@@ -106,13 +106,12 @@ namespace Spring.Social.Dropbox.Api
         /// The path to the file you want to write to, relative to root. 
         /// This parameter should not point to a folder.
         /// </param>
-        /// <param name="cancellationToken">The <see cref="CancellationToken"/> that will be assigned to the task.</param>
         /// <returns>
         /// A <code>Task</code> that represents the asynchronous operation that can return 
         /// a metadata <see cref="Entry"/> for the uploaded file.
         /// </returns>
         /// <exception cref="DropboxApiException">If there is an error while communicating with Dropbox.</exception>
-        Task<Entry> UploadFileAsync(IResource file, string path, CancellationToken cancellationToken);
+        Task<Entry> UploadFileAsync(IResource file, string path);
 
         /// <summary>
         /// Asynchronously uploads a file.
@@ -143,13 +142,12 @@ namespace Spring.Social.Dropbox.Api
         /// Asynchronously downloads a file.
         /// </summary>
         /// <param name="path">The Dropbox path to the file you want to retrieve, relative to root.</param>
-        /// <param name="cancellationToken">The <see cref="CancellationToken"/> that will be assigned to the task.</param>
         /// <returns>
         /// A <code>Task</code> that represents the asynchronous operation that can return 
         /// an array of bytes containing the file's content.
         /// </returns>
         /// <exception cref="DropboxApiException">If there is an error while communicating with Dropbox.</exception>
-        Task<byte[]> DownloadFileAsync(string path, CancellationToken cancellationToken);
+        Task<byte[]> DownloadFileAsync(string path);
 
         /// <summary>
         /// Asynchronously downloads a file.

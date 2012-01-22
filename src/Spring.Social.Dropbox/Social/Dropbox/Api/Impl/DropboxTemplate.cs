@@ -182,15 +182,14 @@ namespace Spring.Social.Dropbox.Api.Impl
         /// The path to the file you want to write to, relative to root. 
         /// This parameter should not point to a folder.
         /// </param>
-        /// <param name="cancellationToken">The <see cref="CancellationToken"/> that will be assigned to the task.</param>
         /// <returns>
         /// A <code>Task</code> that represents the asynchronous operation that can return 
         /// a metadata <see cref="Entry"/> for the uploaded file.
         /// </returns>
         /// <exception cref="DropboxApiException">If there is an error while communicating with Dropbox.</exception>
-        public Task<Entry> UploadFileAsync(IResource file, string path, CancellationToken cancellationToken)
+        public Task<Entry> UploadFileAsync(IResource file, string path)
         {
-            return this.UploadFileAsync(file, path, true, null, cancellationToken);
+            return this.UploadFileAsync(file, path, true, null, CancellationToken.None);
         }
 
         /// <summary>
@@ -230,15 +229,14 @@ namespace Spring.Social.Dropbox.Api.Impl
         /// Asynchronously downloads a file.
         /// </summary>
         /// <param name="path">The Dropbox path to the file you want to retrieve, relative to root.</param>
-        /// <param name="cancellationToken">The <see cref="CancellationToken"/> that will be assigned to the task.</param>
         /// <returns>
         /// A <code>Task</code> that represents the asynchronous operation that can return 
         /// an array of bytes containing the file's content.
         /// </returns>
         /// <exception cref="DropboxApiException">If there is an error while communicating with Dropbox.</exception>
-        public Task<byte[]> DownloadFileAsync(string path, CancellationToken cancellationToken)
+        public Task<byte[]> DownloadFileAsync(string path)
         {
-            return this.DownloadFileAsync(path, null, cancellationToken);
+            return this.DownloadFileAsync(path, null, CancellationToken.None);
         }
 
         /// <summary>
