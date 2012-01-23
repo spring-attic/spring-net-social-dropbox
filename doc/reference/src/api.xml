@@ -109,7 +109,7 @@ Console.WriteLine("Hi " + profile.DisplayName + "!");]]></programlisting>
 
       <listitem>
         <emphasis role="bold">Asynchronuous methods</emphasis>
-        <para>Available on .NET 2.0, .NET 3.5, Silvelight 4 and Windows Phone</para>
+        <para>Available on .NET 2.0, .NET 3.5 and Windows Phone</para>
         <programlisting language="csharp"><![CDATA[DropboxProfile profile = dropbox.GetUserProfileAsync(
   r =>
   {
@@ -120,7 +120,7 @@ Console.WriteLine("Hi " + profile.DisplayName + "!");]]></programlisting>
 
       <listitem>
         <emphasis role="bold">Task-based asynchronuous methods (Task Parallel Library)</emphasis>
-        <para>Available on .NET 4.0 and Silvelight 5</para>
+        <para>Available on .NET 4.0</para>
         <programlisting language="csharp"><![CDATA[DropboxProfile profile = dropbox.GetUserProfileAsync()
   .ContinueWith(task =>
   {

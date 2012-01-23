@@ -31,8 +31,6 @@
           <versions>
             <version label=".NET Framework" version="2.0" helpFileProject="Spring.Social.Dropbox-net-2.0.shfbproj" />
             <version label=".NET Framework" version="3.5 Client Profile" helpFileProject="Spring.Social.Dropbox-net-3.5.shfbproj" />
-            <version label="Silverlight" version="4.0" helpFileProject="Spring.Social.Dropbox-sl-4.0.shfbproj" />
-            <version label="Silverlight" version="5.0" helpFileProject="Spring.Social.Dropbox-sl-5.0.shfbproj" />
             <version label="Windows Phone" version="7.0" helpFileProject="Spring.Social.Dropbox-wp-7.0.shfbproj" />
             <version label="Windows Phone" version="7.1" helpFileProject="Spring.Social.Dropbox-wp-7.1.shfbproj" />
           </versions>
