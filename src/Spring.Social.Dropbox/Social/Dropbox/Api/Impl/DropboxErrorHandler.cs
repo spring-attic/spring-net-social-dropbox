@@ -41,14 +41,17 @@ namespace Spring.Social.Dropbox.Api.Impl
 
         /// <summary>
         /// Handles the error in the given response. 
-        /// This method is only called when <see cref="M:HasError"/> has returned <see langword="true"/>.
+        /// <para/>
+        /// This method is only called when HasError() method has returned <see langword="true"/>.
         /// </summary>
         /// <remarks>
         /// This implementation throws appropriate exception if the response status code 
         /// is a client code error (4xx) or a server code error (5xx). 
         /// </remarks>
-        /// <param name="response">The response message with the error</param>
-        public override void HandleError(HttpResponseMessage<byte[]> response)
+        /// <param name="requestUri">The request URI.</param>
+        /// <param name="requestMethod">The request method.</param>
+        /// <param name="response">The response message with the error.</param>
+        public override void HandleError(Uri requestUri, HttpMethod requestMethod, HttpResponseMessage<byte[]> response)
         {
             int type = (int)response.StatusCode / 100;
             if (type == 4)
@@ -60,10 +63,10 @@ namespace Spring.Social.Dropbox.Api.Impl
                 this.HandleServerErrors(response.StatusCode);
             }
 
-            // if not otherwise handled, do default handling and wrap with ApiException
+            // if not otherwise handled, do default handling and wrap with DropboxApiException
             try
             {
-                base.HandleError(response);
+                base.HandleError(requestUri, requestMethod, response);
             }
             catch (Exception ex)
             {
@@ -127,6 +130,10 @@ namespace Spring.Social.Dropbox.Api.Impl
 
         private JsonValue ExtractErrorDetailsFromResponse(HttpResponseMessage<byte[]> response) 
         {
+            if (response.Body == null)
+            {
+                return null;
+            }
             MediaType contentType = response.Headers.ContentType;
             Encoding charset = (contentType != null && contentType.CharSet != null) ? contentType.CharSet : DEFAULT_CHARSET;
             string errorDetails = charset.GetString(response.Body, 0, response.Body.Length);

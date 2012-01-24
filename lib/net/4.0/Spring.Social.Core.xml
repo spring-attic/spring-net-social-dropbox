@@ -4,182 +4,6 @@
         <name>Spring.Social.Core</name>
     </assembly>
     <members>
-        <member name="T:Spring.Social.ApiException">
-            <summary>
-            The exception that is thrown when an error occurred while consuming a provider API.
-            </summary>
-            <author>Craig Walls</author>
-            <author>Bruno Baia (.NET)</author>
-        </member>
-        <member name="T:Spring.Social.SocialException">
-            <summary>
-            The exception that is thrown when a problem occurred performing an operation against a service provider. 
-            </summary>
-            <remarks>
-            This exception class is abstract, as it is too generic for actual use. 
-            When a SocialException is thrown, it should be one of the more specific subclasses.
-            </remarks>
-            <author>Craig Walls</author>
-            <author>Bruno Baia (.NET)</author>
-        </member>
-        <member name="M:Spring.Social.SocialException.#ctor(System.String)">
-            <summary>
-            Creates a new instance of the <see cref="T:Spring.Social.SocialException"/> class.
-            </summary>
-            <param name="message">A message about the exception.</param>
-        </member>
-        <member name="M:Spring.Social.SocialException.#ctor(System.String,System.Exception)">
-            <summary>
-            Creates a new instance of the <see cref="T:Spring.Social.SocialException"/> class.
-            </summary>
-            <param name="message">A message about the exception.</param>
-            <param name="rootCause">The root exception that is being wrapped.</param>
-        </member>
-        <member name="M:Spring.Social.SocialException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
-            <summary>
-            Creates a new instance of the <see cref="T:Spring.Social.SocialException"/> class.
-            </summary>
-            <param name="info">
-            The <see cref="T:System.Runtime.Serialization.SerializationInfo"/>
-            that holds the serialized object data about the exception being thrown.
-            </param>
-            <param name="context">
-            The <see cref="T:System.Runtime.Serialization.StreamingContext"/>
-            that contains contextual information about the source or destination.
-            </param>
-        </member>
-        <member name="M:Spring.Social.ApiException.#ctor(System.String)">
-            <summary>
-            Creates a new instance of the <see cref="T:Spring.Social.ApiException"/> class.
-            </summary>
-            <param name="message">A message about the exception.</param>
-        </member>
-        <member name="M:Spring.Social.ApiException.#ctor(System.String,System.Exception)">
-            <summary>
-            Creates a new instance of the <see cref="T:Spring.Social.ApiException"/> class.
-            </summary>
-            <param name="message">A message about the exception.</param>
-            <param name="rootCause">The root exception that is being wrapped.</param>
-        </member>
-        <member name="M:Spring.Social.ApiException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
-            <summary>
-            Creates a new instance of the <see cref="T:Spring.Social.ApiException"/> class.
-            </summary>
-            <param name="info">
-            The <see cref="T:System.Runtime.Serialization.SerializationInfo"/>
-            that holds the serialized object data about the exception being thrown.
-            </param>
-            <param name="context">
-            The <see cref="T:System.Runtime.Serialization.StreamingContext"/>
-            that contains contextual information about the source or destination.
-            </param>
-        </member>
-        <member name="T:Spring.Social.OperationNotPermittedException">
-            <summary>
-            The exception that is thrown when an operation was attempted that is not permitted.
-            </summary>
-            <author>Craig Walls</author>
-            <author>Bruno Baia (.NET)</author>
-        </member>
-        <member name="M:Spring.Social.OperationNotPermittedException.#ctor(System.String)">
-            <summary>
-            Creates a new instance of the <see cref="T:Spring.Social.OperationNotPermittedException"/> class.
-            </summary>
-            <param name="message">A message about the exception.</param>
-        </member>
-        <member name="M:Spring.Social.OperationNotPermittedException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
-            <summary>
-            Creates a new instance of the <see cref="T:Spring.Social.OperationNotPermittedException"/> class.
-            </summary>
-            <param name="info">
-            The <see cref="T:System.Runtime.Serialization.SerializationInfo"/>
-            that holds the serialized object data about the exception being thrown.
-            </param>
-            <param name="context">
-            The <see cref="T:System.Runtime.Serialization.StreamingContext"/>
-            that contains contextual information about the source or destination.
-            </param>
-        </member>
-        <member name="T:Spring.Social.ServerException">
-            <summary>
-            The exception that is thrown when a server error occurs.
-            </summary>
-            <author>Craig Walls</author>
-            <author>Bruno Baia (.NET)</author>
-        </member>
-        <member name="M:Spring.Social.ServerException.#ctor(System.String,System.Net.HttpStatusCode)">
-            <summary>
-            Creates a new instance of the <see cref="T:Spring.Social.ServerException"/> class.
-            </summary>
-            <param name="message">A message about the exception.</param>
-            <param name="statusCode">The HTTP status code.</param>
-        </member>
-        <member name="M:Spring.Social.ServerException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
-            <summary>
-            Creates a new instance of the <see cref="T:Spring.Social.ServerException"/> class.
-            </summary>
-            <param name="info">
-            The <see cref="T:System.Runtime.Serialization.SerializationInfo"/>
-            that holds the serialized object data about the exception being thrown.
-            </param>
-            <param name="context">
-            The <see cref="T:System.Runtime.Serialization.StreamingContext"/>
-            that contains contextual information about the source or destination.
-            </param>
-        </member>
-        <member name="M:Spring.Social.ServerException.GetObjectData(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
-            <summary>
-            Populates the <see cref="T:System.Runtime.Serialization.SerializationInfo"/> with 
-            information about the exception.
-            </summary>
-            <param name="info">
-            The <see cref="T:System.Runtime.Serialization.SerializationInfo"/> that holds 
-            the serialized object data about the exception being thrown.
-            </param>
-            <param name="context">
-            The <see cref="T:System.Runtime.Serialization.StreamingContext"/> that contains contextual 
-            information about the source or destination.
-            </param>
-        </member>
-        <member name="P:Spring.Social.ServerException.StatusCode">
-            <summary>
-            Gets the HTTP status code (5xx) of the server error.
-            </summary>
-        </member>
-        <member name="T:Spring.Social.NotAuthorizedException">
-            <summary>
-            The exception that is thrown when the client is not authorized to invoke the API.
-            </summary>
-            <remarks>
-            This can occur:
-            <list type="bullet">
-            <item>when invoking an API operation with an access token that is malformed or fails signature validation.</item>
-            <item>when invoking an API operation with a revoked or expired access token.</item>
-            <item>when invoking an API operation that requires authorization without providing authorization credentials.</item>
-            </list>
-            </remarks>
-            <author>Craig Walls</author>
-            <author>Bruno Baia (.NET)</author>
-        </member>
-        <member name="M:Spring.Social.NotAuthorizedException.#ctor(System.String)">
-            <summary>
-            Creates a new instance of the <see cref="T:Spring.Social.NotAuthorizedException"/> class.
-            </summary>
-            <param name="message">A message about the exception.</param>
-        </member>
-        <member name="M:Spring.Social.NotAuthorizedException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
-            <summary>
-            Creates a new instance of the <see cref="T:Spring.Social.NotAuthorizedException"/> class.
-            </summary>
-            <param name="info">
-            The <see cref="T:System.Runtime.Serialization.SerializationInfo"/>
-            that holds the serialized object data about the exception being thrown.
-            </param>
-            <param name="context">
-            The <see cref="T:System.Runtime.Serialization.StreamingContext"/>
-            that contains contextual information about the source or destination.
-            </param>
-        </member>
         <member name="T:Spring.Social.IApiBinding">
             <summary>
             Base interface that may be implemented by API bindings.
@@ -1209,6 +1033,43 @@
             <summary>
             OAuth Version 2.0 Draft 8.
             </summary>
+        </member>
+        <member name="T:Spring.Social.SocialException">
+            <summary>
+            The exception that is thrown when a problem occurred performing an operation against a service provider. 
+            </summary>
+            <remarks>
+            This exception class is abstract, as it is too generic for actual use. 
+            When a <see cref="T:Spring.Social.SocialException"/> is thrown, it should be one of the more specific subclasses.
+            </remarks>
+            <author>Craig Walls</author>
+            <author>Bruno Baia (.NET)</author>
+        </member>
+        <member name="M:Spring.Social.SocialException.#ctor(System.String)">
+            <summary>
+            Creates a new instance of the <see cref="T:Spring.Social.SocialException"/> class.
+            </summary>
+            <param name="message">A message about the exception.</param>
+        </member>
+        <member name="M:Spring.Social.SocialException.#ctor(System.String,System.Exception)">
+            <summary>
+            Creates a new instance of the <see cref="T:Spring.Social.SocialException"/> class.
+            </summary>
+            <param name="message">A message about the exception.</param>
+            <param name="innerException">The inner exception that is the cause of the current exception.</param>
+        </member>
+        <member name="M:Spring.Social.SocialException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+            <summary>
+            Creates a new instance of the <see cref="T:Spring.Social.SocialException"/> class.
+            </summary>
+            <param name="info">
+            The <see cref="T:System.Runtime.Serialization.SerializationInfo"/>
+            that holds the serialized object data about the exception being thrown.
+            </param>
+            <param name="context">
+            The <see cref="T:System.Runtime.Serialization.StreamingContext"/>
+            that contains contextual information about the source or destination.
+            </param>
         </member>
     </members>
 </doc>
