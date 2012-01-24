@@ -20,8 +20,8 @@
 
   <target name="shfb">
     <echo message="Building Sandcastle Help File Builder project..." />
-    <property name="sandcastle.helptitle" value="Spring.NET Social Framework extension for Dropbox - API Documentation" />
-    <property name="sandcastle.helptitle" value="Spring.NET Social Framework extension for Dropbox ${product.version} - API Documentation" if="${property::exists('product.version')}" />
+    <property name="sandcastle.helptitle" value="Spring.NET Social Dropbox - API Documentation" />
+    <property name="sandcastle.helptitle" value="Spring.NET Social Dropbox ${product.version} - API Documentation" if="${property::exists('product.version')}" />
     <exec program="${msbuild.exe}">
       <arg value="${project.basedir}\src\Spring.Social.Dropbox.shfbproj"/>
       <arg value="/property:Configuration=Release" />
