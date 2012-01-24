@@ -1314,7 +1314,8 @@ namespace Spring.Social.Dropbox.Api.Impl
 
         private string BuildUrl(string path, string dropboxPath, NameValueCollection parameters)
         {
-            return this.BuildUrl(path.TrimEnd('/') + "/" + this.root + "/" + dropboxPath.TrimStart('/'), parameters);
+            string encodedDropboxPath = HttpUtils.UrlEncode(dropboxPath.TrimStart('/')).Replace("%2F", "/");
+            return this.BuildUrl(path.TrimEnd('/') + "/" + this.root + "/" + encodedDropboxPath, parameters);
         }
 
         private string BuildUrl(string path, NameValueCollection parameters)
