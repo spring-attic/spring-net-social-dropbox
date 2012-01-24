@@ -1,5 +1,5 @@
-The Spring.NET Social Dropbox project, Release 1.0.0 (TO BE DEFINED)
---------------------------------------------------------------------
+The Spring.NET Social Dropbox project, Release 1.0.0 (January 24, 2012)
+-----------------------------------------------------------------------
 http://www.springframework.net/social-dropbox/
 
 

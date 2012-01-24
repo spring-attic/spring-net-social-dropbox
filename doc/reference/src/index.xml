@@ -6,14 +6,14 @@
 <book xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xi="http://docbook.org/ns/docbook/xi" version="5.0" xml:lang="en">
   <bookinfo>
     <!-- auto-generated -->
-    <title>Spring.NET Social Dropbox</title>
+    <title>Spring.NET Social Framework extension for Dropbox</title>
     <subtitle>Reference Documentation</subtitle>
     <!-- auto-generated -->
     <releaseinfo>1.0.0</releaseinfo>
     <!-- auto-generated -->
     <copyright>Copyright 2012 SpringSource</copyright>
     <!-- auto-generated -->
-    <pubdate>Last Updated 1/22/2012</pubdate>
+    <pubdate>Last Updated 1/24/2012</pubdate>
     <authorgroup>
       <author>
         <firstname>Bruno</firstname>
