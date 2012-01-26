@@ -26,6 +26,9 @@ namespace Spring.Social.Dropbox.Api
     /// Represents a Dropbox shareable link to files or folders.
     /// </summary>
     /// <author>Bruno Baia</author>
+#if !SILVERLIGHT
+    [Serializable]
+#endif
     public class DropboxLink
     {
         /// <summary>

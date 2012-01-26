@@ -65,7 +65,7 @@ namespace Spring.Social.Dropbox.Api
             this.error = DropboxApiError.Unknown;
         }
 
-#if !SILVERLIGHT && !CF_3_5
+#if !SILVERLIGHT
         /// <summary>
         /// Creates a new instance of the <see cref="DropboxApiException"/> class.
         /// </summary>

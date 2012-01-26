@@ -112,8 +112,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Social\Dropbox\Api\DropboxApiExceptionTests.cs" />
     <Compile Include="Social\Dropbox\Api\Impl\DropboxTemplateTests.cs" />
     <Compile Include="Social\Dropbox\Api\Impl\ErrorHandlerTests.cs" />
+    <Compile Include="Util\SerializationTestUtils.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Social\Dropbox\Api\Impl\Dropbox_Profile.json" />

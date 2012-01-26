@@ -26,6 +26,9 @@ namespace Spring.Social.Dropbox.Api
     /// Represents a Dropbox user's profile information.
     /// </summary>
     /// <author>Bruno Baia</author>
+#if !SILVERLIGHT
+    [Serializable]
+#endif
     public class DropboxProfile 
     {
         /// <summary>

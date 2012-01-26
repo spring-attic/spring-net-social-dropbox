@@ -26,6 +26,9 @@ namespace Spring.Social.Dropbox.Api
     /// Defines parameters for retrieving file or folder metadata.
     /// </summary>
     /// <author>Bruno Baia</author>
+#if !SILVERLIGHT
+    [Serializable]
+#endif
     public class MetadataParameters 
     {
         /// <summary>

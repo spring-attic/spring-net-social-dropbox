@@ -27,6 +27,9 @@ namespace Spring.Social.Dropbox.Api
     /// Represents metadata information about a file or folder.
     /// </summary>
     /// <author>Bruno Baia</author>
+#if !SILVERLIGHT
+    [Serializable]
+#endif
     public class Entry 
     {
         /// <summary>
