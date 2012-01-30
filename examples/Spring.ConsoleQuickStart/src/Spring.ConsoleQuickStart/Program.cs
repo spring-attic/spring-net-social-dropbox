@@ -108,16 +108,15 @@ namespace Spring.OAuth1ConsoleQuickStart
 
                 // Authentication using callback url
                 Console.Write("Getting request token...");
-                OAuthToken oauthToken = dropboxServiceProvider.OAuthOperations.FetchRequestToken("http://localhost/", null);
+                OAuthToken oauthToken = dropboxServiceProvider.OAuthOperations.FetchRequestToken(null, null);
                 Console.WriteLine("Done");
 
                 OAuth1Parameters parameters = new OAuth1Parameters();
-                parameters.CallbackUrl = "http://localhost/";
                 //parameters.Add("locale", CultureInfo.CurrentUICulture.IetfLanguageTag); // for a localized version of the authorization website
                 string authenticateUrl = dropboxServiceProvider.OAuthOperations.BuildAuthorizeUrl(oauthToken.Value, parameters);
                 Console.WriteLine("Redirect user for authentication: " + authenticateUrl);
                 Process.Start(authenticateUrl);
-                Console.WriteLine("Enter 'oauth_token' query string parameter from callback url:");
+                Console.WriteLine("Copy/Paste 'oauth_token' query string parameter from success url:");
                 string verifier = Console.ReadLine();
 
                 Console.Write("Getting access token...");
