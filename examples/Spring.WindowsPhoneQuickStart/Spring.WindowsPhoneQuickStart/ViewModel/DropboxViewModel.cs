@@ -67,7 +67,7 @@ namespace Spring.WindowsPhoneQuickStart.ViewModel
 
         public void Authenticate()
         {
-            this.DropboxServiceProvider.OAuthOperations.FetchRequestTokenAsync(CallbackUrl, null,
+            this.DropboxServiceProvider.OAuthOperations.FetchRequestTokenAsync(null, null,
                 r =>
                 {
                     this.requestOAuthToken = r.Response;

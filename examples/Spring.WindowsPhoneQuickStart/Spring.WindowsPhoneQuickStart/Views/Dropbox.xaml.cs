@@ -55,7 +55,7 @@ namespace Spring.WindowsPhoneQuickStart.Views
                 string url = e.Uri.ToString();
                 if (url.StartsWith(DropboxViewModel.CallbackUrl, StringComparison.OrdinalIgnoreCase))
                 {
-                    string verifier = url.Substring(url.LastIndexOf("oauth_token=") + 15);
+                    string verifier = url.Substring(url.LastIndexOf("oauth_token=") + 12);
                     this.ViewModel.AuthenticateCallback(verifier);
                 }
             }

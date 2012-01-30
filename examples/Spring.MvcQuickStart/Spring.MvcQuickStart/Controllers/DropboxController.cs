@@ -29,7 +29,7 @@ namespace Spring.MvcQuickStart.Controllers
         // GET: /Dropbox/SignIn
         public ActionResult SignIn()
         {
-            OAuthToken requestToken = dropboxProvider.OAuthOperations.FetchRequestTokenAsync("http://localhost/Dropbox/Callback", null).Result;
+            OAuthToken requestToken = dropboxProvider.OAuthOperations.FetchRequestTokenAsync(null , null).Result;
             Session["RequestToken"] = requestToken;
 
             OAuth1Parameters parameters = new OAuth1Parameters();
