@@ -18,32 +18,27 @@
 
 #endregion
 
-using Spring.Util;
-
-using NUnit.Framework;
+using System;
 
 namespace Spring.Social.Dropbox.Api
 {
     /// <summary>
-    /// Unit tests for the DropboxApiException class.
+    /// Represents a Dropbox downloaded file with content and metadata information.
     /// </summary>
     /// <author>Bruno Baia</author>
-    [TestFixture]
-    public class DropboxApiExceptionTests
+#if !SILVERLIGHT
+    [Serializable]
+#endif
+    public class DropboxFile
     {
-        [Test]
-        public void BinarySerialization()
-        {
-            string message = "Error message";
-            DropboxApiError error = DropboxApiError.OperationNotPermitted;
+        /// <summary>
+        /// Gets or sets the metadata information about the file.
+        /// </summary>
+	    public Entry Metadata { get; set; }
 
-            DropboxApiException exBefore = new DropboxApiException(message, error);
-
-            DropboxApiException exAfter = SerializationTestUtils.BinarySerializeAndDeserialize(exBefore) as DropboxApiException;
-
-            Assert.IsNotNull(exAfter);
-            Assert.AreEqual(message, exAfter.Message, "Invalid message");
-            Assert.AreEqual(error, exAfter.Error, "Invalid error");
-        }
+        /// <summary>
+        /// Gets or sets the array of bytes containing the file's content.
+        /// </summary>
+        public byte[] Content { get; set; }
     }
 }

@@ -110,7 +110,7 @@ namespace Spring.Social.Dropbox.Api.Impl
         {
             NameValueCollection parameters = new NameValueCollection();
             this.AddLocaleTo(parameters);
-            return this.RestTemplate.GetForObjectAsync<DropboxProfile>(this.BuildUrl("account/info", parameters));
+            return this.RestTemplate.GetForObjectAsync<DropboxProfile>(BuildUrl("account/info", parameters));
         }
 
         /// <summary>
@@ -270,6 +270,27 @@ namespace Spring.Social.Dropbox.Api.Impl
             return this.RestTemplate.ExchangeAsync<byte[]>(
                 this.BuildDownloadUrl(path, revision), HttpMethod.GET, null, cancellationToken)
                 .ContinueWith<byte[]>(task =>
+                {
+                    return task.Result.Body;
+                });
+        }
+
+        /// <summary>
+        /// Asynchronously downloads a file and its metadata.
+        /// </summary>
+        /// <param name="path">The Dropbox path to the file you want to retrieve, relative to root.</param>
+        /// <param name="revision">The revision of the file to retrieve.</param>
+        /// <param name="cancellationToken">The <see cref="CancellationToken"/> that will be assigned to the task.</param>
+        /// <returns>
+        /// A <code>Task</code> that represents the asynchronous operation that can return 
+        /// a <see cref="DropboxFile"/> object containing the file's content and metadata.
+        /// </returns>
+        /// <exception cref="DropboxApiException">If there is an error while communicating with Dropbox.</exception>
+        public Task<DropboxFile> DownloadFileAndMetadataAsync(string path, string revision, CancellationToken cancellationToken)
+        {
+            return this.RestTemplate.ExchangeAsync<DropboxFile>(
+                this.BuildDownloadUrl(path, revision), HttpMethod.GET, null, cancellationToken)
+                .ContinueWith<DropboxFile>(task =>
                 {
                     return task.Result.Body;
                 });
@@ -450,6 +471,24 @@ namespace Spring.Social.Dropbox.Api.Impl
         {
             return this.RestTemplate.GetForObjectAsync<byte[]>(this.BuildThumbnailsUrl(path, format, size));
         }
+
+        /// <summary>
+        /// Asynchronously downloads a thumbnail for an image and its metadata.
+        /// </summary>
+        /// <param name="path">
+        /// The Dropbox path to the image file you want to thumbnail, relative to root.
+        /// </param>
+        /// <param name="format">The image format of the thumbnail to download.</param>
+        /// <param name="size">The size of the thumbnail to download.</param>
+        /// <returns>
+        /// A <code>Task</code> that represents the asynchronous operation that can return 
+        /// a <see cref="DropboxFile"/> object containing the thumbnail's content and metadata.
+        /// </returns>
+        /// <exception cref="DropboxApiException">If there is an error while communicating with Dropbox.</exception>
+        public Task<DropboxFile> DownloadThumbnailAndMetadataAsync(string path, ThumbnailFormat format, ThumbnailSize size)
+        {
+            return this.RestTemplate.GetForObjectAsync<DropboxFile>(this.BuildThumbnailsUrl(path, format, size));
+        }
 #else
 #if !SILVERLIGHT
         /// <summary>
@@ -461,7 +500,7 @@ namespace Spring.Social.Dropbox.Api.Impl
         {
             NameValueCollection parameters = new NameValueCollection();
             this.AddLocaleTo(parameters);
-            return this.RestTemplate.GetForObject<DropboxProfile>(this.BuildUrl("account/info", parameters));
+            return this.RestTemplate.GetForObject<DropboxProfile>(BuildUrl("account/info", parameters));
         }
 
         /// <summary>
@@ -597,6 +636,20 @@ namespace Spring.Social.Dropbox.Api.Impl
         public byte[] DownloadFile(string path, string revision)
         {
             return this.RestTemplate.GetForObject<byte[]>(this.BuildDownloadUrl(path, revision));
+        }
+
+        /// <summary>
+        /// Downloads a file and its metadata.
+        /// </summary>
+        /// <param name="path">The Dropbox path to the file you want to retrieve, relative to root.</param>
+        /// <param name="revision">The revision of the file to retrieve.</param>
+        /// <returns>
+        /// A <see cref="DropboxFile"/> object containing the file's content and metadata.
+        /// </returns>
+        /// <exception cref="DropboxApiException">If there is an error while communicating with Dropbox.</exception>
+        public DropboxFile DownloadFileAndMetadata(string path, string revision)
+        {
+            return this.RestTemplate.GetForObject<DropboxFile>(this.BuildDownloadUrl(path, revision));
         }
 
         /// <summary>
@@ -764,6 +817,23 @@ namespace Spring.Social.Dropbox.Api.Impl
         {
             return this.RestTemplate.GetForObject<byte[]>(this.BuildThumbnailsUrl(path, format, size));
         }
+
+        /// <summary>
+        /// Downloads a thumbnail for an image and its metadata.
+        /// </summary>
+        /// <param name="path">
+        /// The Dropbox path to the image file you want to thumbnail, relative to root.
+        /// </param>
+        /// <param name="format">The image format of the thumbnail to download.</param>
+        /// <param name="size">The size of the thumbnail to download.</param>
+        /// <returns>
+        /// A <see cref="DropboxFile"/> object containing the thumbnail's content and metadata.
+        /// </returns>
+        /// <exception cref="DropboxApiException">If there is an error while communicating with Dropbox.</exception>
+        public DropboxFile DownloadThumbnailAndMetadata(string path, ThumbnailFormat format, ThumbnailSize size)
+        {
+            return this.RestTemplate.GetForObject<DropboxFile>(this.BuildThumbnailsUrl(path, format, size));
+        }
 #endif
 
         /// <summary>
@@ -781,7 +851,7 @@ namespace Spring.Social.Dropbox.Api.Impl
         {
             NameValueCollection parameters = new NameValueCollection();
             this.AddLocaleTo(parameters);
-            return this.RestTemplate.GetForObjectAsync<DropboxProfile>(this.BuildUrl("account/info", parameters), operationCompleted);
+            return this.RestTemplate.GetForObjectAsync<DropboxProfile>(BuildUrl("account/info", parameters), operationCompleted);
         }
 
         /// <summary>
@@ -962,6 +1032,24 @@ namespace Spring.Social.Dropbox.Api.Impl
         public RestOperationCanceler DownloadFileAsync(string path, string revision, Action<RestOperationCompletedEventArgs<byte[]>> operationCompleted)
         {
             return this.RestTemplate.GetForObjectAsync<byte[]>(this.BuildDownloadUrl(path, revision), operationCompleted);
+        }
+
+        /// <summary>
+        /// Asynchronously downloads a file and its metadata.
+        /// </summary>
+        /// <param name="path">The Dropbox path to the file you want to retrieve, relative to root.</param>
+        /// <param name="revision">The revision of the file to retrieve.</param>
+        /// <param name="operationCompleted">
+        /// The <code>Action&lt;&gt;</code> to perform when the asynchronous request completes. 
+        /// Provides a <see cref="DropboxFile"/> object containing the file's content and metadata.
+        /// </param>
+        /// <returns>
+        /// A <see cref="RestOperationCanceler"/> instance that allows to cancel the asynchronous operation.
+        /// </returns>
+        /// <exception cref="DropboxApiException">If there is an error while communicating with Dropbox.</exception>
+        public RestOperationCanceler DownloadFileAndMetadataAsync(string path, string revision, Action<RestOperationCompletedEventArgs<DropboxFile>> operationCompleted)
+        {
+            return this.RestTemplate.GetForObjectAsync<DropboxFile>(this.BuildDownloadUrl(path, revision), operationCompleted);
         }
 
         /// <summary>
@@ -1169,6 +1257,27 @@ namespace Spring.Social.Dropbox.Api.Impl
         {
             return this.RestTemplate.GetForObjectAsync<byte[]>(this.BuildThumbnailsUrl(path, format, size), operationCompleted);
         }
+
+        /// <summary>
+        /// Asynchronously downloads a thumbnail for an image and its metadata.
+        /// </summary>
+        /// <param name="path">
+        /// The Dropbox path to the image file you want to thumbnail, relative to root.
+        /// </param>
+        /// <param name="format">The image format of the thumbnail to download.</param>
+        /// <param name="size">The size of the thumbnail to download.</param>
+        /// <param name="operationCompleted">
+        /// The <code>Action&lt;&gt;</code> to perform when the asynchronous request completes. 
+        /// Provides a <see cref="DropboxFile"/> object containing the thumbnail's content and metadata.
+        /// </param>
+        /// <returns>
+        /// A <see cref="RestOperationCanceler"/> instance that allows to cancel the asynchronous operation.
+        /// </returns>
+        /// <exception cref="DropboxApiException">If there is an error while communicating with Dropbox.</exception>
+        public RestOperationCanceler DownloadThumbnailAndMetadataAsync(string path, ThumbnailFormat format, ThumbnailSize size, Action<RestOperationCompletedEventArgs<DropboxFile>> operationCompleted)
+        {
+            return this.RestTemplate.GetForObjectAsync<DropboxFile>(this.BuildThumbnailsUrl(path, format, size), operationCompleted);
+        }
 #endif
 
         /// <summary>
@@ -1220,6 +1329,7 @@ namespace Spring.Social.Dropbox.Api.Impl
             converters.Add(new ByteArrayHttpMessageConverter());
             converters.Add(new ResourceHttpMessageConverter());
             converters.Add(new SpringJsonHttpMessageConverter(jsonMapper));
+            converters.Add(new DropboxFileHttpMessageConverter(jsonMapper));
             return converters;
         }
 
@@ -1315,10 +1425,10 @@ namespace Spring.Social.Dropbox.Api.Impl
         private string BuildUrl(string path, string dropboxPath, NameValueCollection parameters)
         {
             string encodedDropboxPath = HttpUtils.UrlEncode(dropboxPath.TrimStart('/')).Replace("%2F", "/");
-            return this.BuildUrl(path.TrimEnd('/') + "/" + this.root + "/" + encodedDropboxPath, parameters);
+            return BuildUrl(path.TrimEnd('/') + "/" + this.root + "/" + encodedDropboxPath, parameters);
         }
 
-        private string BuildUrl(string path, NameValueCollection parameters)
+        private static string BuildUrl(string path, NameValueCollection parameters)
         {
             StringBuilder qsBuilder = new StringBuilder();
             bool isFirst = true;
