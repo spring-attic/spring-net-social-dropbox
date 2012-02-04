@@ -1424,8 +1424,9 @@ namespace Spring.Social.Dropbox.Api.Impl
 
         private string BuildUrl(string path, string dropboxPath, NameValueCollection parameters)
         {
-            string encodedDropboxPath = HttpUtils.UrlEncode(dropboxPath.TrimStart('/')).Replace("%2F", "/");
-            return BuildUrl(path.TrimEnd('/') + "/" + this.root + "/" + encodedDropboxPath, parameters);
+            return BuildUrl(
+                path.TrimEnd('/') + "/" + this.root + "/" + DropboxPathEncode(dropboxPath.TrimStart('/')), 
+                parameters);
         }
 
         private static string BuildUrl(string path, NameValueCollection parameters)
@@ -1448,6 +1449,25 @@ namespace Spring.Social.Dropbox.Api.Impl
                 qsBuilder.Append(HttpUtils.UrlEncode(parameters[key]));
             }
             return path + qsBuilder.ToString();
+        }
+
+        private const string DROPBOX_PATH_UNRESERVED_CHARS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_./";
+
+        private static string DropboxPathEncode(string path)
+        {
+            StringBuilder result = new StringBuilder();
+            foreach (char symbol in path)
+            {
+                if (DROPBOX_PATH_UNRESERVED_CHARS.IndexOf(symbol) != -1)
+                {
+                    result.Append(symbol);
+                }
+                else
+                {
+                    result.Append('%' + String.Format("{0:X2}", (int)symbol));
+                }
+            }
+            return result.ToString();
         }
 
         private static string ThumbnailSizeToString(ThumbnailSize size)

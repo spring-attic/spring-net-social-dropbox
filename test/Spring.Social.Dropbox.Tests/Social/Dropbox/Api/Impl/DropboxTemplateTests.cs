@@ -576,6 +576,22 @@ namespace Spring.Social.Dropbox.Api.Impl
             Assert.IsNull(thumbnail.Metadata.Contents);
         }
 
+        [Test]
+        public void DropboxPathSpecialCharacters()
+        {
+            mockServer.ExpectNewRequest()
+                .AndExpectUri("https://api.dropbox.com/1/metadata/dropbox/%24%26%2B%2C%3B%3D%40%23%7B%7D%5E%7E%5B%5D%60%27%25%28%29%21-_/Spring%20Social.txt?list=false")
+                .AndExpectMethod(HttpMethod.GET);
+
+            MetadataParameters parameters = new MetadataParameters();
+            parameters.IncludeContents = false;
+#if NET_4_0 || SILVERLIGHT_5
+            dropbox.GetMetadataAsync("$&+,;=@#{}^~[]`'%()!-_/Spring Social.txt", parameters).Wait();
+#else
+            dropbox.GetMetadata("$&+,;=@#{}^~[]`'%()!-_/Spring Social.txt", parameters);
+#endif
+        }
+
 
         // tests helpers
 
