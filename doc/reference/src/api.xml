@@ -73,11 +73,9 @@ IDropbox dropboxApi = serviceProvider.GetApi(accessToken.Value, accessToken.Secr
 
   Entry UploadFile(IResource file, string path, bool overwrite, string revision);
 
-  byte[] DownloadFile(string path);
+  DropboxFile DownloadFile(string path);
 
-  byte[] DownloadFile(string path, string revision);
-  
-  DropboxFile DownloadFileAndMetadata(string path, string revision);
+  DropboxFile DownloadFile(string path, string revision);
 
   Entry GetMetadata(string path);
 
@@ -97,9 +95,7 @@ IDropbox dropboxApi = serviceProvider.GetApi(accessToken.Value, accessToken.Secr
 
   DropboxLink GetMediaLink(string path);
 
-  byte[] DownloadThumbnail(string path, ThumbnailFormat format, ThumbnailSize size);
-  
-  DropboxFile DownloadThumbnailAndMetadata(string path, ThumbnailFormat format, ThumbnailSize size);
+  DropboxFile DownloadThumbnail(string path, ThumbnailFormat format, ThumbnailSize size);
 }]]></programlisting>
 
   <para>

@@ -53,7 +53,7 @@ namespace Spring.OAuth1ConsoleQuickStart
                 DropboxProfile profile = dropbox.GetUserProfileAsync().Result;
                 Console.WriteLine("Hi " + profile.DisplayName + "!");
 
-                // Use step by step debugging             
+                // Use step by step debugging, or not             
 /*
                 Entry createFolderEntry = dropbox.CreateFolderAsync("Spring Social").Result;
                 Entry uploadFileEntry = dropbox.UploadFileAsync(
@@ -65,10 +65,11 @@ namespace Spring.OAuth1ConsoleQuickStart
                 dropbox.DownloadFileAsync("Spring Social/File.txt")
                     .ContinueWith(task =>
                     {
+                        Console.WriteLine("File '{0}' downloaded ({1})", task.Result.Metadata.Path, task.Result.Metadata.Size);
                         // Save file to "C:\Spring Social.txt"
                         using (FileStream fileStream = new FileStream(@"C:\Spring Social.txt", FileMode.Create))
                         {
-                            fileStream.Write(task.Result, 0, task.Result.Length);
+                            fileStream.Write(task.Result.Content, 0, task.Result.Content.Length);
                         }
                     });
                 Entry folderMetadata = dropbox.GetMetadataAsync("Spring Social").Result;
@@ -83,10 +84,11 @@ namespace Spring.OAuth1ConsoleQuickStart
                 dropbox.DownloadThumbnailAsync("Spring Social/Image.png", ThumbnailFormat.Png, ThumbnailSize.Medium)
                     .ContinueWith(task =>
                     {
+                        Console.WriteLine("Thumbnail '{0}' downloaded ({1})", task.Result.Metadata.Path, task.Result.Metadata.Size);
                         // Save file to "C:\Thumbnail_Medium.png"
                         using (FileStream fileStream = new FileStream(@"C:\Thumbnail_Medium.png", FileMode.Create))
                         {
-                            fileStream.Write(task.Result, 0, task.Result.Length);
+                            fileStream.Write(task.Result.Content, 0, task.Result.Content.Length);
                         }
                     });
 */
@@ -132,7 +134,7 @@ namespace Spring.OAuth1ConsoleQuickStart
                 DropboxProfile profile = dropbox.GetUserProfile();
                 Console.WriteLine("Hi " + profile.DisplayName + "!");
 
-                // Use step by step debugging
+                // Use step by step debugging, or not
 /*
                 Entry createFolderEntry = dropbox.CreateFolder("Spring Social");
                 Entry uploadFileEntry = dropbox.UploadFile(
@@ -144,10 +146,11 @@ namespace Spring.OAuth1ConsoleQuickStart
                 var fileCanceler = dropbox.DownloadFileAsync("Spring Social/File.txt",
                     r =>
                     {
+                        Console.WriteLine("File '{0}' downloaded ({1})", r.Response.Metadata.Path, r.Response.Metadata.Size);
                         // Save file to "C:\Spring Social.txt"
                         using (FileStream fileStream = new FileStream(@"C:\Spring Social.txt", FileMode.Create))
                         {
-                            fileStream.Write(r.Response, 0, r.Response.Length);
+                            fileStream.Write(r.Response.Content, 0, r.Response.Content.Length);
                         }
                     });
                 Entry folderMetadata = dropbox.GetMetadata("Spring Social");
@@ -162,10 +165,11 @@ namespace Spring.OAuth1ConsoleQuickStart
                 var thumbnailCanceler = dropbox.DownloadThumbnailAsync("Spring Social/Image.png", ThumbnailFormat.Png, ThumbnailSize.Medium, 
                     r =>
                     {
+                        Console.WriteLine("Thumbnail '{0}' downloaded ({1})", r.Response.Metadata.Path, r.Response.Metadata.Size);
                         // Save file to "C:\Thumbnail_Medium.png"
                         using (FileStream fileStream = new FileStream(@"C:\Thumbnail_Medium.png", FileMode.Create))
                         {
-                            fileStream.Write(r.Response, 0, r.Response.Length);
+                            fileStream.Write(r.Response.Content, 0, r.Response.Content.Length);
                         }
                     });
 */

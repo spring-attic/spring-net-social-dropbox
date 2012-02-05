@@ -20,6 +20,7 @@
 
 using System;
 using System.Net;
+using System.Threading;
 using System.Collections.Generic;
 
 using NUnit.Framework;
@@ -215,7 +216,7 @@ namespace Spring.Social.Dropbox.Api.Impl
                 .AndRespondWith(EmbeddedResource("Upload_File.json"), responseHeaders);
 
 #if NET_4_0 || SILVERLIGHT_5
-            Entry metadata = dropbox.UploadFileAsync(EmbeddedResource("File.txt"), "Dir/File.txt", false, "a123z", System.Threading.CancellationToken.None).Result;
+            Entry metadata = dropbox.UploadFileAsync(EmbeddedResource("File.txt"), "Dir/File.txt", false, "a123z", CancellationToken.None).Result;
 #else
             Entry metadata = dropbox.UploadFile(EmbeddedResource("File.txt"), "Dir/File.txt", false, "a123z");
 #endif
@@ -238,24 +239,6 @@ namespace Spring.Social.Dropbox.Api.Impl
         [Test]
         public void DownloadFile()
         {
-            responseHeaders.ContentType = MediaType.TEXT_PLAIN;
-            mockServer.ExpectNewRequest()
-                .AndExpectUri("https://api-content.dropbox.com/1/files/dropbox/Dir/File.txt?rev=a123z")
-                .AndExpectMethod(HttpMethod.GET)
-                .AndRespondWith(EmbeddedResource("File.txt"), responseHeaders);
-
-#if NET_4_0 || SILVERLIGHT_5
-            byte[] file = dropbox.DownloadFileAsync("Dir/File.txt", "a123z", System.Threading.CancellationToken.None).Result;
-#else
-            byte[] file = dropbox.DownloadFile("Dir/File.txt", "a123z");
-#endif
-            Assert.IsNotNull(file);
-            Assert.IsNotEmpty(file);
-        }
-
-        [Test]
-        public void DownloadFileAndMetadata()
-        {
             responseHeaders["x-dropbox-metadata"] = "{ \"size\": \"225.4KB\", \"rev\": \"35e97029684fe\", \"thumb_exists\": false, \"bytes\": 230783, \"modified\": \"Tue, 19 Jul 2011 21:55:38 +0000\", \"path\": \"/Getting_Started.pdf\", \"is_dir\": false, \"icon\": \"page_white_acrobat\", \"root\": \"dropbox\", \"mime_type\": \"application/pdf\", \"revision\": 220823 }";
             responseHeaders.ContentType = MediaType.TEXT_PLAIN;
             mockServer.ExpectNewRequest()
@@ -264,9 +247,9 @@ namespace Spring.Social.Dropbox.Api.Impl
                 .AndRespondWith(EmbeddedResource("File.txt"), responseHeaders);
 
 #if NET_4_0 || SILVERLIGHT_5
-            DropboxFile file = dropbox.DownloadFileAndMetadataAsync("Dir/File.txt", "a123z", System.Threading.CancellationToken.None).Result;
+            DropboxFile file = dropbox.DownloadFileAsync("Dir/File.txt", "a123z", CancellationToken.None).Result;
 #else
-            DropboxFile file = dropbox.DownloadFileAndMetadata("Dir/File.txt", "a123z");
+            DropboxFile file = dropbox.DownloadFile("Dir/File.txt", "a123z");
 #endif
             Assert.IsNotNull(file);
 
@@ -523,24 +506,6 @@ namespace Spring.Social.Dropbox.Api.Impl
         [Test]
         public void DownloadThumbnail()
         {
-            responseHeaders.ContentType = MediaType.IMAGE_PNG;
-            mockServer.ExpectNewRequest()
-                .AndExpectUri("https://api-content.dropbox.com/1/thumbnails/dropbox/Dir/Image.jpg?format=PNG&size=xl")
-                .AndExpectMethod(HttpMethod.GET)
-                .AndRespondWith(EmbeddedResource("Image.png"), responseHeaders);
-
-#if NET_4_0 || SILVERLIGHT_5
-            byte[] thumbnail = dropbox.DownloadThumbnailAsync("Dir/Image.jpg", ThumbnailFormat.Png, ThumbnailSize.ExtraLarge).Result;
-#else
-            byte[] thumbnail = dropbox.DownloadThumbnail("Dir/Image.jpg", ThumbnailFormat.Png, ThumbnailSize.ExtraLarge);
-#endif
-            Assert.IsNotNull(thumbnail);
-            Assert.IsNotEmpty(thumbnail);
-        }
-
-        [Test]
-        public void DownloadThumbnailAndMetadata()
-        {
             responseHeaders["x-dropbox-metadata"] = "{ \"size\": \"225.4KB\", \"rev\": \"35e97029684fe\", \"thumb_exists\": false, \"bytes\": 230783, \"modified\": \"Tue, 19 Jul 2011 21:55:38 +0000\", \"path\": \"/Getting_Started.pdf\", \"is_dir\": false, \"icon\": \"page_white_acrobat\", \"root\": \"dropbox\", \"mime_type\": \"application/pdf\", \"revision\": 220823 }";
             responseHeaders.ContentType = MediaType.IMAGE_PNG;
             mockServer.ExpectNewRequest()
@@ -549,9 +514,9 @@ namespace Spring.Social.Dropbox.Api.Impl
                 .AndRespondWith(EmbeddedResource("Image.png"), responseHeaders);
 
 #if NET_4_0 || SILVERLIGHT_5
-            DropboxFile thumbnail = dropbox.DownloadThumbnailAndMetadataAsync("Dir/Image.jpg", ThumbnailFormat.Png, ThumbnailSize.ExtraLarge).Result;
+            DropboxFile thumbnail = dropbox.DownloadThumbnailAsync("Dir/Image.jpg", ThumbnailFormat.Png, ThumbnailSize.ExtraLarge).Result;
 #else
-            DropboxFile thumbnail = dropbox.DownloadThumbnailAndMetadata("Dir/Image.jpg", ThumbnailFormat.Png, ThumbnailSize.ExtraLarge);
+            DropboxFile thumbnail = dropbox.DownloadThumbnail("Dir/Image.jpg", ThumbnailFormat.Png, ThumbnailSize.ExtraLarge);
 #endif
             Assert.IsNotNull(thumbnail);
 

@@ -139,7 +139,11 @@ namespace Spring.Social.Dropbox.Api
         /// The revision of the file you're editing or null if this is a new upload. 
         /// If <paramref name="revision"/> matches the latest version of the file on the user's Dropbox, that file will be replaced.
         /// </param>
-        /// <param name="cancellationToken">The <see cref="CancellationToken"/> that will be assigned to the task.</param>
+        /// <param name="cancellationToken">
+        /// The <see cref="CancellationToken"/> that will be assigned to the task. 
+        /// <para/>
+        /// Use <see cref="P:CancellationToken.None"/> for an empty <see cref="CancellationToken"/> value.
+        /// </param>
         /// <returns>
         /// A <code>Task</code> that represents the asynchronous operation that can return 
         /// a metadata <see cref="Entry"/> for the uploaded file.
@@ -148,41 +152,34 @@ namespace Spring.Social.Dropbox.Api
         Task<Entry> UploadFileAsync(IResource file, string path, bool overwrite, string revision, CancellationToken cancellationToken);
 
         /// <summary>
-        /// Asynchronously downloads a file.
-        /// </summary>
-        /// <param name="path">The Dropbox path to the file you want to retrieve, relative to root.</param>
-        /// <returns>
-        /// A <code>Task</code> that represents the asynchronous operation that can return 
-        /// an array of bytes containing the file's content.
-        /// </returns>
-        /// <exception cref="DropboxApiException">If there is an error while communicating with Dropbox.</exception>
-        Task<byte[]> DownloadFileAsync(string path);
-
-        /// <summary>
-        /// Asynchronously downloads a file.
-        /// </summary>
-        /// <param name="path">The Dropbox path to the file you want to retrieve, relative to root.</param>
-        /// <param name="revision">The revision of the file to retrieve.</param>
-        /// <param name="cancellationToken">The <see cref="CancellationToken"/> that will be assigned to the task.</param>
-        /// <returns>
-        /// A <code>Task</code> that represents the asynchronous operation that can return 
-        /// an array of bytes containing the file's content.
-        /// </returns>
-        /// <exception cref="DropboxApiException">If there is an error while communicating with Dropbox.</exception>
-        Task<byte[]> DownloadFileAsync(string path, string revision, CancellationToken cancellationToken);
-
-        /// <summary>
         /// Asynchronously downloads a file and its metadata.
         /// </summary>
         /// <param name="path">The Dropbox path to the file you want to retrieve, relative to root.</param>
-        /// <param name="revision">The revision of the file to retrieve.</param>
-        /// <param name="cancellationToken">The <see cref="CancellationToken"/> that will be assigned to the task.</param>
         /// <returns>
         /// A <code>Task</code> that represents the asynchronous operation that can return 
         /// a <see cref="DropboxFile"/> object containing the file's content and metadata.
         /// </returns>
         /// <exception cref="DropboxApiException">If there is an error while communicating with Dropbox.</exception>
-        Task<DropboxFile> DownloadFileAndMetadataAsync(string path, string revision, CancellationToken cancellationToken);
+        Task<DropboxFile> DownloadFileAsync(string path);
+
+        /// <summary>
+        /// Asynchronously downloads a file and its metadata.
+        /// </summary>
+        /// <param name="path">The Dropbox path to the file you want to retrieve, relative to root.</param>
+        /// <param name="revision">
+        /// The revision of the file to retrieve, or <see langword="null"/> for the latest version.
+        /// </param>
+        /// <param name="cancellationToken">
+        /// The <see cref="CancellationToken"/> that will be assigned to the task. 
+        /// <para/>
+        /// Use <see cref="P:CancellationToken.None"/> for an empty <see cref="CancellationToken"/> value.
+        /// </param>
+        /// <returns>
+        /// A <code>Task</code> that represents the asynchronous operation that can return 
+        /// a <see cref="DropboxFile"/> object containing the file's content and metadata.
+        /// </returns>
+        /// <exception cref="DropboxApiException">If there is an error while communicating with Dropbox.</exception>
+        Task<DropboxFile> DownloadFileAsync(string path, string revision, CancellationToken cancellationToken);
 
         /// <summary>
         /// Asynchronously retrieves file or folder metadata.
@@ -302,21 +299,6 @@ namespace Spring.Social.Dropbox.Api
         Task<DropboxLink> GetMediaLinkAsync(string path);
 
         /// <summary>
-        /// Asynchronously downloads a thumbnail for an image.
-        /// </summary>
-        /// <param name="path">
-        /// The Dropbox path to the image file you want to thumbnail, relative to root.
-        /// </param>
-        /// <param name="format">The image format of the thumbnail to download.</param>
-        /// <param name="size">The size of the thumbnail to download.</param>
-        /// <returns>
-        /// A <code>Task</code> that represents the asynchronous operation that can return 
-        /// an array of bytes containing the thumbnail's content.
-        /// </returns>
-        /// <exception cref="DropboxApiException">If there is an error while communicating with Dropbox.</exception>
-        Task<byte[]> DownloadThumbnailAsync(string path, ThumbnailFormat format, ThumbnailSize size);
-
-        /// <summary>
         /// Asynchronously downloads a thumbnail for an image and its metadata.
         /// </summary>
         /// <param name="path">
@@ -329,7 +311,7 @@ namespace Spring.Social.Dropbox.Api
         /// a <see cref="DropboxFile"/> object containing the thumbnail's content and metadata.
         /// </returns>
         /// <exception cref="DropboxApiException">If there is an error while communicating with Dropbox.</exception>
-        Task<DropboxFile> DownloadThumbnailAndMetadataAsync(string path, ThumbnailFormat format, ThumbnailSize size);
+        Task<DropboxFile> DownloadThumbnailAsync(string path, ThumbnailFormat format, ThumbnailSize size);
 #else
 #if !SILVERLIGHT
         /// <summary>
@@ -415,32 +397,27 @@ namespace Spring.Social.Dropbox.Api
         Entry UploadFile(IResource file, string path, bool overwrite, string revision);
 
         /// <summary>
-        /// Downloads a file.
+        /// Downloads a file and its metadata.
         /// </summary>
         /// <param name="path">The Dropbox path to the file you want to retrieve, relative to root.</param>
-        /// <returns>An array of bytes containing the file's content.</returns>
+        /// <returns>
+        /// A <see cref="DropboxFile"/> object containing the file's content and metadata.
+        /// </returns>
         /// <exception cref="DropboxApiException">If there is an error while communicating with Dropbox.</exception>
-        byte[] DownloadFile(string path);
-
-        /// <summary>
-        /// Downloads a file.
-        /// </summary>
-        /// <param name="path">The Dropbox path to the file you want to retrieve, relative to root.</param>
-        /// <param name="revision">The revision of the file to retrieve.</param>
-        /// <returns>An array of bytes containing the file's content.</returns>
-        /// <exception cref="DropboxApiException">If there is an error while communicating with Dropbox.</exception>
-        byte[] DownloadFile(string path, string revision);
+        DropboxFile DownloadFile(string path);
 
         /// <summary>
         /// Downloads a file and its metadata.
         /// </summary>
         /// <param name="path">The Dropbox path to the file you want to retrieve, relative to root.</param>
-        /// <param name="revision">The revision of the file to retrieve.</param>
+        /// <param name="revision">
+        /// The revision of the file to retrieve, or <see langword="null"/> for the latest version.
+        /// </param>
         /// <returns>
         /// A <see cref="DropboxFile"/> object containing the file's content and metadata.
         /// </returns>
         /// <exception cref="DropboxApiException">If there is an error while communicating with Dropbox.</exception>
-        DropboxFile DownloadFileAndMetadata(string path, string revision);
+        DropboxFile DownloadFile(string path, string revision);
 
         /// <summary>
         /// Retrieves file or folder metadata.
@@ -551,20 +528,6 @@ namespace Spring.Social.Dropbox.Api
         DropboxLink GetMediaLink(string path);
 
         /// <summary>
-        /// Downloads a thumbnail for an image.
-        /// </summary>
-        /// <param name="path">
-        /// The Dropbox path to the image file you want to thumbnail, relative to root.
-        /// </param>
-        /// <param name="format">The image format of the thumbnail to download.</param>
-        /// <param name="size">The size of the thumbnail to download.</param>
-        /// <returns>
-        /// An array of bytes containing the thumbnail's content.
-        /// </returns>
-        /// <exception cref="DropboxApiException">If there is an error while communicating with Dropbox.</exception>
-        byte[] DownloadThumbnail(string path, ThumbnailFormat format, ThumbnailSize size);
-
-        /// <summary>
         /// Downloads a thumbnail for an image and its metadata.
         /// </summary>
         /// <param name="path">
@@ -576,7 +539,7 @@ namespace Spring.Social.Dropbox.Api
         /// A <see cref="DropboxFile"/> object containing the thumbnail's content and metadata.
         /// </returns>
         /// <exception cref="DropboxApiException">If there is an error while communicating with Dropbox.</exception>
-        DropboxFile DownloadThumbnailAndMetadata(string path, ThumbnailFormat format, ThumbnailSize size);
+        DropboxFile DownloadThumbnail(string path, ThumbnailFormat format, ThumbnailSize size);
 #endif
 
         /// <summary>
@@ -696,39 +659,9 @@ namespace Spring.Social.Dropbox.Api
         RestOperationCanceler UploadFileAsync(IResource file, string path, bool overwrite, string revision, Action<RestOperationCompletedEventArgs<Entry>> operationCompleted);
 
         /// <summary>
-        /// Asynchronously downloads a file.
-        /// </summary>
-        /// <param name="path">The Dropbox path to the file you want to retrieve, relative to root.</param>
-        /// <param name="operationCompleted">
-        /// The <code>Action&lt;&gt;</code> to perform when the asynchronous request completes. 
-        /// Provides an array of bytes containing the file's content.
-        /// </param>
-        /// <returns>
-        /// A <see cref="RestOperationCanceler"/> instance that allows to cancel the asynchronous operation.
-        /// </returns>
-        /// <exception cref="DropboxApiException">If there is an error while communicating with Dropbox.</exception>
-        RestOperationCanceler DownloadFileAsync(string path, Action<RestOperationCompletedEventArgs<byte[]>> operationCompleted);
-
-        /// <summary>
-        /// Asynchronously downloads a file.
-        /// </summary>
-        /// <param name="path">The Dropbox path to the file you want to retrieve, relative to root.</param>
-        /// <param name="revision">The revision of the file to retrieve.</param>
-        /// <param name="operationCompleted">
-        /// The <code>Action&lt;&gt;</code> to perform when the asynchronous request completes. 
-        /// Provides an array of bytes containing the file's content.
-        /// </param>
-        /// <returns>
-        /// A <see cref="RestOperationCanceler"/> instance that allows to cancel the asynchronous operation.
-        /// </returns>
-        /// <exception cref="DropboxApiException">If there is an error while communicating with Dropbox.</exception>
-        RestOperationCanceler DownloadFileAsync(string path, string revision, Action<RestOperationCompletedEventArgs<byte[]>> operationCompleted);
-
-        /// <summary>
         /// Asynchronously downloads a file and its metadata.
         /// </summary>
         /// <param name="path">The Dropbox path to the file you want to retrieve, relative to root.</param>
-        /// <param name="revision">The revision of the file to retrieve.</param>
         /// <param name="operationCompleted">
         /// The <code>Action&lt;&gt;</code> to perform when the asynchronous request completes. 
         /// Provides a <see cref="DropboxFile"/> object containing the file's content and metadata.
@@ -737,7 +670,24 @@ namespace Spring.Social.Dropbox.Api
         /// A <see cref="RestOperationCanceler"/> instance that allows to cancel the asynchronous operation.
         /// </returns>
         /// <exception cref="DropboxApiException">If there is an error while communicating with Dropbox.</exception>
-        RestOperationCanceler DownloadFileAndMetadataAsync(string path, string revision, Action<RestOperationCompletedEventArgs<DropboxFile>> operationCompleted);
+        RestOperationCanceler DownloadFileAsync(string path, Action<RestOperationCompletedEventArgs<DropboxFile>> operationCompleted);
+
+        /// <summary>
+        /// Asynchronously downloads a file and its metadata.
+        /// </summary>
+        /// <param name="path">The Dropbox path to the file you want to retrieve, relative to root.</param>
+        /// <param name="revision">
+        /// The revision of the file to retrieve, or <see langword="null"/> for the latest version.
+        /// </param>
+        /// <param name="operationCompleted">
+        /// The <code>Action&lt;&gt;</code> to perform when the asynchronous request completes. 
+        /// Provides a <see cref="DropboxFile"/> object containing the file's content and metadata.
+        /// </param>
+        /// <returns>
+        /// A <see cref="RestOperationCanceler"/> instance that allows to cancel the asynchronous operation.
+        /// </returns>
+        /// <exception cref="DropboxApiException">If there is an error while communicating with Dropbox.</exception>
+        RestOperationCanceler DownloadFileAsync(string path, string revision, Action<RestOperationCompletedEventArgs<DropboxFile>> operationCompleted);
 
         /// <summary>
         /// Asynchronously retrieves file or folder metadata.
@@ -884,24 +834,6 @@ namespace Spring.Social.Dropbox.Api
         RestOperationCanceler GetMediaLinkAsync(string path, Action<RestOperationCompletedEventArgs<DropboxLink>> operationCompleted);
 
         /// <summary>
-        /// Asynchronously downloads a thumbnail for an image.
-        /// </summary>
-        /// <param name="path">
-        /// The Dropbox path to the image file you want to thumbnail, relative to root.
-        /// </param>
-        /// <param name="format">The image format of the thumbnail to download.</param>
-        /// <param name="size">The size of the thumbnail to download.</param>
-        /// <param name="operationCompleted">
-        /// The <code>Action&lt;&gt;</code> to perform when the asynchronous request completes. 
-        /// Provides an array of bytes containing the thumbnail's content.
-        /// </param>
-        /// <returns>
-        /// A <see cref="RestOperationCanceler"/> instance that allows to cancel the asynchronous operation.
-        /// </returns>
-        /// <exception cref="DropboxApiException">If there is an error while communicating with Dropbox.</exception>
-        RestOperationCanceler DownloadThumbnailAsync(string path, ThumbnailFormat format, ThumbnailSize size, Action<RestOperationCompletedEventArgs<byte[]>> operationCompleted);
-
-        /// <summary>
         /// Asynchronously downloads a thumbnail for an image and its metadata.
         /// </summary>
         /// <param name="path">
@@ -917,7 +849,7 @@ namespace Spring.Social.Dropbox.Api
         /// A <see cref="RestOperationCanceler"/> instance that allows to cancel the asynchronous operation.
         /// </returns>
         /// <exception cref="DropboxApiException">If there is an error while communicating with Dropbox.</exception>
-        RestOperationCanceler DownloadThumbnailAndMetadataAsync(string path, ThumbnailFormat format, ThumbnailSize size, Action<RestOperationCompletedEventArgs<DropboxFile>> operationCompleted);
+        RestOperationCanceler DownloadThumbnailAsync(string path, ThumbnailFormat format, ThumbnailSize size, Action<RestOperationCompletedEventArgs<DropboxFile>> operationCompleted);
 #endif
 
         /// <summary>
