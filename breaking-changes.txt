@@ -1,0 +1,5 @@
+Changes (1.0 to 1.1)
+====================
+
+1. Changed DownloadFile and DownloadThumbnail methods return value from byte[] to DropboxFile 
+   to return both file's content and metadata [SPRNETSOCIALDB-2].

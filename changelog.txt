@@ -1,0 +1,12 @@
+SPRING.NET SOCIAL DROPBOX CHANGELOG
+===================================
+http://www.springframework.net/social-dropbox/
+
+Release Version 1.1.0 February 7, 2012
+
+Bug
+[SPRNETSOCIALDB-5] - Fix special character encoding for Dropbox path in request url
+
+Improvement
+[SPRNETSOCIALDB-1] - Make data model classes serializable
+[SPRNETSOCIALDB-2] - Expose content metadata for DownloadFile and DownloadThumbnail methods
