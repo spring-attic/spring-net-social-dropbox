@@ -47,7 +47,7 @@ string authorizeUrl = oauthOperations.BuildAuthorizeUrl(requestToken, parameters
 Response.Redirect(authorizeUrl);
 
 // upon receiving the callback from the provider:
-OAuthToken accessToken = oauthOperations.ExchangeForAccessToken(new AuthorizedRequestToken(requestToken, oauthVerifier), null);
+OAuthToken accessToken = oauthOperations.ExchangeForAccessToken(new AuthorizedRequestToken(requestToken, null), null);
 IDropbox dropboxApi = serviceProvider.GetApi(accessToken.Value, accessToken.Secret);]]></programlisting>
   </para>
 	
@@ -56,8 +56,7 @@ IDropbox dropboxApi = serviceProvider.GetApi(accessToken.Value, accessToken.Secr
 		<sbr/><interfacename>IDropbox</interfacename> is defined as follows:
 	</para>
 	
-  <programlisting language="csharp">
-    <![CDATA[public interface IDropbox : IApiBinding
+  <programlisting language="csharp"><![CDATA[public interface IDropbox : IApiBinding
 {
   DropboxProfile GetUserProfile();
 

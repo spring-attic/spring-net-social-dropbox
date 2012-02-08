@@ -25,9 +25,9 @@ namespace Spring.OAuth1ConsoleQuickStart
                 DropboxServiceProvider dropboxServiceProvider = new DropboxServiceProvider(DropboxAppKey, DropboxAppSecret, AccessLevel.Full);
 
 #if NET_4_0
-                /* OAuth 'dance' */
+                /* OAuth 1.0 'dance' */
 
-                // Authentication using callback url
+                // Authorization without callback url
                 Console.Write("Getting request token...");
                 OAuthToken oauthToken = dropboxServiceProvider.OAuthOperations.FetchRequestTokenAsync(null , null).Result;
                 Console.WriteLine("Done");
@@ -35,13 +35,13 @@ namespace Spring.OAuth1ConsoleQuickStart
                 OAuth1Parameters parameters = new OAuth1Parameters();
                 //parameters.Add("locale", CultureInfo.CurrentUICulture.IetfLanguageTag); // for a localized version of the authorization website
                 string authenticateUrl = dropboxServiceProvider.OAuthOperations.BuildAuthorizeUrl(oauthToken.Value, parameters);
-                Console.WriteLine("Redirect user for authentication: " + authenticateUrl);
+                Console.WriteLine("Redirect user for authorization");
                 Process.Start(authenticateUrl);
-                Console.WriteLine("Copy/Paste 'oauth_token' query string parameter from success url:");
-                string verifier = Console.ReadLine();
+                Console.Write("Press any key when authorization attempt has succeeded");
+                Console.ReadLine();
 
                 Console.Write("Getting access token...");
-                AuthorizedRequestToken requestToken = new AuthorizedRequestToken(oauthToken, verifier);
+                AuthorizedRequestToken requestToken = new AuthorizedRequestToken(oauthToken, null);
                 OAuthToken oauthAccessToken = dropboxServiceProvider.OAuthOperations.ExchangeForAccessTokenAsync(requestToken, null).Result;
                 Console.WriteLine("Done");
 
@@ -106,9 +106,9 @@ namespace Spring.OAuth1ConsoleQuickStart
                     });
             }
 #else
-                /* OAuth 'dance' */
+                /* OAuth 1.0 'dance' */
 
-                // Authentication using callback url
+                // Authorization without callback url
                 Console.Write("Getting request token...");
                 OAuthToken oauthToken = dropboxServiceProvider.OAuthOperations.FetchRequestToken(null, null);
                 Console.WriteLine("Done");
@@ -116,13 +116,13 @@ namespace Spring.OAuth1ConsoleQuickStart
                 OAuth1Parameters parameters = new OAuth1Parameters();
                 //parameters.Add("locale", CultureInfo.CurrentUICulture.IetfLanguageTag); // for a localized version of the authorization website
                 string authenticateUrl = dropboxServiceProvider.OAuthOperations.BuildAuthorizeUrl(oauthToken.Value, parameters);
-                Console.WriteLine("Redirect user for authentication: " + authenticateUrl);
+                Console.WriteLine("Redirect user for authorization");
                 Process.Start(authenticateUrl);
-                Console.WriteLine("Copy/Paste 'oauth_token' query string parameter from success url:");
-                string verifier = Console.ReadLine();
+                Console.Write("Press any key when authorization attempt has succeeded");
+                Console.ReadLine();
 
                 Console.Write("Getting access token...");
-                AuthorizedRequestToken requestToken = new AuthorizedRequestToken(oauthToken, verifier);
+                AuthorizedRequestToken requestToken = new AuthorizedRequestToken(oauthToken, null);
                 OAuthToken oauthAccessToken = dropboxServiceProvider.OAuthOperations.ExchangeForAccessToken(requestToken, null);
                 Console.WriteLine("Done");
 

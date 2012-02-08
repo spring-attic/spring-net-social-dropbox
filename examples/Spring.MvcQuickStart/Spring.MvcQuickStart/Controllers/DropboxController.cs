@@ -39,10 +39,10 @@ namespace Spring.MvcQuickStart.Controllers
         }
 
         // GET: /Dropbox/Callback
-        public ActionResult Callback(string oauth_token)
+        public ActionResult Callback()
         {
             OAuthToken requestToken = Session["RequestToken"] as OAuthToken;
-            AuthorizedRequestToken authorizedRequestToken = new AuthorizedRequestToken(requestToken, oauth_token);
+            AuthorizedRequestToken authorizedRequestToken = new AuthorizedRequestToken(requestToken, null);
             OAuthToken token = dropboxProvider.OAuthOperations.ExchangeForAccessTokenAsync(authorizedRequestToken, null).Result;
 
             Session["TokenValue"] = token.Value;

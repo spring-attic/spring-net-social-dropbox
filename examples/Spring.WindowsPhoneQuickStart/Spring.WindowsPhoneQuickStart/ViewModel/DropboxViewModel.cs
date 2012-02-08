@@ -77,9 +77,9 @@ namespace Spring.WindowsPhoneQuickStart.ViewModel
                 });
         }
 
-        public void AuthenticateCallback(string verifier)
+        public void AuthenticateCallback()
         {
-            AuthorizedRequestToken authorizedRequestToken = new AuthorizedRequestToken(this.requestOAuthToken, verifier);
+            AuthorizedRequestToken authorizedRequestToken = new AuthorizedRequestToken(this.requestOAuthToken, null);
             this.DropboxServiceProvider.OAuthOperations.ExchangeForAccessTokenAsync(authorizedRequestToken, null,
                 r =>
                 {
