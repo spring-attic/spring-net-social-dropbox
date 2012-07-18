@@ -111,8 +111,10 @@
     <Compile Include="Social\Dropbox\Api\DropboxFile.cs" />
     <Compile Include="Social\Dropbox\Api\DropboxApiError.cs" />
     <Compile Include="Social\Dropbox\Api\DropboxApiException.cs" />
+    <Compile Include="Social\Dropbox\Api\FileRef.cs" />
     <Compile Include="Social\Dropbox\Api\Impl\DropboxFileHttpMessageConverter.cs" />
     <Compile Include="Social\Dropbox\Api\Impl\DropboxErrorHandler.cs" />
+    <Compile Include="Social\Dropbox\Api\Impl\Json\FileRefDeserializer.cs" />
     <Compile Include="Social\Dropbox\Api\ThumbnailFormat.cs" />
     <Compile Include="Social\Dropbox\Api\ThumbnailSize.cs" />
     <Compile Include="Social\Dropbox\Api\DropboxLink.cs" />

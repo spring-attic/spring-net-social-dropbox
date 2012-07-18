@@ -96,6 +96,21 @@ namespace Spring.Social.Dropbox.Api
         Task<Entry> MoveAsync(string fromPath, string toPath);
 
         /// <summary>
+        /// Asynchronously creates a reference to another user's Dropbox file that can be used to 
+        /// copy files directly between two Dropbox accounts (with permission from both users) 
+        /// using the <see cref="M:CopyFileRefAsync"/> method.
+        /// No need to download and re-upload files.
+        /// </summary>
+        /// <param name="path">The path to the file you want a reference.</param>
+        /// <returns>
+        /// A <code>Task</code> that represents the asynchronous operation that can return 
+        /// a <see cref="FileRef">reference to another user's Dropbox file</see>.
+        /// </returns>
+        /// <exception cref="DropboxApiException">If there is an error while communicating with Dropbox.</exception>
+        /// <seealso cref="M:CopyFileRefAsync"/>
+        Task<FileRef> CreateFileRefAsync(string path);
+
+        /// <summary>
         /// Asynchronously copies a file or folder to a new location.
         /// </summary>
         /// <param name="fromPath">The path to the file or folder to be copied from, relative to root.</param>
@@ -106,6 +121,22 @@ namespace Spring.Social.Dropbox.Api
         /// </returns>
         /// <exception cref="DropboxApiException">If there is an error while communicating with Dropbox.</exception>
         Task<Entry> CopyAsync(string fromPath, string toPath);
+
+        /// <summary>
+        /// Asynchronously copies another user's Dropbox file without the need to download and re-upload the file.
+        /// </summary>
+        /// <param name="fromFileRef">
+        /// The reference to another user's Dropbox file to be copied from, 
+        /// obtained by calling the <see cref="M:CreateFileRefAsync"/> method.
+        /// </param>
+        /// <param name="toPath">The destination file path, including the new name for the file, relative to root.</param>
+        /// <returns>
+        /// A <code>Task</code> that represents the asynchronous operation that can return 
+        /// a metadata <see cref="Entry"/> for the copied file.
+        /// </returns>
+        /// <exception cref="DropboxApiException">If there is an error while communicating with Dropbox.</exception>
+        /// <seealso cref="M:CreateFileRefAsync"/>
+        Task<Entry> CopyFileRefAsync(string fromFileRef, string toPath);
 
         /// <summary>
         /// Asynchronously uploads a file.
@@ -353,6 +384,20 @@ namespace Spring.Social.Dropbox.Api
         Entry Move(string fromPath, string toPath);
 
         /// <summary>
+        /// Creates a reference to another user's Dropbox file that can be used to 
+        /// copy files directly between two Dropbox accounts (with permission from both users) 
+        /// using the <see cref="M:CopyFileRef"/> method.
+        /// No need to download and re-upload files.
+        /// </summary>
+        /// <param name="path">The path to the file you want a reference.</param>
+        /// <returns>
+        /// A <see cref="FileRef">reference to another user's Dropbox file</see>.
+        /// </returns>
+        /// <exception cref="DropboxApiException">If there is an error while communicating with Dropbox.</exception>
+        /// <seealso cref="M:CopyFileRef"/>
+        FileRef CreateFileRef(string path);
+
+        /// <summary>
         /// Copies a file or folder to a new location.
         /// </summary>
         /// <param name="fromPath">The path to the file or folder to be copied from, relative to root.</param>
@@ -362,6 +407,21 @@ namespace Spring.Social.Dropbox.Api
         /// </returns>
         /// <exception cref="DropboxApiException">If there is an error while communicating with Dropbox.</exception>
         Entry Copy(string fromPath, string toPath);
+
+        /// <summary>
+        /// Copies another user's Dropbox file without the need to download and re-upload the file.
+        /// </summary>
+        /// <param name="fromFileRef">
+        /// The reference to another user's Dropbox file to be copied from, 
+        /// obtained by calling the <see cref="M:CreateFileRef"/> method.
+        /// </param>
+        /// <param name="toPath">The destination file path, including the new name for the file, relative to root.</param>
+        /// <returns>
+        /// A metadata <see cref="Entry"/> for the copied file.
+        /// </returns>
+        /// <exception cref="DropboxApiException">If there is an error while communicating with Dropbox.</exception>
+        /// <seealso cref="M:CreateFileRef"/>
+        Entry CopyFileRef(string fromFileRef, string toPath);
 
         /// <summary>
         /// Uploads a file.
@@ -599,6 +659,24 @@ namespace Spring.Social.Dropbox.Api
         RestOperationCanceler MoveAsync(string fromPath, string toPath, Action<RestOperationCompletedEventArgs<Entry>> operationCompleted);
 
         /// <summary>
+        /// Asynchronously creates a reference to another user's Dropbox file that can be used to 
+        /// copy files directly between two Dropbox accounts (with permission from both users) 
+        /// using the <see cref="M:CopyFileRefAsync"/> method.
+        /// No need to download and re-upload files.
+        /// </summary>
+        /// <param name="path">The path to the file you want a reference.</param>
+        /// <param name="operationCompleted">
+        /// The <code>Action&lt;&gt;</code> to perform when the asynchronous request completes. 
+        /// Provides a <see cref="FileRef">reference to another user's Dropbox file</see>.
+        /// </param>
+        /// <returns>
+        /// A <see cref="RestOperationCanceler"/> instance that allows to cancel the asynchronous operation.
+        /// </returns>
+        /// <exception cref="DropboxApiException">If there is an error while communicating with Dropbox.</exception>
+        /// <seealso cref="M:CopyFileRefAsync"/>
+        RestOperationCanceler CreateFileRefAsync(string path, Action<RestOperationCompletedEventArgs<FileRef>> operationCompleted);
+
+        /// <summary>
         /// Asynchronously copies a file or folder to a new location.
         /// </summary>
         /// <param name="fromPath">The path to the file or folder to be copied from, relative to root.</param>
@@ -612,6 +690,25 @@ namespace Spring.Social.Dropbox.Api
         /// </returns>
         /// <exception cref="DropboxApiException">If there is an error while communicating with Dropbox.</exception>
         RestOperationCanceler CopyAsync(string fromPath, string toPath, Action<RestOperationCompletedEventArgs<Entry>> operationCompleted);
+
+        /// <summary>
+        /// Asynchronously copies another user's Dropbox file without the need to download and re-upload the file.
+        /// </summary>
+        /// <param name="fromFileRef">
+        /// The reference to another user's Dropbox file to be copied from, 
+        /// obtained by calling the <see cref="M:CreateFileRefAsync"/> method.
+        /// </param>
+        /// <param name="toPath">The destination file path, including the new name for the file, relative to root.</param>
+        /// <param name="operationCompleted">
+        /// The <code>Action&lt;&gt;</code> to perform when the asynchronous request completes. 
+        /// Provides a metadata <see cref="Entry"/> for the copied file.
+        /// </param>
+        /// <returns>
+        /// A <see cref="RestOperationCanceler"/> instance that allows to cancel the asynchronous operation.
+        /// </returns>
+        /// <exception cref="DropboxApiException">If there is an error while communicating with Dropbox.</exception>
+        /// <seealso cref="M:CreateFileRefAsync"/>
+        RestOperationCanceler CopyFileRefAsync(string fromFileRef, string toPath, Action<RestOperationCompletedEventArgs<Entry>> operationCompleted);
 
         /// <summary>
         /// Asynchronously uploads a file.

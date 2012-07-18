@@ -56,6 +56,7 @@
     <Compile Include="Social\Dropbox\Api\DropboxLink.cs" />
     <Compile Include="Social\Dropbox\Api\DropboxProfile.cs" />
     <Compile Include="Social\Dropbox\Api\Entry.cs" />
+    <Compile Include="Social\Dropbox\Api\FileRef.cs" />
     <Compile Include="Social\Dropbox\Api\IDropbox.cs" />
     <Compile Include="Social\Dropbox\Api\Impl\DropboxErrorHandler.cs" />
     <Compile Include="Social\Dropbox\Api\Impl\DropboxFileHttpMessageConverter.cs" />
@@ -64,6 +65,7 @@
     <Compile Include="Social\Dropbox\Api\Impl\Json\DropboxProfileDeserializer.cs" />
     <Compile Include="Social\Dropbox\Api\Impl\Json\EntryDeserializer.cs" />
     <Compile Include="Social\Dropbox\Api\Impl\Json\EntryListDeserializer.cs" />
+    <Compile Include="Social\Dropbox\Api\Impl\Json\FileRefDeserializer.cs" />
     <Compile Include="Social\Dropbox\Api\Impl\Json\JsonUtils.cs" />
     <Compile Include="Social\Dropbox\Api\MetadataParameters.cs" />
     <Compile Include="Social\Dropbox\Api\ThumbnailFormat.cs" />

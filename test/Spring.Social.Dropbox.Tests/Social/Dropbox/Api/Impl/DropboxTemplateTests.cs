@@ -178,6 +178,23 @@ namespace Spring.Social.Dropbox.Api.Impl
         }
 
         [Test]
+        public void CreateFileRef()
+        {
+            mockServer.ExpectNewRequest()
+                .AndExpectUri("https://api.dropbox.com/1/copy_ref/dropbox/test1.txt")
+                .AndExpectMethod(HttpMethod.GET)
+                .AndRespondWith(EmbeddedResource("Copy_Ref.json"), responseHeaders);
+
+#if NET_4_0 || SILVERLIGHT_5
+            FileRef fileRef = dropbox.CreateFileRefAsync("test1.txt").Result;
+#else
+            FileRef fileRef = dropbox.CreateFileRef("test1.txt");
+#endif
+            Assert.AreEqual("z1X6ATl6aWtzOGq0c3g5Ng", fileRef.Value);
+            Assert.AreEqual("31/01/2042 21:01:05", fileRef.ExpireDate.ToUniversalTime().ToString("dd/MM/yyyy HH:mm:ss"));
+        }
+
+        [Test]
         public void Copy()
         {
             mockServer.ExpectNewRequest()
@@ -190,6 +207,36 @@ namespace Spring.Social.Dropbox.Api.Impl
             Entry metadata = dropbox.CopyAsync("test2.txt", "test1.txt").Result;
 #else
             Entry metadata = dropbox.Copy("test2.txt", "test1.txt");
+#endif
+            Assert.AreEqual(15, metadata.Bytes);
+            Assert.IsNull(metadata.Hash);
+            Assert.AreEqual("page_white_text", metadata.Icon);
+            Assert.AreEqual(false, metadata.IsDeleted);
+            Assert.AreEqual(false, metadata.IsDirectory);
+            Assert.AreEqual("text/plain", metadata.MimeType);
+            Assert.IsNotNull(metadata.ModifiedDate);
+            Assert.AreEqual("10/08/2011 18:21:29", metadata.ModifiedDate.Value.ToUniversalTime().ToString("dd/MM/yyyy HH:mm:ss"));
+            Assert.AreEqual("/test1.txt", metadata.Path);
+            Assert.AreEqual("1f0a503351f", metadata.Revision);
+            Assert.AreEqual("dropbox", metadata.Root);
+            Assert.AreEqual("15 bytes", metadata.Size);
+            Assert.IsFalse(metadata.ThumbExists);
+            Assert.IsNull(metadata.Contents);
+        }
+
+        [Test]
+        public void CopyFileRef()
+        {
+            mockServer.ExpectNewRequest()
+                .AndExpectUri("https://api.dropbox.com/1/fileops/copy")
+                .AndExpectMethod(HttpMethod.POST)
+                .AndExpectBody("root=dropbox&from_copy_ref=z1X6ATl6aWtzOGq0c3g5Ng&to_path=test1.txt")
+                .AndRespondWith(EmbeddedResource("Copy.json"), responseHeaders);
+
+#if NET_4_0 || SILVERLIGHT_5
+            Entry metadata = dropbox.CopyFileRefAsync("z1X6ATl6aWtzOGq0c3g5Ng", "test1.txt").Result;
+#else
+            Entry metadata = dropbox.CopyFileRef("z1X6ATl6aWtzOGq0c3g5Ng", "test1.txt");
 #endif
             Assert.AreEqual(15, metadata.Bytes);
             Assert.IsNull(metadata.Hash);
