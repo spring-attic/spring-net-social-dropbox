@@ -108,7 +108,7 @@ namespace Spring.Social.Dropbox.Api.Impl
             Assert.AreEqual(true, metadata.IsDirectory);
             Assert.IsNull(metadata.MimeType);
             Assert.IsNotNull(metadata.ModifiedDate);
-            Assert.AreEqual("10/08/2011 18:21:30", metadata.ModifiedDate.Value.ToUniversalTime().ToString("dd/MM/yyyy HH:mm:ss"));
+            Assert.AreEqual("10/08/2011 18:21:30", metadata.ModifiedDate.Value.ToUniversalTime().ToString("dd'/'MM'/'yyyy HH:mm:ss"));
             Assert.AreEqual("/new_folder", metadata.Path);
             Assert.AreEqual("1f477dd351f", metadata.Revision);
             Assert.AreEqual("dropbox", metadata.Root);
@@ -138,7 +138,7 @@ namespace Spring.Social.Dropbox.Api.Impl
             Assert.AreEqual(false, metadata.IsDirectory);
             Assert.AreEqual("text/plain", metadata.MimeType);
             Assert.IsNotNull(metadata.ModifiedDate);
-            Assert.AreEqual("10/08/2011 18:21:30", metadata.ModifiedDate.Value.ToUniversalTime().ToString("dd/MM/yyyy HH:mm:ss"));
+            Assert.AreEqual("10/08/2011 18:21:30", metadata.ModifiedDate.Value.ToUniversalTime().ToString("dd'/'MM'/'yyyy HH:mm:ss"));
             Assert.AreEqual("/test .txt", metadata.Path);
             Assert.AreEqual("1f33043551f", metadata.Revision);
             Assert.AreEqual("dropbox", metadata.Root);
@@ -168,7 +168,7 @@ namespace Spring.Social.Dropbox.Api.Impl
             Assert.AreEqual(false, metadata.IsDirectory);
             Assert.AreEqual("text/plain", metadata.MimeType);
             Assert.IsNotNull(metadata.ModifiedDate);
-            Assert.AreEqual("10/08/2011 18:21:29", metadata.ModifiedDate.Value.ToUniversalTime().ToString("dd/MM/yyyy HH:mm:ss"));
+            Assert.AreEqual("10/08/2011 18:21:29", metadata.ModifiedDate.Value.ToUniversalTime().ToString("dd'/'MM'/'yyyy HH:mm:ss"));
             Assert.AreEqual("/test2.txt", metadata.Path);
             Assert.AreEqual("1e0a503351f", metadata.Revision);
             Assert.AreEqual("dropbox", metadata.Root);
@@ -191,7 +191,7 @@ namespace Spring.Social.Dropbox.Api.Impl
             FileRef fileRef = dropbox.CreateFileRef("test1.txt");
 #endif
             Assert.AreEqual("z1X6ATl6aWtzOGq0c3g5Ng", fileRef.Value);
-            Assert.AreEqual("31/01/2042 21:01:05", fileRef.ExpireDate.ToUniversalTime().ToString("dd/MM/yyyy HH:mm:ss"));
+            Assert.AreEqual("31/01/2042 21:01:05", fileRef.ExpireDate.ToUniversalTime().ToString("dd'/'MM'/'yyyy HH:mm:ss"));
         }
 
         [Test]
@@ -215,7 +215,7 @@ namespace Spring.Social.Dropbox.Api.Impl
             Assert.AreEqual(false, metadata.IsDirectory);
             Assert.AreEqual("text/plain", metadata.MimeType);
             Assert.IsNotNull(metadata.ModifiedDate);
-            Assert.AreEqual("10/08/2011 18:21:29", metadata.ModifiedDate.Value.ToUniversalTime().ToString("dd/MM/yyyy HH:mm:ss"));
+            Assert.AreEqual("10/08/2011 18:21:29", metadata.ModifiedDate.Value.ToUniversalTime().ToString("dd'/'MM'/'yyyy HH:mm:ss"));
             Assert.AreEqual("/test1.txt", metadata.Path);
             Assert.AreEqual("1f0a503351f", metadata.Revision);
             Assert.AreEqual("dropbox", metadata.Root);
@@ -245,7 +245,7 @@ namespace Spring.Social.Dropbox.Api.Impl
             Assert.AreEqual(false, metadata.IsDirectory);
             Assert.AreEqual("text/plain", metadata.MimeType);
             Assert.IsNotNull(metadata.ModifiedDate);
-            Assert.AreEqual("10/08/2011 18:21:29", metadata.ModifiedDate.Value.ToUniversalTime().ToString("dd/MM/yyyy HH:mm:ss"));
+            Assert.AreEqual("10/08/2011 18:21:29", metadata.ModifiedDate.Value.ToUniversalTime().ToString("dd'/'MM'/'yyyy HH:mm:ss"));
             Assert.AreEqual("/test1.txt", metadata.Path);
             Assert.AreEqual("1f0a503351f", metadata.Revision);
             Assert.AreEqual("dropbox", metadata.Root);
@@ -274,7 +274,7 @@ namespace Spring.Social.Dropbox.Api.Impl
             Assert.AreEqual(false, metadata.IsDirectory);
             Assert.AreEqual("application/pdf", metadata.MimeType);
             Assert.IsNotNull(metadata.ModifiedDate);
-            Assert.AreEqual("19/07/2011 21:55:38", metadata.ModifiedDate.Value.ToUniversalTime().ToString("dd/MM/yyyy HH:mm:ss"));
+            Assert.AreEqual("19/07/2011 21:55:38", metadata.ModifiedDate.Value.ToUniversalTime().ToString("dd'/'MM'/'yyyy HH:mm:ss"));
             Assert.AreEqual("/Getting_Started.pdf", metadata.Path);
             Assert.AreEqual("35e97029684fe", metadata.Revision);
             Assert.AreEqual("dropbox", metadata.Root);
@@ -312,7 +312,7 @@ namespace Spring.Social.Dropbox.Api.Impl
             Assert.AreEqual(false, file.Metadata.IsDirectory);
             Assert.AreEqual("application/pdf", file.Metadata.MimeType);
             Assert.IsNotNull(file.Metadata.ModifiedDate);
-            Assert.AreEqual("19/07/2011 21:55:38", file.Metadata.ModifiedDate.Value.ToUniversalTime().ToString("dd/MM/yyyy HH:mm:ss"));
+            Assert.AreEqual("19/07/2011 21:55:38", file.Metadata.ModifiedDate.Value.ToUniversalTime().ToString("dd'/'MM'/'yyyy HH:mm:ss"));
             Assert.AreEqual("/Getting_Started.pdf", file.Metadata.Path);
             Assert.AreEqual("35e97029684fe", file.Metadata.Revision);
             Assert.AreEqual("dropbox", file.Metadata.Root);
@@ -343,7 +343,7 @@ namespace Spring.Social.Dropbox.Api.Impl
             Assert.AreEqual(false, metadata.IsDirectory);
             Assert.AreEqual("application/pdf", metadata.MimeType);
             Assert.IsNotNull(metadata.ModifiedDate);
-            Assert.AreEqual("19/07/2011 21:55:38", metadata.ModifiedDate.Value.ToUniversalTime().ToString("dd/MM/yyyy HH:mm:ss"));
+            Assert.AreEqual("19/07/2011 21:55:38", metadata.ModifiedDate.Value.ToUniversalTime().ToString("dd'/'MM'/'yyyy HH:mm:ss"));
             Assert.AreEqual("/Getting_Started.pdf", metadata.Path);
             Assert.AreEqual("35e97029684fe", metadata.Revision);
             Assert.AreEqual("dropbox", metadata.Root);
@@ -377,7 +377,7 @@ namespace Spring.Social.Dropbox.Api.Impl
             Assert.AreEqual(true, metadata.IsDirectory);
             Assert.IsNull(metadata.MimeType);
             Assert.IsNotNull(metadata.ModifiedDate);
-            Assert.AreEqual("27/04/2011 22:18:51", metadata.ModifiedDate.Value.ToUniversalTime().ToString("dd/MM/yyyy HH:mm:ss"));
+            Assert.AreEqual("27/04/2011 22:18:51", metadata.ModifiedDate.Value.ToUniversalTime().ToString("dd'/'MM'/'yyyy HH:mm:ss"));
             Assert.AreEqual("/Public", metadata.Path);
             Assert.AreEqual("714f029684fe", metadata.Revision);
             Assert.AreEqual("dropbox", metadata.Root);
@@ -392,7 +392,7 @@ namespace Spring.Social.Dropbox.Api.Impl
             Assert.AreEqual(false, metadata.Contents[0].IsDirectory);
             Assert.AreEqual("text/plain", metadata.Contents[0].MimeType);
             Assert.IsNotNull(metadata.Contents[0].ModifiedDate);
-            Assert.AreEqual("18/07/2011 20:13:43", metadata.Contents[0].ModifiedDate.Value.ToUniversalTime().ToString("dd/MM/yyyy HH:mm:ss"));
+            Assert.AreEqual("18/07/2011 20:13:43", metadata.Contents[0].ModifiedDate.Value.ToUniversalTime().ToString("dd'/'MM'/'yyyy HH:mm:ss"));
             Assert.AreEqual("/Public/latest.txt", metadata.Contents[0].Path);
             Assert.AreEqual("35c1f029684fe", metadata.Contents[0].Revision);
             Assert.AreEqual("dropbox", metadata.Contents[0].Root);
@@ -441,7 +441,7 @@ namespace Spring.Social.Dropbox.Api.Impl
             Assert.AreEqual(false, revisions[0].IsDirectory);
             Assert.AreEqual("application/octet-stream", revisions[0].MimeType);
             Assert.IsNotNull(revisions[0].ModifiedDate);
-            Assert.AreEqual("20/07/2011 22:41:09", revisions[0].ModifiedDate.Value.ToUniversalTime().ToString("dd/MM/yyyy HH:mm:ss"));
+            Assert.AreEqual("20/07/2011 22:41:09", revisions[0].ModifiedDate.Value.ToUniversalTime().ToString("dd'/'MM'/'yyyy HH:mm:ss"));
             Assert.AreEqual("/hi2", revisions[0].Path);
             Assert.AreEqual("40000000d", revisions[0].Revision);
             Assert.AreEqual("app_folder", revisions[0].Root);
@@ -471,7 +471,7 @@ namespace Spring.Social.Dropbox.Api.Impl
             Assert.AreEqual(false, metadata.IsDirectory);
             Assert.AreEqual("application/octet-stream", metadata.MimeType);
             Assert.IsNotNull(metadata.ModifiedDate);
-            Assert.AreEqual("20/07/2011 22:41:09", metadata.ModifiedDate.Value.ToUniversalTime().ToString("dd/MM/yyyy HH:mm:ss"));
+            Assert.AreEqual("20/07/2011 22:41:09", metadata.ModifiedDate.Value.ToUniversalTime().ToString("dd'/'MM'/'yyyy HH:mm:ss"));
             Assert.AreEqual("/hi2", metadata.Path);
             Assert.AreEqual("40000000d", metadata.Revision);
             Assert.AreEqual("sandbox", metadata.Root);
@@ -503,7 +503,7 @@ namespace Spring.Social.Dropbox.Api.Impl
             Assert.AreEqual(false, results[0].IsDirectory);
             Assert.AreEqual("text/plain", results[0].MimeType);
             Assert.IsNotNull(results[0].ModifiedDate);
-            Assert.AreEqual("18/07/2011 20:13:43", results[0].ModifiedDate.Value.ToUniversalTime().ToString("dd/MM/yyyy HH:mm:ss"));
+            Assert.AreEqual("18/07/2011 20:13:43", results[0].ModifiedDate.Value.ToUniversalTime().ToString("dd'/'MM'/'yyyy HH:mm:ss"));
             Assert.AreEqual("/Public/latest.txt", results[0].Path);
             Assert.AreEqual("35c1f029684fe", results[0].Revision);
             Assert.AreEqual("dropbox", results[0].Root);
@@ -528,7 +528,7 @@ namespace Spring.Social.Dropbox.Api.Impl
 #endif
             Assert.IsNotNull(link);
             Assert.AreEqual("http://db.tt/APqhX1", link.Url);
-            Assert.AreEqual("17/08/2011 02:34:33", link.ExpireDate.ToUniversalTime().ToString("dd/MM/yyyy HH:mm:ss"));
+            Assert.AreEqual("17/08/2011 02:34:33", link.ExpireDate.ToUniversalTime().ToString("dd'/'MM'/'yyyy HH:mm:ss"));
         }
 
         [Test]
@@ -547,7 +547,7 @@ namespace Spring.Social.Dropbox.Api.Impl
 #endif
             Assert.IsNotNull(link);
             Assert.AreEqual("http://www.dropbox.com/s/m/a2mbDa2", link.Url);
-            Assert.AreEqual("16/09/2011 01:01:25", link.ExpireDate.ToUniversalTime().ToString("dd/MM/yyyy HH:mm:ss"));
+            Assert.AreEqual("16/09/2011 01:01:25", link.ExpireDate.ToUniversalTime().ToString("dd'/'MM'/'yyyy HH:mm:ss"));
         }
 
         [Test]
@@ -579,7 +579,7 @@ namespace Spring.Social.Dropbox.Api.Impl
             Assert.AreEqual(false, thumbnail.Metadata.IsDirectory);
             Assert.AreEqual("application/pdf", thumbnail.Metadata.MimeType);
             Assert.IsNotNull(thumbnail.Metadata.ModifiedDate);
-            Assert.AreEqual("19/07/2011 21:55:38", thumbnail.Metadata.ModifiedDate.Value.ToUniversalTime().ToString("dd/MM/yyyy HH:mm:ss"));
+            Assert.AreEqual("19/07/2011 21:55:38", thumbnail.Metadata.ModifiedDate.Value.ToUniversalTime().ToString("dd'/'MM'/'yyyy HH:mm:ss"));
             Assert.AreEqual("/Getting_Started.pdf", thumbnail.Metadata.Path);
             Assert.AreEqual("35e97029684fe", thumbnail.Metadata.Revision);
             Assert.AreEqual("dropbox", thumbnail.Metadata.Root);
