@@ -1503,7 +1503,11 @@ namespace Spring.Social.Dropbox.Api.Impl
                 }
                 else
                 {
-                    result.Append('%' + String.Format("{0:X2}", (int)symbol));
+                    byte[] bytes = Encoding.UTF8.GetBytes(new char[] { symbol });
+                    foreach (byte b in bytes)
+                    {
+                        result.AppendFormat("%{0:X2}", b);
+                    }
                 }
             }
             return result.ToString();
