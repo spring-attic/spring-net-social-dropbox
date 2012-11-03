@@ -24,7 +24,7 @@ using System.Collections.Generic;
 namespace Spring.Social.Dropbox.Api
 {
     /// <summary>
-    /// Represents a page of delta entries returned by <code>Delta(string cursor)</code> method.
+    /// Represents a page of delta entries returned by 'Delta(string cursor)' method.
     /// </summary>
     /// <author>Bruno Baia</author>
 #if !SILVERLIGHT
@@ -36,7 +36,7 @@ namespace Spring.Social.Dropbox.Api
         /// Gets or sets a value that encodes the latest information that has been returned.
         /// It is used to keep track of your current state. 
         /// <para/>
-        /// On the next call to <code>Delta(string cursor)</code> method, pass in this value 
+        /// On the next call to 'Delta(string cursor)' method, pass in this value 
         /// to return delta entries that have been recorded since this cursor was returned.
         /// </summary>
 	    public string Cursor { get; set; }
@@ -44,7 +44,7 @@ namespace Spring.Social.Dropbox.Api
         /// <summary>
         /// Gets or sets a value indicating whether or not more entries are available.
         /// <para/>
-        /// If <see langword="true"/> you can call <code>Delta(string cursor)</code> method again immediately to retrieve those entries. 
+        /// If <see langword="true"/> you can call 'Delta(string cursor)' method again immediately to retrieve those entries. 
         /// If <see langword="false"/>, then wait for at least five minutes (preferably longer) before checking again.
         /// </summary>
         public bool HasMore { get; set; }
@@ -52,7 +52,7 @@ namespace Spring.Social.Dropbox.Api
         /// <summary>
         /// Gets or sets a value indicating whether or not to clear your local state before processing the delta entries.
         /// <para/>
-        /// Always <see langword="true"/> on the initial call to <code>Delta(string cursor)</code> method (i.e. when no cursor is passed in). 
+        /// Always <see langword="true"/> on the initial call to 'Delta(string cursor)' method (i.e. when no cursor is passed in). 
         /// Otherwise, it is <see langword="true"/> in rare situations, such as after server or account maintenance, 
         /// or if a user deletes their app folder.
         /// </summary>
