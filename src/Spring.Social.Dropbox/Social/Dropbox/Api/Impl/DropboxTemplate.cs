@@ -328,6 +328,37 @@ namespace Spring.Social.Dropbox.Api.Impl
         }
 
         /// <summary>
+        /// Asynchronously keeps up with changes to files and folders in a user's Dropbox. 
+        /// <para/>
+        /// You can periodically call this method to get a list of metadatas, 
+        /// which are instructions on how to update your local state to match the server's state.
+        /// </summary>
+        /// <param name="cursor">
+        /// A value that is used to keep track of your current state. 
+        /// <para/>
+        /// On the first call, you should pass in <see langword="null"/>. 
+        /// On subsequent calls, pass in the cursor value returned by the previous call.
+        /// </param>
+        /// <returns>
+        /// A <code>Task</code> that represents the asynchronous operation that can return 
+        /// a single <see cref="DeltaPage">delta page</see> of results. 
+        /// <para/>
+        /// The <see cref="DeltaPage"/>'s HasMore property will tell you whether the server has more pages of results to return. 
+        /// If the server doesn't have more results, wait for at least five minutes (preferably longer) and poll again.
+        /// </returns>
+        /// <exception cref="DropboxApiException">If there is an error while communicating with Dropbox.</exception>
+        public Task<DeltaPage> DeltaAsync(string cursor)
+        {
+            NameValueCollection request = new NameValueCollection();
+            if (cursor != null)
+            {
+                request.Add("cursor", cursor);
+            }
+            this.AddLocaleTo(request);
+            return this.RestTemplate.PostForObjectAsync<DeltaPage>("delta/", request);
+        }
+
+        /// <summary>
         /// Asynchronously retrieves file or folder metadata.
         /// </summary>
         /// <param name="path">The Dropbox path to the file or folder, relative to root.</param>
@@ -695,6 +726,36 @@ namespace Spring.Social.Dropbox.Api.Impl
         public DropboxFile DownloadFile(string path, string revision)
         {
             return this.RestTemplate.GetForObject<DropboxFile>(this.BuildDownloadUrl(path, revision));
+        }
+
+        /// <summary>
+        /// Keeps up with changes to files and folders in a user's Dropbox. 
+        /// <para/>
+        /// You can periodically call this method to get a list of metadatas, 
+        /// which are instructions on how to update your local state to match the server's state.
+        /// </summary>
+        /// <param name="cursor">
+        /// A value that is used to keep track of your current state. 
+        /// <para/>
+        /// On the first call, you should pass in <see langword="null"/>. 
+        /// On subsequent calls, pass in the cursor value returned by the previous call.
+        /// </param>
+        /// <returns>
+        /// A single <see cref="DeltaPage">delta page</see> of results. 
+        /// <para/>
+        /// The <see cref="DeltaPage"/>'s HasMore property will tell you whether the server has more pages of results to return. 
+        /// If the server doesn't have more results, wait for at least five minutes (preferably longer) and poll again.
+        /// </returns>
+        /// <exception cref="DropboxApiException">If there is an error while communicating with Dropbox.</exception>
+        public DeltaPage Delta(string cursor)
+        {
+            NameValueCollection request = new NameValueCollection();
+            if (cursor != null)
+            {
+                request.Add("cursor", cursor);
+            }
+            this.AddLocaleTo(request);
+            return this.RestTemplate.PostForObject<DeltaPage>("delta/", request);
         }
 
         /// <summary>
@@ -1113,6 +1174,40 @@ namespace Spring.Social.Dropbox.Api.Impl
         }
 
         /// <summary>
+        /// Asynchronously keeps up with changes to files and folders in a user's Dropbox. 
+        /// <para/>
+        /// You can periodically call this method to get a list of metadatas, 
+        /// which are instructions on how to update your local state to match the server's state.
+        /// </summary>
+        /// <param name="cursor">
+        /// A value that is used to keep track of your current state. 
+        /// <para/>
+        /// On the first call, you should pass in <see langword="null"/>. 
+        /// On subsequent calls, pass in the cursor value returned by the previous call.
+        /// </param>
+        /// <param name="operationCompleted">
+        /// The <code>Action&lt;&gt;</code> to perform when the asynchronous request completes. 
+        /// Provides a single <see cref="DeltaPage">delta page</see> of results. 
+        /// <para/>
+        /// The <see cref="DeltaPage"/>'s HasMore property will tell you whether the server has more pages of results to return. 
+        /// If the server doesn't have more results, wait for at least five minutes (preferably longer) and poll again.
+        /// </param>
+        /// <returns>
+        /// A <see cref="RestOperationCanceler"/> instance that allows to cancel the asynchronous operation.
+        /// </returns>
+        /// <exception cref="DropboxApiException">If there is an error while communicating with Dropbox.</exception>
+        public RestOperationCanceler DeltaAsync(string cursor, Action<RestOperationCompletedEventArgs<DeltaPage>> operationCompleted)
+        {
+            NameValueCollection request = new NameValueCollection();
+            if (cursor != null)
+            {
+                request.Add("cursor", cursor);
+            }
+            this.AddLocaleTo(request);
+            return this.RestTemplate.PostForObjectAsync<DeltaPage>("delta/", request, operationCompleted);
+        }
+
+        /// <summary>
         /// Asynchronously retrieves file or folder metadata.
         /// </summary>
         /// <param name="path">The Dropbox path to the file or folder, relative to root.</param>
@@ -1364,6 +1459,7 @@ namespace Spring.Social.Dropbox.Api.Impl
             jsonMapper.RegisterDeserializer(typeof(IList<Entry>), new EntryListDeserializer());
             jsonMapper.RegisterDeserializer(typeof(DropboxLink), new DropboxLinkDeserializer());
             jsonMapper.RegisterDeserializer(typeof(FileRef), new FileRefDeserializer());
+            jsonMapper.RegisterDeserializer(typeof(DeltaPage), new DeltaPageDeserializer());
 
             IList<IHttpMessageConverter> converters = base.GetMessageConverters();
             converters.Add(new ResourceHttpMessageConverter());

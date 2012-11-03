@@ -55,6 +55,7 @@ namespace Spring.OAuth1ConsoleQuickStart
 
                 // Use step by step debugging, or not             
 /*
+                DeltaPage deltaPage = dropbox.DeltaAsync(null).Result;
                 Entry createFolderEntry = dropbox.CreateFolderAsync("Spring Social").Result;
                 Entry uploadFileEntry = dropbox.UploadFileAsync(
                     new AssemblyResource("assembly://Spring.ConsoleQuickStart/Spring.ConsoleQuickStart/File.txt"),
@@ -138,6 +139,7 @@ namespace Spring.OAuth1ConsoleQuickStart
 
                 // Use step by step debugging, or not
 /*
+                DeltaPage deltaPage = dropbox.Delta(null);
                 Entry createFolderEntry = dropbox.CreateFolder("Spring Social");
                 Entry uploadFileEntry = dropbox.UploadFile(
                     new AssemblyResource("assembly://Spring.ConsoleQuickStart/Spring.ConsoleQuickStart/File.txt"),

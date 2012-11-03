@@ -66,7 +66,11 @@ IDropbox dropboxApi = serviceProvider.GetApi(accessToken.Value, accessToken.Secr
 
   Entry Move(string fromPath, string toPath);
 
+  FileRef CreateFileRef(string path);
+  
   Entry Copy(string fromPath, string toPath);
+  
+  Entry CopyFileRef(string fromFileRef, string toPath);
 
   Entry UploadFile(IResource file, string path);
 
@@ -75,6 +79,8 @@ IDropbox dropboxApi = serviceProvider.GetApi(accessToken.Value, accessToken.Secr
   DropboxFile DownloadFile(string path);
 
   DropboxFile DownloadFile(string path, string revision);
+
+  DeltaPage Delta(string cursor);
 
   Entry GetMetadata(string path);
 

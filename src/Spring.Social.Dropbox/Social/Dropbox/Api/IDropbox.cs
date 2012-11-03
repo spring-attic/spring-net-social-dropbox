@@ -213,6 +213,28 @@ namespace Spring.Social.Dropbox.Api
         Task<DropboxFile> DownloadFileAsync(string path, string revision, CancellationToken cancellationToken);
 
         /// <summary>
+        /// Asynchronously keeps up with changes to files and folders in a user's Dropbox. 
+        /// <para/>
+        /// You can periodically call this method to get a list of metadatas, 
+        /// which are instructions on how to update your local state to match the server's state.
+        /// </summary>
+        /// <param name="cursor">
+        /// A value that is used to keep track of your current state. 
+        /// <para/>
+        /// On the first call, you should pass in <see langword="null"/>. 
+        /// On subsequent calls, pass in the cursor value returned by the previous call.
+        /// </param>
+        /// <returns>
+        /// A <code>Task</code> that represents the asynchronous operation that can return 
+        /// a single <see cref="DeltaPage">delta page</see> of results. 
+        /// <para/>
+        /// The <see cref="DeltaPage"/>'s HasMore property will tell you whether the server has more pages of results to return. 
+        /// If the server doesn't have more results, wait for at least five minutes (preferably longer) and poll again.
+        /// </returns>
+        /// <exception cref="DropboxApiException">If there is an error while communicating with Dropbox.</exception>
+        Task<DeltaPage> DeltaAsync(string cursor);
+
+        /// <summary>
         /// Asynchronously retrieves file or folder metadata.
         /// </summary>
         /// <param name="path">The Dropbox path to the file or folder, relative to root.</param>
@@ -478,6 +500,27 @@ namespace Spring.Social.Dropbox.Api
         /// </returns>
         /// <exception cref="DropboxApiException">If there is an error while communicating with Dropbox.</exception>
         DropboxFile DownloadFile(string path, string revision);
+
+        /// <summary>
+        /// Keeps up with changes to files and folders in a user's Dropbox. 
+        /// <para/>
+        /// You can periodically call this method to get a list of metadatas, 
+        /// which are instructions on how to update your local state to match the server's state.
+        /// </summary>
+        /// <param name="cursor">
+        /// A value that is used to keep track of your current state. 
+        /// <para/>
+        /// On the first call, you should pass in <see langword="null"/>. 
+        /// On subsequent calls, pass in the cursor value returned by the previous call.
+        /// </param>
+        /// <returns>
+        /// A single <see cref="DeltaPage">delta page</see> of results. 
+        /// <para/>
+        /// The <see cref="DeltaPage"/>'s HasMore property will tell you whether the server has more pages of results to return. 
+        /// If the server doesn't have more results, wait for at least five minutes (preferably longer) and poll again.
+        /// </returns>
+        /// <exception cref="DropboxApiException">If there is an error while communicating with Dropbox.</exception>
+        DeltaPage Delta(string cursor);
 
         /// <summary>
         /// Retrieves file or folder metadata.
@@ -785,6 +828,31 @@ namespace Spring.Social.Dropbox.Api
         /// </returns>
         /// <exception cref="DropboxApiException">If there is an error while communicating with Dropbox.</exception>
         RestOperationCanceler DownloadFileAsync(string path, string revision, Action<RestOperationCompletedEventArgs<DropboxFile>> operationCompleted);
+
+        /// <summary>
+        /// Asynchronously keeps up with changes to files and folders in a user's Dropbox. 
+        /// <para/>
+        /// You can periodically call this method to get a list of metadatas, 
+        /// which are instructions on how to update your local state to match the server's state.
+        /// </summary>
+        /// <param name="cursor">
+        /// A value that is used to keep track of your current state. 
+        /// <para/>
+        /// On the first call, you should pass in <see langword="null"/>. 
+        /// On subsequent calls, pass in the cursor value returned by the previous call.
+        /// </param>
+        /// <param name="operationCompleted">
+        /// The <code>Action&lt;&gt;</code> to perform when the asynchronous request completes. 
+        /// Provides a single <see cref="DeltaPage">delta page</see> of results. 
+        /// <para/>
+        /// The <see cref="DeltaPage"/>'s HasMore property will tell you whether the server has more pages of results to return. 
+        /// If the server doesn't have more results, wait for at least five minutes (preferably longer) and poll again.
+        /// </param>
+        /// <returns>
+        /// A <see cref="RestOperationCanceler"/> instance that allows to cancel the asynchronous operation.
+        /// </returns>
+        /// <exception cref="DropboxApiException">If there is an error while communicating with Dropbox.</exception>
+        RestOperationCanceler DeltaAsync(string cursor, Action<RestOperationCompletedEventArgs<DeltaPage>> operationCompleted);
 
         /// <summary>
         /// Asynchronously retrieves file or folder metadata.

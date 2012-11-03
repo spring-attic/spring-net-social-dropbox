@@ -114,6 +114,7 @@
     <EmbeddedResource Include="Social\Dropbox\Api\Impl\Revisions.json" />
     <EmbeddedResource Include="Social\Dropbox\Api\Impl\Search.json" />
     <EmbeddedResource Include="Social\Dropbox\Api\Impl\Copy_Ref.json" />
+    <EmbeddedResource Include="Social\Dropbox\Api\Impl\Delta.json" />
     <None Include="Spring.Social.Dropbox.Tests.dll.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

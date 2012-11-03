@@ -132,6 +132,7 @@
     <EmbeddedResource Include="Social\Dropbox\Api\Impl\GetShareableLink.json" />
     <EmbeddedResource Include="Social\Dropbox\Api\Impl\GetMediaLink.json" />
     <EmbeddedResource Include="Social\Dropbox\Api\Impl\Copy_Ref.json" />
+    <EmbeddedResource Include="Social\Dropbox\Api\Impl\Delta.json" />
     <None Include="Spring.Social.Dropbox.Tests.dll.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

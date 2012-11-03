@@ -322,6 +322,31 @@ namespace Spring.Social.Dropbox.Api.Impl
         }
 
         [Test]
+        public void Delta()
+        {
+            mockServer.ExpectNewRequest()
+                .AndExpectUri("https://api.dropbox.com/1/delta/")
+                .AndExpectMethod(HttpMethod.POST)
+                .AndExpectBody("cursor=123azed54")
+                .AndRespondWith(EmbeddedResource("Delta.json"), responseHeaders);
+
+#if NET_4_0 || SILVERLIGHT_5
+            DeltaPage deltaPage = dropbox.DeltaAsync("123azed54").Result;
+#else
+            DeltaPage deltaPage = dropbox.Delta("123azed54");
+#endif
+            Assert.AreEqual("AuYe6kpu-M6pToHfszmwEtnEuE8Xiz4NqiDs4BKp2w2OeJxj_JqrzMCww5VZ5l8SAwOjGwMDAzMDBAjpF-cmFpWoFeenlSjoKiSlpKQxi_n8YkAAff3EgoJi_eKCosy8dL281BKF4vzkzMQchcLSzOTs4hKgbgUNoBKFtPyclNQiTdb3W-yQtAvoJyVmJiok5-cVl-aUAI1gyWl_D5IAANo_J44", deltaPage.Cursor);
+            Assert.AreEqual(true, deltaPage.HasMore);
+            Assert.AreEqual(true, deltaPage.Reset);
+            Assert.AreEqual(11, deltaPage.Entries.Count);
+            Assert.AreEqual("/photos", deltaPage.Entries[0].Path);
+            Assert.IsNotNull(deltaPage.Entries[0].Metadata);
+            Assert.AreEqual("/Photos", deltaPage.Entries[0].Metadata.Path);
+            Assert.AreEqual("/deleted_dir", deltaPage.Entries[10].Path);
+            Assert.IsNull(deltaPage.Entries[10].Metadata);
+        }
+
+        [Test]
         public void GetFileMetadata()
         {
             mockServer.ExpectNewRequest()

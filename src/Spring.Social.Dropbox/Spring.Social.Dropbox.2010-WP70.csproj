@@ -59,6 +59,8 @@
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Social\Dropbox\Api\AccessLevel.cs" />
+    <Compile Include="Social\Dropbox\Api\DeltaEntry.cs" />
+    <Compile Include="Social\Dropbox\Api\DeltaPage.cs" />
     <Compile Include="Social\Dropbox\Api\DropboxApiError.cs" />
     <Compile Include="Social\Dropbox\Api\DropboxApiException.cs" />
     <Compile Include="Social\Dropbox\Api\DropboxFile.cs" />
@@ -70,6 +72,7 @@
     <Compile Include="Social\Dropbox\Api\Impl\DropboxErrorHandler.cs" />
     <Compile Include="Social\Dropbox\Api\Impl\DropboxFileHttpMessageConverter.cs" />
     <Compile Include="Social\Dropbox\Api\Impl\DropboxTemplate.cs" />
+    <Compile Include="Social\Dropbox\Api\Impl\Json\DeltaPageDeserializer.cs" />
     <Compile Include="Social\Dropbox\Api\Impl\Json\DropboxLinkDeserializer.cs" />
     <Compile Include="Social\Dropbox\Api\Impl\Json\DropboxProfileDeserializer.cs" />
     <Compile Include="Social\Dropbox\Api\Impl\Json\EntryDeserializer.cs" />
