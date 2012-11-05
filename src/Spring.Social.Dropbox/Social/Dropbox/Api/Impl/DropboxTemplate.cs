@@ -20,7 +20,6 @@
 
 using System;
 using System.Text;
-using System.Globalization;
 using System.Collections.Generic;
 #if SILVERLIGHT
 using Spring.Collections.Specialized;
@@ -35,8 +34,10 @@ using System.Threading.Tasks;
 using Spring.IO;
 using Spring.Json;
 using Spring.Rest.Client;
+using Spring.Rest.Client.Support;
 using Spring.Social.OAuth1;
 using Spring.Http;
+using Spring.Http.Client;
 using Spring.Http.Converters;
 using Spring.Http.Converters.Json;
 
@@ -319,12 +320,9 @@ namespace Spring.Social.Dropbox.Api.Impl
         /// <exception cref="DropboxApiException">If there is an error while communicating with Dropbox.</exception>
         public Task<DropboxFile> DownloadFileAsync(string path, string revision, CancellationToken cancellationToken)
         {
-            return this.RestTemplate.ExchangeAsync<DropboxFile>(
-                this.BuildDownloadUrl(path, revision), HttpMethod.GET, null, cancellationToken)
-                .ContinueWith<DropboxFile>(task =>
-                {
-                    return task.Result.Body;
-                });
+            AcceptHeaderRequestCallback requestCallback = new AcceptHeaderRequestCallback(typeof(DropboxFile), this.RestTemplate.MessageConverters);
+            DropboxFileResponseExtractor responseExtractor = new DropboxFileResponseExtractor(this.RestTemplate.MessageConverters);
+            return this.RestTemplate.ExecuteAsync<DropboxFile>(this.BuildDownloadUrl(path, revision), HttpMethod.GET, requestCallback, responseExtractor, cancellationToken);
         }
 
         /// <summary>
@@ -725,7 +723,9 @@ namespace Spring.Social.Dropbox.Api.Impl
         /// <exception cref="DropboxApiException">If there is an error while communicating with Dropbox.</exception>
         public DropboxFile DownloadFile(string path, string revision)
         {
-            return this.RestTemplate.GetForObject<DropboxFile>(this.BuildDownloadUrl(path, revision));
+            AcceptHeaderRequestCallback requestCallback = new AcceptHeaderRequestCallback(typeof(DropboxFile), this.RestTemplate.MessageConverters);
+            DropboxFileResponseExtractor responseExtractor = new DropboxFileResponseExtractor(this.RestTemplate.MessageConverters);
+            return this.RestTemplate.Execute<DropboxFile>(this.BuildDownloadUrl(path, revision), HttpMethod.GET, requestCallback, responseExtractor);
         }
 
         /// <summary>
@@ -1170,7 +1170,9 @@ namespace Spring.Social.Dropbox.Api.Impl
         /// <exception cref="DropboxApiException">If there is an error while communicating with Dropbox.</exception>
         public RestOperationCanceler DownloadFileAsync(string path, string revision, Action<RestOperationCompletedEventArgs<DropboxFile>> operationCompleted)
         {
-            return this.RestTemplate.GetForObjectAsync<DropboxFile>(this.BuildDownloadUrl(path, revision), operationCompleted);
+            AcceptHeaderRequestCallback requestCallback = new AcceptHeaderRequestCallback(typeof(DropboxFile), this.RestTemplate.MessageConverters);
+            DropboxFileResponseExtractor responseExtractor = new DropboxFileResponseExtractor(this.RestTemplate.MessageConverters);
+            return this.RestTemplate.ExecuteAsync<DropboxFile>(this.BuildDownloadUrl(path, revision), HttpMethod.GET, requestCallback, responseExtractor, operationCompleted);
         }
 
         /// <summary>
@@ -1623,6 +1625,20 @@ namespace Spring.Social.Dropbox.Api.Impl
                     return "xl";
                 default:
                     return "small";
+            }
+        }
+
+        // SPRNETSOCIALDB-9
+        private class DropboxFileResponseExtractor : MessageConverterResponseExtractor<DropboxFile>
+        {
+            public DropboxFileResponseExtractor(IList<IHttpMessageConverter> messageConverters)
+                : base(messageConverters)
+            {
+            }
+
+            protected override bool HasMessageBody(IClientHttpResponse response)
+            {
+                return true;
             }
         }
     }
