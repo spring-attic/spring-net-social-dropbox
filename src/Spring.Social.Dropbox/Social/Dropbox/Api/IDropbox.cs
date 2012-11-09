@@ -213,6 +213,40 @@ namespace Spring.Social.Dropbox.Api
         Task<DropboxFile> DownloadFileAsync(string path, string revision, CancellationToken cancellationToken);
 
         /// <summary>
+        /// Asynchronously downloads part of a file and its metadata.
+        /// </summary>
+        /// <param name="path">The Dropbox path to the file you want to retrieve, relative to root.</param>
+        /// <param name="startOffset">The zero-based starting position of the part file.</param>
+        /// <param name="length">The number of bytes of the part file.</param>
+        /// <returns>
+        /// A 'Task' that represents the asynchronous operation that can return 
+        /// a <see cref="DropboxFile"/> object containing the part of file's content and metadata.
+        /// </returns>
+        /// <exception cref="DropboxApiException">If there is an error while communicating with Dropbox.</exception>
+        Task<DropboxFile> DownloadPartialFileAsync(string path, long startOffset, long length);
+
+        /// <summary>
+        /// Asynchronously downloads part of a file and its metadata.
+        /// </summary>
+        /// <param name="path">The Dropbox path to the file you want to retrieve, relative to root.</param>
+        /// <param name="startOffset">The zero-based starting position of the part file.</param>
+        /// <param name="length">The number of bytes of the part file.</param>
+        /// <param name="revision">
+        /// The revision of the file to retrieve, or <see langword="null"/> for the latest version.
+        /// </param>
+        /// <param name="cancellationToken">
+        /// The <see cref="CancellationToken"/> that will be assigned to the task. 
+        /// <para/>
+        /// Use <see cref="P:CancellationToken.None"/> for an empty <see cref="CancellationToken"/> value.
+        /// </param>
+        /// <returns>
+        /// A 'Task' that represents the asynchronous operation that can return 
+        /// a <see cref="DropboxFile"/> object containing the part of file's content and metadata.
+        /// </returns>
+        /// <exception cref="DropboxApiException">If there is an error while communicating with Dropbox.</exception>
+        Task<DropboxFile> DownloadPartialFileAsync(string path, long startOffset, long length, string revision, CancellationToken cancellationToken);
+
+        /// <summary>
         /// Asynchronously keeps up with changes to files and folders in a user's Dropbox. 
         /// <para/>
         /// You can periodically call this method to get a list of metadatas, 
@@ -500,6 +534,33 @@ namespace Spring.Social.Dropbox.Api
         /// </returns>
         /// <exception cref="DropboxApiException">If there is an error while communicating with Dropbox.</exception>
         DropboxFile DownloadFile(string path, string revision);
+
+        /// <summary>
+        /// Downloads part of a file and its metadata.
+        /// </summary>
+        /// <param name="path">The Dropbox path to the file you want to retrieve, relative to root.</param>
+        /// <param name="startOffset">The zero-based starting position of the part file.</param>
+        /// <param name="length">The number of bytes of the part file.</param>
+        /// <returns>
+        /// A <see cref="DropboxFile"/> object containing the part of file's content and metadata.
+        /// </returns>
+        /// <exception cref="DropboxApiException">If there is an error while communicating with Dropbox.</exception>
+        DropboxFile DownloadPartialFile(string path, long startOffset, long length);
+
+        /// <summary>
+        /// Downloads part of a file and its metadata.
+        /// </summary>
+        /// <param name="path">The Dropbox path to the file you want to retrieve, relative to root.</param>
+        /// <param name="startOffset">The zero-based starting position of the part file.</param>
+        /// <param name="length">The number of bytes of the part file.</param>
+        /// <param name="revision">
+        /// The revision of the file to retrieve, or <see langword="null"/> for the latest version.
+        /// </param>
+        /// <returns>
+        /// A <see cref="DropboxFile"/> object containing the part of file's content and metadata.
+        /// </returns>
+        /// <exception cref="DropboxApiException">If there is an error while communicating with Dropbox.</exception>
+        DropboxFile DownloadPartialFile(string path, long startOffset, long length, string revision);
 
         /// <summary>
         /// Keeps up with changes to files and folders in a user's Dropbox. 
@@ -828,6 +889,41 @@ namespace Spring.Social.Dropbox.Api
         /// </returns>
         /// <exception cref="DropboxApiException">If there is an error while communicating with Dropbox.</exception>
         RestOperationCanceler DownloadFileAsync(string path, string revision, Action<RestOperationCompletedEventArgs<DropboxFile>> operationCompleted);
+
+        /// <summary>
+        /// Asynchronously downloads part of a file and its metadata.
+        /// </summary>
+        /// <param name="path">The Dropbox path to the file you want to retrieve, relative to root.</param>
+        /// <param name="startOffset">The zero-based starting position of the part file.</param>
+        /// <param name="length">The number of bytes of the part file.</param>
+        /// <param name="operationCompleted">
+        /// The 'Action&lt;&gt;' to perform when the asynchronous request completes. 
+        /// Provides <see cref="DropboxFile"/> object containing the part of file's content and metadata.
+        /// </param>
+        /// <returns>
+        /// A <see cref="RestOperationCanceler"/> instance that allows to cancel the asynchronous operation.
+        /// </returns>
+        /// <exception cref="DropboxApiException">If there is an error while communicating with Dropbox.</exception>
+        RestOperationCanceler DownloadPartialFileAsync(string path, long startOffset, long length, Action<RestOperationCompletedEventArgs<DropboxFile>> operationCompleted);
+
+        /// <summary>
+        /// Asynchronously downloads part of a file and its metadata.
+        /// </summary>
+        /// <param name="path">The Dropbox path to the file you want to retrieve, relative to root.</param>
+        /// <param name="startOffset">The zero-based starting position of the part file.</param>
+        /// <param name="length">The number of bytes of the part file.</param>
+        /// <param name="revision">
+        /// The revision of the file to retrieve, or <see langword="null"/> for the latest version.
+        /// </param>
+        /// <param name="operationCompleted">
+        /// The 'Action&lt;&gt;' to perform when the asynchronous request completes. 
+        /// Provides <see cref="DropboxFile"/> object containing the part of file's content and metadata.
+        /// </param>
+        /// <returns>
+        /// A <see cref="RestOperationCanceler"/> instance that allows to cancel the asynchronous operation.
+        /// </returns>
+        /// <exception cref="DropboxApiException">If there is an error while communicating with Dropbox.</exception>
+        RestOperationCanceler DownloadPartialFileAsync(string path, long startOffset, long length, string revision, Action<RestOperationCompletedEventArgs<DropboxFile>> operationCompleted);
 
         /// <summary>
         /// Asynchronously keeps up with changes to files and folders in a user's Dropbox. 

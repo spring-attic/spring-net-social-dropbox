@@ -80,6 +80,10 @@ IDropbox dropboxApi = serviceProvider.GetApi(accessToken.Value, accessToken.Secr
 
   DropboxFile DownloadFile(string path, string revision);
 
+  DropboxFile DownloadPartialFile(string path, long startOffset, long length);
+
+  DropboxFile DownloadPartialFile(string path, long startOffset, long length, string revision);
+
   DeltaPage Delta(string cursor);
 
   Entry GetMetadata(string path);

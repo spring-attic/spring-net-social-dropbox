@@ -322,6 +322,45 @@ namespace Spring.Social.Dropbox.Api.Impl
         }
 
         [Test]
+        public void DownloadPartialFile()
+        {
+            responseHeaders["x-dropbox-metadata"] = "{ \"size\": \"225.4KB\", \"rev\": \"35e97029684fe\", \"thumb_exists\": false, \"bytes\": 230783, \"modified\": \"Tue, 19 Jul 2011 21:55:38 +0000\", \"path\": \"/Getting_Started.pdf\", \"is_dir\": false, \"icon\": \"page_white_acrobat\", \"root\": \"dropbox\", \"mime_type\": \"application/pdf\", \"revision\": 220823 }";
+            responseHeaders.ContentType = MediaType.TEXT_PLAIN;
+            mockServer.ExpectNewRequest()
+                .AndExpectUri("https://api-content.dropbox.com/1/files/dropbox/Dir/File.txt?rev=a123z")
+                .AndExpectMethod(HttpMethod.GET)
+                .AndExpectHeader("Range", "bytes=0-1023")
+                .AndRespondWith(EmbeddedResource("File.txt"), responseHeaders);
+
+#if NET_4_0 || SILVERLIGHT_5
+            DropboxFile file = dropbox.DownloadPartialFileAsync("Dir/File.txt", 0, 1024, "a123z", CancellationToken.None).Result;
+#else
+            DropboxFile file = dropbox.DownloadPartialFile("Dir/File.txt", 0, 1024, "a123z");
+#endif
+            Assert.IsNotNull(file);
+
+            // Content
+            Assert.IsNotNull(file.Content);
+            Assert.IsNotEmpty(file.Content);
+
+            // Metadata
+            Assert.AreEqual(230783, file.Metadata.Bytes);
+            Assert.IsNull(file.Metadata.Hash);
+            Assert.AreEqual("page_white_acrobat", file.Metadata.Icon);
+            Assert.AreEqual(false, file.Metadata.IsDeleted);
+            Assert.AreEqual(false, file.Metadata.IsDirectory);
+            Assert.AreEqual("application/pdf", file.Metadata.MimeType);
+            Assert.IsNotNull(file.Metadata.ModifiedDate);
+            Assert.AreEqual("19/07/2011 21:55:38", file.Metadata.ModifiedDate.Value.ToUniversalTime().ToString("dd'/'MM'/'yyyy HH:mm:ss"));
+            Assert.AreEqual("/Getting_Started.pdf", file.Metadata.Path);
+            Assert.AreEqual("35e97029684fe", file.Metadata.Revision);
+            Assert.AreEqual("dropbox", file.Metadata.Root);
+            Assert.AreEqual("225.4KB", file.Metadata.Size);
+            Assert.IsFalse(file.Metadata.ThumbExists);
+            Assert.IsNull(file.Metadata.Contents);
+        }
+
+        [Test]
         public void Delta()
         {
             mockServer.ExpectNewRequest()
