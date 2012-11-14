@@ -279,12 +279,9 @@ namespace Spring.Social.Dropbox.Api.Impl
         /// <exception cref="DropboxApiException">If there is an error while communicating with Dropbox.</exception>
         public Task<Entry> UploadFileAsync(IResource file, string path, bool overwrite, string revision, CancellationToken cancellationToken)
         {
-            return this.RestTemplate.ExchangeAsync<Entry>(
-                this.BuildUploadUrl(path, overwrite, revision), HttpMethod.PUT, new HttpEntity(file), cancellationToken)
-                .ContinueWith<Entry>(task =>
-                {
-                    return task.Result.Body;
-                });
+            HttpEntityRequestCallback requestCallback = new HttpEntityRequestCallback(file, typeof(Entry), this.RestTemplate.MessageConverters);
+            MessageConverterResponseExtractor<Entry> responseExtractor = new MessageConverterResponseExtractor<Entry>(this.RestTemplate.MessageConverters);
+            return this.RestTemplate.ExecuteAsync<Entry>(this.BuildUploadUrl(path, overwrite, revision), HttpMethod.PUT, requestCallback, responseExtractor, cancellationToken);
         }
 
         /// <summary>
@@ -364,12 +361,9 @@ namespace Spring.Social.Dropbox.Api.Impl
         {
             HttpEntity requestEntity = new HttpEntity();
             requestEntity.Headers.Add("Range", String.Format("bytes={0}-{1}", startOffset, startOffset + length - 1));
-            return this.RestTemplate.ExchangeAsync<DropboxFile>(
-                this.BuildDownloadUrl(path, revision), HttpMethod.GET, requestEntity, cancellationToken)
-                .ContinueWith<DropboxFile>(task =>
-                {
-                    return task.Result.Body;
-                });
+            HttpEntityRequestCallback requestCallback = new HttpEntityRequestCallback(requestEntity, typeof(DropboxFile), this.RestTemplate.MessageConverters);
+            DropboxFileResponseExtractor responseExtractor = new DropboxFileResponseExtractor(this.RestTemplate.MessageConverters);
+            return this.RestTemplate.ExecuteAsync<DropboxFile>(this.BuildDownloadUrl(path, revision), HttpMethod.GET, requestCallback, responseExtractor, cancellationToken);
         }
 
         /// <summary>
@@ -740,8 +734,9 @@ namespace Spring.Social.Dropbox.Api.Impl
         /// <exception cref="DropboxApiException">If there is an error while communicating with Dropbox.</exception>
         public Entry UploadFile(IResource file, string path, bool overwrite, string revision)
         {
-            return this.RestTemplate.Exchange<Entry>(
-                this.BuildUploadUrl(path, overwrite, revision), HttpMethod.PUT, new HttpEntity(file)).Body;
+            HttpEntityRequestCallback requestCallback = new HttpEntityRequestCallback(file, typeof(Entry), this.RestTemplate.MessageConverters);
+            MessageConverterResponseExtractor<Entry> responseExtractor = new MessageConverterResponseExtractor<Entry>(this.RestTemplate.MessageConverters);
+            return this.RestTemplate.Execute<Entry>(this.BuildUploadUrl(path, overwrite, revision), HttpMethod.PUT, requestCallback, responseExtractor);
         }
 
         /// <summary>
@@ -807,8 +802,9 @@ namespace Spring.Social.Dropbox.Api.Impl
         {
             HttpEntity requestEntity = new HttpEntity();
             requestEntity.Headers.Add("Range", String.Format("bytes={0}-{1}", startOffset, startOffset + length - 1));
-            return this.RestTemplate.Exchange<DropboxFile>(
-                this.BuildDownloadUrl(path, revision), HttpMethod.GET, requestEntity).Body;
+            HttpEntityRequestCallback requestCallback = new HttpEntityRequestCallback(requestEntity, typeof(DropboxFile), this.RestTemplate.MessageConverters);
+            DropboxFileResponseExtractor responseExtractor = new DropboxFileResponseExtractor(this.RestTemplate.MessageConverters);
+            return this.RestTemplate.Execute<DropboxFile>(this.BuildDownloadUrl(path, revision), HttpMethod.GET, requestCallback, responseExtractor);
         }
 
         /// <summary>
@@ -1210,13 +1206,9 @@ namespace Spring.Social.Dropbox.Api.Impl
         /// <exception cref="DropboxApiException">If there is an error while communicating with Dropbox.</exception>
         public RestOperationCanceler UploadFileAsync(IResource file, string path, bool overwrite, string revision, Action<RestOperationCompletedEventArgs<Entry>> operationCompleted)
         {
-            return this.RestTemplate.ExchangeAsync<Entry>(
-                this.BuildUploadUrl(path, overwrite, revision), HttpMethod.PUT, new HttpEntity(file),
-                r =>
-                {
-                    operationCompleted(new RestOperationCompletedEventArgs<Entry>(
-                         r.Error == null ? r.Response.Body : null, r.Error, r.Cancelled, r.UserState));
-                });
+            HttpEntityRequestCallback requestCallback = new HttpEntityRequestCallback(file, typeof(Entry), this.RestTemplate.MessageConverters);
+            MessageConverterResponseExtractor<Entry> responseExtractor = new MessageConverterResponseExtractor<Entry>(this.RestTemplate.MessageConverters);
+            return this.RestTemplate.ExecuteAsync<Entry>(this.BuildUploadUrl(path, overwrite, revision), HttpMethod.PUT, requestCallback, responseExtractor, operationCompleted);
         }
 
         /// <summary>
@@ -1298,13 +1290,9 @@ namespace Spring.Social.Dropbox.Api.Impl
         {
             HttpEntity requestEntity = new HttpEntity();
             requestEntity.Headers.Add("Range", String.Format("bytes={0}-{1}", startOffset, startOffset + length - 1));
-            return this.RestTemplate.ExchangeAsync<DropboxFile>(
-                this.BuildDownloadUrl(path, revision), HttpMethod.GET, requestEntity,
-                r =>
-                {
-                    operationCompleted(new RestOperationCompletedEventArgs<DropboxFile>(
-                         r.Error == null ? r.Response.Body : null, r.Error, r.Cancelled, r.UserState));
-                });
+            HttpEntityRequestCallback requestCallback = new HttpEntityRequestCallback(requestEntity, typeof(DropboxFile), this.RestTemplate.MessageConverters);
+            DropboxFileResponseExtractor responseExtractor = new DropboxFileResponseExtractor(this.RestTemplate.MessageConverters);
+            return this.RestTemplate.ExecuteAsync<DropboxFile>(this.BuildDownloadUrl(path, revision), HttpMethod.GET, requestCallback, responseExtractor, operationCompleted);
         }
 
         /// <summary>
