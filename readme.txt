@@ -1,11 +1,11 @@
-The Spring.NET Social Dropbox project, Release 1.1.0 (February 7, 2012)
------------------------------------------------------------------------
+The Spring.NET Social Dropbox project, Release 1.2.0 (November 19, 2012)
+------------------------------------------------------------------------
 http://www.springframework.net/social-dropbox/
 
 
 1. INTRODUCTION
 
-The 1.1.0 release of Spring.NET Social Dropbox contains
+The 1.2.0 release of Spring.NET Social Dropbox contains
 	
 	* A Spring.NET Social extension with connection support and an API binding for Dropbox.
 

@@ -2,6 +2,22 @@ SPRING.NET SOCIAL DROPBOX CHANGELOG
 ===================================
 http://www.springframework.net/social-dropbox/
 
+Release Version 1.2.0 November 19, 2012
+
+Bug
+[SPRNETSOCIALDB-8] - Fix Dropbox path encoding with UTF-8 multi-byte characters
+[SPRNETSOCIALDB-9] - DownloadFile methods returns null when getting an empty file
+
+New Feature
+[SPRNETSOCIALDB-6] - Add 'copy ref' feature support
+[SPRNETSOCIALDB-7] - Add 'delta' feature support
+[SPRNETSOCIALDB-10] - Add partial file download support
+
+Task
+[SPRNETSOCIALDB-11] - Update Spring Social version to 1.0.1
+
+
+*******************************************************************************
 Release Version 1.1.0 February 7, 2012
 
 Bug
