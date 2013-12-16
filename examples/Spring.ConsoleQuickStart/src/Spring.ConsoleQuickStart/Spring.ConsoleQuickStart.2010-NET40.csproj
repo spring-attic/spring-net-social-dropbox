@@ -53,15 +53,15 @@
   <ItemGroup>
     <Reference Include="Spring.Rest, Version=1.1.0.4840, Culture=neutral, PublicKeyToken=65e474d141e25e07, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\bin\net\4.0\Debug\Spring.Rest.dll</HintPath>
+      <HintPath>..\..\..\..\build\VS2010-NET40\Spring.Social.Dropbox\Debug\Spring.Rest.dll</HintPath>
     </Reference>
     <Reference Include="Spring.Social.Core, Version=1.0.0.4840, Culture=neutral, PublicKeyToken=65e474d141e25e07, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\bin\net\4.0\Debug\Spring.Social.Core.dll</HintPath>
+      <HintPath>..\..\..\..\build\VS2010-NET40\Spring.Social.Dropbox\Debug\Spring.Social.Core.dll</HintPath>
     </Reference>
     <Reference Include="Spring.Social.Dropbox, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\bin\net\4.0\Debug\Spring.Social.Dropbox.dll</HintPath>
+      <HintPath>..\..\..\..\build\VS2010-NET40\Spring.Social.Dropbox\Debug\Spring.Social.Dropbox.dll</HintPath>
     </Reference>
     <Reference Include="System" />
   </ItemGroup>
