@@ -126,7 +126,20 @@ namespace Spring.Social.Dropbox.Connect
             string postData = string.Format("t={0}&lhs_type=default&display=desktop&login_email={1}&login_password={2}&login_submit=1&login_submit_dummy=Sign+in", t, email, password);
 
             HttpWebResponse loginRespone = Post(postData, cookieContainer, LOGIN_URL);
-            return loginRespone.StatusCode == HttpStatusCode.OK;
+            using (Stream stream_ = loginRespone.GetResponseStream())
+            {
+                using (StreamReader reader = new StreamReader(stream_))
+                {
+                    var htmlPage = reader.ReadToEnd();
+
+                    if (htmlPage.Contains("error-message"))
+                    {
+                        throw new ArgumentException("Invalid e-mail or password");
+                    }
+                }
+            }
+
+            return true;
         }
 
         private string Get(CookieContainer cookieContainer, string url)
