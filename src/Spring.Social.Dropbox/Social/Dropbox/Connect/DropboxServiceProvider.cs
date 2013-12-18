@@ -81,12 +81,16 @@ namespace Spring.Social.Dropbox.Connect
         public OAuthToken LinkAccount(string email, string password)
         {
             OAuthToken oauthToken = this.OAuthOperations.FetchRequestTokenAsync(null, null).Result;
-
             OAuth1Parameters parameters = new OAuth1Parameters();
             string authenticateUrl = this.OAuthOperations.BuildAuthorizeUrl(oauthToken.Value, parameters);
-            LinkAccount(email, password, authenticateUrl);
-            AuthorizedRequestToken requestToken = new AuthorizedRequestToken(oauthToken, null);
-            return this.OAuthOperations.ExchangeForAccessTokenAsync(requestToken, null).Result;
+
+            if (LinkAccount(email, password, authenticateUrl))
+            {
+                AuthorizedRequestToken requestToken = new AuthorizedRequestToken(oauthToken, null);
+                return this.OAuthOperations.ExchangeForAccessTokenAsync(requestToken, null).Result;
+            }
+
+            return null;
         }
 
         private bool LinkAccount(string email, string password, string authenticateURL)
