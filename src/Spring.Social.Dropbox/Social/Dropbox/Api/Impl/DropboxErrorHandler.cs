@@ -123,7 +123,7 @@ namespace Spring.Social.Dropbox.Api.Impl
             else 
             {
                 throw new DropboxApiException(
-                    "Something is broken at Dropbox. Please check status page at http://status.dropbox.com/.", 
+                    "Something is broken at Dropbox. Please check status page at https://status.dropbox.com/.", 
                     DropboxApiError.Server);
 		    } 
 	    }

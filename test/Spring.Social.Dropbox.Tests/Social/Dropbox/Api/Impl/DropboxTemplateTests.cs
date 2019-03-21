@@ -591,7 +591,7 @@ namespace Spring.Social.Dropbox.Api.Impl
             DropboxLink link = dropbox.GetShareableLink("Dir/File.txt");
 #endif
             Assert.IsNotNull(link);
-            Assert.AreEqual("http://db.tt/APqhX1", link.Url);
+            Assert.AreEqual("https://db.tt/APqhX1", link.Url);
             Assert.AreEqual("17/08/2011 02:34:33", link.ExpireDate.ToUniversalTime().ToString("dd'/'MM'/'yyyy HH:mm:ss"));
         }
 
@@ -610,7 +610,7 @@ namespace Spring.Social.Dropbox.Api.Impl
             DropboxLink link = dropbox.GetMediaLink("Dir/File.txt");
 #endif
             Assert.IsNotNull(link);
-            Assert.AreEqual("http://www.dropbox.com/s/m/a2mbDa2", link.Url);
+            Assert.AreEqual("https://www.dropbox.com/s/m/a2mbDa2", link.Url);
             Assert.AreEqual("16/09/2011 01:01:25", link.ExpireDate.ToUniversalTime().ToString("dd'/'MM'/'yyyy HH:mm:ss"));
         }
 
