@@ -41,7 +41,7 @@ DropboxServiceProvider serviceProvider = new DropboxServiceProvider("consumerKey
 OAuth1Operations oauthOperations = serviceProvider.AuthOperations;
 OAuthToken requestToken = oauthOperations.FetchRequestToken(null, null);
 OAuth1Parameters parameters = new OAuth1Parameters();
-parameters.CallbackUrl = "http://my-callback-url/";
+parameters.CallbackUrl = "https://my-callback-url/";
 parameters.Add("locale", "fr-FR"); // for a localized version of the authorization website
 string authorizeUrl = oauthOperations.BuildAuthorizeUrl(requestToken, parameters);
 Response.Redirect(authorizeUrl);
